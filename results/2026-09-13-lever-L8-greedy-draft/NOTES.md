@@ -26,3 +26,19 @@ logprob path. Not explained; worth checking separately.
 
 Next test to isolate the cause: speculative decoding off entirely. If outputs still diverge,
 the source is the target's kernels or MoE routing, not speculation.
+
+## Independent corroboration
+
+AtomicChat measured the original checkpoint on 4x B200, vLLM `e47aa780`, **no speculative
+decoding**: two runs disagree with each other on 4 % of top-1 tokens (KL 0.016 on general
+text), and a batch-size-1 run disagrees about as much, which argues against batching. Their
+working hypothesis is non-deterministic MoE kernels flipping near-tied experts
+([model card](https://huggingface.co/AtomicChat/DeepSeek-V4.1-Flash-NVFP4-nvidia)). That fits
+this result: temperature-0 divergence is a property of the target's MoE compute on this
+model, not of DSpark.
+
+## Afterwards
+
+Reverted to `probabilistic` with `scripts/fleet down dsv41 && scripts/fleet up dsv41`
+(mtxc-spark-cluster), boot 5 min, watchdog re-armed, gates 10/10
+(`../2026-09-13-restored-probabilistic/gates.json`, greedy 2/5).
