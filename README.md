@@ -60,9 +60,10 @@ compares directly.
 - **Large files come from the internet once.** Anything over 1 GB lands on one download node,
   is hash-verified there, and reaches the other nodes over rail B from its rsync daemon. In the
   first bring-up the 286 GiB checkpoint took 73 minutes over the shared datacenter uplink and
-  about 6 minutes per node over rail B. The Engram slices still came from Hugging Face per node
-  that time, and they were the slowest step; moving them to the download node is the next
-  change ([docs/DESIGN.md](docs/DESIGN.md#large-files-download-once-fan-out-over-the-fabric)).
+  about 6 minutes per node over rail B. Engram slices are cut on the download node from the
+  full shards and shipped as packs over rail B
+  ([docs/DESIGN.md](docs/DESIGN.md#large-files-download-once-fan-out-over-the-fabric)); the
+  first bring-up still pulled them from Hugging Face per node.
 - **No NFS.** Every node holds shards 1-46 and its own ~47.5 GiB sparse slice of the Engram
   shards.
 - **Rail A carries NCCL only**, with the switch's PFC class (`NCCL_IB_TC=106`). The GID index is

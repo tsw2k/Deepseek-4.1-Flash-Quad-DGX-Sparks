@@ -3,7 +3,7 @@
 #
 #   launch/cluster.sh ship         git archive HEAD + cluster.env to REPO_DIR on every node
 #   launch/cluster.sh render       render the patch set on every node and compare hashes
-#   launch/cluster.sh slice        cut each node's Engram slice (weights/engram-slice.py)
+#   launch/cluster.sh slice [--check]  Engram slices cut on the download node, shipped over rail B
 #   launch/cluster.sh preflight    every launch check on every node, nothing started
 #   launch/cluster.sh up           down-check, preflight, ranks 3,2,1 then 0, wait for /health
 #   launch/cluster.sh down         head first, save each rank's log, remove the containers
@@ -49,15 +49,55 @@ render)
   done
   ;;
 slice)
-  pids=()
-  for i in "${!NODES[@]}"; do
-    ( set -o pipefail
-      on "${NODES[$i]}" "python3 '$REPO_DIR/weights/engram-slice.py' '$MODEL_DIR' --rank $i --revision '$MODEL_REVISION'" 2>&1 \
-        | sed "s#^#${NODES[$i]}: #" ) &
-    pids+=($!)
-  done
+  # Engram slices from the full shards on the download node (NODES[0]); docs/DESIGN.md.
+  #   slice           cut every rank's slice into the model directories (engine must be down)
+  #   slice --check   cut and ship into scratch directories and compare with the serving slices
+  check=0; [ "${2:-}" = --check ] && check=1
+  dl=${NODES[0]}; dl_ip=${RAIL_B_IPS[0]}
+  cache=${ENGRAM_CACHE_DIR:-/var/tmp/models/DeepSeek-V4.1-Flash-engram-full}
+  staging=${SLICE_STAGING:-/var/tmp/dsv41-slices}
+  bw=${SLICE_BWLIMIT:-400m}
+  case "$staging" in /var/tmp/*) ;; *) echo "SLICE_STAGING must live under /var/tmp (rsyncd module root)" >&2; exit 2;; esac
+  on "$dl" "python3 '$REPO_DIR/weights/fetch-engram.py' '$cache' --verify-only" \
+    || { echo "full Engram shards not verified on $dl: run weights/fetch-engram.py $cache there" >&2; exit 3; }
+  if [ $check = 0 ]; then
+    for n in "${NODES[@]}"; do
+      if [ "$(on "$n" "docker inspect -f '{{.State.Status}}' '$CONTAINER' 2>/dev/null" || true)" = running ]; then
+        echo "$n is serving; replacing slices under a live engine is refused (fleet down first, or use --check)" >&2; exit 3
+      fi
+    done
+  fi
+  sl="python3 '$REPO_DIR/weights/engram-slice.py'"
+  sweep="python3 '$REPO_DIR/weights/pagecache-sweep.py'"
   bad=0
-  for p in "${pids[@]}"; do wait "$p" || bad=1; done
+  for i in "${!NODES[@]}"; do
+    n=${NODES[$i]}
+    echo "=== rank $i ($n)"
+    if [ "$i" -eq 0 ]; then
+      out=$MODEL_DIR; [ $check = 1 ] && out=$staging/check-rank-0
+      if on "$dl" "mkdir -p '$staging' && $sl cut '$MODEL_DIR' --rank 0 --source '$cache' --out '$out' --force"; then
+        [ $check = 0 ] || on "$dl" "$sl compare '$out' '$MODEL_DIR'" || bad=1
+      else bad=1; fi
+      [ $check = 0 ] || on "$dl" "rm -rf '$out'"
+      continue
+    fi
+    pack=$staging/rank-$i.pack
+    if ! on "$dl" "mkdir -p '$staging' && $sl cut '$MODEL_DIR' --rank $i --source '$cache' --pack '$pack'"; then
+      bad=1; continue
+    fi
+    # Over rail B from rsyncd, as a plain file; both ends keep it out of the page cache.
+    on "$dl" "setsid nohup $sweep '$pack' --wait 300 >/dev/null 2>&1 < /dev/null &"
+    out=$MODEL_DIR; [ $check = 1 ] && out=$staging/check-rank-$i
+    if on "$n" "mkdir -p '$staging' && { setsid nohup $sweep '$pack' --wait 300 >/dev/null 2>&1 < /dev/null & } \
+          && rsync --inplace --partial --bwlimit=$bw rsync://$dl_ip/models/${pack#/var/tmp/} '$pack' \
+          && $sl unpack '$pack' --out '$out' --force"; then
+      [ $check = 0 ] || on "$n" "$sl compare '$out' '$MODEL_DIR'" || bad=1
+    else bad=1; fi
+    [ $check = 0 ] || on "$n" "rm -rf '$out'"
+    on "$n" "rm -f '$pack'"
+    on "$dl" "rm -f '$pack'"
+  done
+  [ $bad -eq 0 ] && echo "slices OK on all ranks$([ $check = 1 ] && echo ' (check: identical to the serving slices)')"
   exit $bad
   ;;
 preflight)

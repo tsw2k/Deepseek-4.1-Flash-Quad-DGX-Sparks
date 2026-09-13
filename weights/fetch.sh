@@ -3,9 +3,10 @@
 #
 #   bash weights/fetch.sh ./cluster.env          # on spark-01
 #
-# Shards 1-46 (286.1 GiB) are needed in full on every rank. Shards 47-48 (189.1 GiB) hold the
-# two Engram tables, of which each TP4 rank reads only its own quarter: those are cut per node
-# by engram-slice.py instead, so no node ever stores all 189 GiB.
+# Shards 1-46 (286.1 GiB) are needed in full on every rank and are fanned out by sync.sh.
+# Shards 47-48 (189.1 GiB) hold the two Engram tables, of which each TP4 rank reads only its
+# own quarter: they are fetched in full to this node only, verified, and every rank's slice is
+# cut from them here (launch/cluster.sh slice).
 #
 # A download this size fills the page cache, and on GB10 the page cache is the GPU's memory.
 # Run it in the maintenance window with nothing serving, and keep a flusher running.
@@ -17,9 +18,9 @@ source "${1:?usage: fetch.sh cluster.env}"
 
 # pip --user installs land in ~/.local/bin, which a non-interactive ssh session does not have
 export PATH="$HOME/.local/bin:$PATH"
-command -v hf >/dev/null ||{ echo "hf CLI missing: python3 -m pip install --user -U huggingface_hub" >&2; exit 2; }
+command -v hf >/dev/null || { echo "hf CLI missing: python3 -m pip install --user -U huggingface_hub" >&2; exit 2; }
 
-need_gib=300
+need_gib=${NEED_GIB:-500}   # 286 GiB of shards 1-46 + 189 GiB of full Engram shards
 free_gib=$(df --output=avail -BG "$(dirname "$MODEL_DIR")" | tail -1 | tr -dc 0-9)
 [ "$free_gib" -ge "$need_gib" ] || { echo "only ${free_gib} GiB free under $(dirname "$MODEL_DIR"); need ${need_gib}" >&2; exit 3; }
 
@@ -34,3 +35,8 @@ HF_HUB_ENABLE_HF_TRANSFER=0 hf download deepseek-ai/DeepSeek-V4.1-Flash \
   --max-workers 8
 
 python3 "$here/verify.py" "$MODEL_DIR"
+
+# The two Engram shards, once, into their own directory (not the model directory, which holds
+# this node's sparse slice under the same names). launch/cluster.sh slice cuts every rank's
+# slice from here.
+python3 "$here/fetch-engram.py" "${ENGRAM_CACHE_DIR:-/var/tmp/models/DeepSeek-V4.1-Flash-engram-full}" --mbps "${FETCH_MBPS:-0}"

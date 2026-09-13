@@ -70,14 +70,16 @@ down, unplug the adapter for 30-60 s, power on. A reboot does not clear it.
 ## 4. Weights
 
 ```bash
-ssh spark-01 "bash /home/mtxc/dsv41/weights/fetch.sh /home/mtxc/dsv41/cluster.env"   # 286 GiB + verify
-bash weights/sync.sh ./cluster.env                                                      # rail B + verify on each node
-launch/cluster.sh slice                                                                 # ~47.5 GiB per node, from HF ranges
+ssh spark-01 "bash /home/mtxc/dsv41/weights/fetch.sh /home/mtxc/dsv41/cluster.env"   # 286 + 189 GiB, verified
+bash weights/sync.sh ./cluster.env                                                      # shards 1-46 over rail B, verified on each node
+launch/cluster.sh slice                                                                 # cut on spark-01, packs over rail B
 ```
 
-`slice` computes each rank's rows, writes the sparse Engram shards into the model directory,
-checks sampled rows and the tail tensors against a second fetch, then writes
-`engram-local.json`. A node without that file has no slice.
+`slice` computes each rank's rows from `config.json`, cuts the rank's ranges out of the full
+Engram shards on spark-01, ships ranks 1-3 as packs over rail B, rebuilds the sparse shards on
+each node with every range hashed twice, then writes `engram-local.json`. A node without that
+file has no slice. It refuses to run while an engine is up; `slice --check` works next to a
+serving engine and only compares.
 
 ## 5. Patches
 

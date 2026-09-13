@@ -82,9 +82,20 @@ which are zeros: wrong output, no error. Two guards replace it. `engram-local.js
 rank, TP size and revision, and `launch/node.sh` refuses a mismatch. After boot,
 `cluster.sh engram` checks that every rank logged both tables as read node-local.
 
-In the first bring-up each node cut its slice straight from Hugging Face over range requests,
-so no node had to store the 189 GiB of full Engram shards. That breaks the rule in the next
-section, and it was the slowest step of the window. The slices move to the download node.
+The full Engram shards are downloaded once, to the download node, into a directory of their
+own (`weights/fetch-engram.py`, full sha256 against the manifest). Every rank's slice is cut
+there. The download node's own slice is written straight into its model directory; for the
+other ranks the slice is written as a **pack**, one plain file with a JSON header and the
+ranges back to back (~47.5 GiB), which crosses rail B from rsyncd and is unpacked on the
+receiving node into the sparse shards, each range re-hashed twice. A sparse file is not sent
+as such: the sender would read its holes as zeros, about 190 GiB per rank, and that would land
+in the page cache, which on GB10 is the GPU's memory. `weights/pagecache-sweep.py` keeps the
+pack itself out of the cache on both ends while rsync moves it.
+
+In the first bring-up each node cut its slice from Hugging Face over range requests instead,
+which broke the rule in the next section and was the slowest step of the window.
+`launch/cluster.sh slice --check` re-cuts every slice the new way into scratch directories and
+compares its digests with the slices already serving.
 
 ## Large files: download once, fan out over the fabric
 
@@ -113,10 +124,9 @@ its own 334 GiB of V4.1, which does not fit a 1 TB node that also holds other mo
 a disk-planning decision to make up front (clear space, or keep a dedicated cache node or
 storage), not a reason to download per node.
 
-Planned change to the tooling: `weights/fetch.sh` also downloads shards 47-48 to the download
-node and verifies them; `launch/cluster.sh slice` cuts every rank's slice there
-(`engram-slice.py --source <full dir>`) and ships it over rail B with `rsync --sparse`;
-`weights/sync.sh` feeds the three nodes in parallel.
+Tooling: `weights/fetch.sh` downloads shards 1-46 and then the two full Engram shards
+(`fetch-engram.py`); `weights/sync.sh` fans shards 1-46 out; `launch/cluster.sh slice` cuts and
+ships the slices. The download node needs 286 + 189 + 47.5 (one pack at a time) GiB.
 
 ## Fabric use
 
@@ -124,7 +134,7 @@ node and verifies them; `launch/cluster.sh slice` cuts every rank's slice there
 |---|---|
 | NCCL all-reduce, Gloo, vLLM rendezvous | rail A only (`rocep1s0f0`, 10.77.1.0/24), `NCCL_IB_TC=106` |
 | checkpoint fan-out, image copy | rail B (rsyncd bound to 10.77.2.0/24) |
-| Engram slices | first bring-up: Hugging Face per node; planned: cut on the download node, rail B |
+| Engram slices | cut on the download node from the full shards, packs over rail B |
 | anything over 1 GB from the internet | once, onto the download node |
 | API | head's rail A address, where LiteLLM already points; not the management network |
 
