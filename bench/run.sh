@@ -65,7 +65,7 @@ scp -q "$head:$rdir/gates.json" "$out/" || true
 
 # ---- benchmark and needle
 on "$head" "cd '$rdir' && python3 '$REPO_DIR/bench/tony/v41bench.py' --base '$base' --label '$label' --out '$rdir' \
-  --levels 1,2,3,4,5,6 --prefill 2000,8000,32000,64000 --notes 'set=$PATCH_SET k=$SPEC_K maxlen=$MAXLEN gmu=$GMU lever_env=${LEVER_ENV:-none} draft=${DRAFT_SAMPLE:-probabilistic}'"
+  --levels 1,2,3,4,5,6 --prefill 2000,8000,32000,64000 --notes 'set=$PATCH_SET k=$SPEC_K maxlen=$MAXLEN gmu=$GMU lever_env=${LEVER_ENV:-none} draft=${DRAFT_SAMPLE:-probabilistic} spec=${SPEC:-dspark}'"
 on "$head" "bash '$REPO_DIR/ops/hangcheck.sh' '$CONTAINER'" || true
 on "$head" "cd '$rdir' && python3 '$REPO_DIR/bench/tony/v41needle.py' --base '$base' --targets 131072 --depth 0.5 --out '$rdir/needle-131k.json'"
 scp -q -r "$head:$rdir/." "$out/"

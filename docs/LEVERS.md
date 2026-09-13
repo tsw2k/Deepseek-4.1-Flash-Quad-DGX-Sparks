@@ -14,8 +14,11 @@ little stricter: upstream measured ±5 % run to run on a single config, and the 
 state (Tech2Wild issue #1) can move one cell by up to 1.5x. Repeat any borderline row before
 deciding.
 
-Apply a lever with `LEVER_ENV` / `VLLM_EXTRA` or a `cluster.env` value, and give the run a
-label that names it.
+Apply a lever by setting `LEVER_ENV`, `SPEC`, `DRAFT_SAMPLE` or another value in the operator's
+`cluster.env`, then `scripts/fleet down dsv41`, `launch/cluster.sh ship`, `scripts/fleet up dsv41`
+(mtxc-spark-cluster). The value then lives in every node's `cluster.env`, so a watchdog relaunch
+keeps the same configuration. Give the run a label that names the lever, and restore the
+baseline the same way.
 
 | # | lever | change | why it might help | source | status |
 |---|---|---|---|---|---|
@@ -27,6 +30,7 @@ label that names it.
 | L5 | minimal patch set | `PATCH_SET=minimal` | keeps the tree's own changes to the indexer, `weight_utils` and `sparse_swa` instead of rolling them back | this repo | not run; gates decide |
 | L6 | page-cache flusher on | `glm53-flusher.service` running during serving | the GLM stack needed it at load; during serving it evicts Engram pages every 60 s | mtxc GLM ops | not run; expect negative |
 | L8 | greedy determinism | `DRAFT_SAMPLE=greedy launch/cluster.sh up` (speculative config `"draft_sample_method":"greedy"`) | First boot: 3/5 sequential temperature-0 runs byte-identical, the rest diverged on one near-tied token and stayed coherent. Probabilistic draft sampling varies acceptance, hence verify-batch sizes, hence kernels. Measure the `greedy` gate's identical count and acceptance length together | this cluster, 2026-09-13 | **rejected**: 1/5 identical, logits still move up to ~2.7 nats ([results](../results/2026-09-13-lever-L8-greedy-draft/NOTES.md)) |
+| L9 | no speculative decoding (determinism isolation) | `SPEC=none` in cluster.env | After L8: is the temperature-0 divergence DSpark's or the target's? AtomicChat saw 4 % top-1 disagreement between runs without speculation on B200 | this cluster, 2026-09-13 | not run |
 | L7 | sysctls | `vm.min_free_kbytes=1048576`, `vm.watermark_scale_factor=200` | earlier reclaim on the unified pool | Tech2Wild | not run |
 
 ## Rejected or out of scope for now

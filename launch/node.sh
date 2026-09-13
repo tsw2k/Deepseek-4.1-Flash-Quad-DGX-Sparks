@@ -91,10 +91,20 @@ while read -r rel; do
 done < "$patch_dir/mounts.txt"
 
 K=$SPEC_K
+# Speculative decoding: dspark (baseline) or none (determinism test, L9).
+SPEC=${SPEC:-dspark}
 # DSpark draft sampling. probabilistic is the measured baseline; greedy is lever L8 (determinism).
 DRAFT_SAMPLE=${DRAFT_SAMPLE:-probabilistic}
+case "$SPEC" in dspark|none) ;; *) fail "SPEC must be dspark or none";; esac
 case "$DRAFT_SAMPLE" in greedy|probabilistic) ;; *) fail "DRAFT_SAMPLE must be greedy or probabilistic";; esac
-cg_sizes=$( { seq "$K" "$K" $((K * SEQS)); seq $((K + 1)) $((K + 1)) $(((K + 1) * SEQS)); } | sort -n -u | paste -sd, - )
+if [ "$SPEC" = dspark ]; then
+  # every decode batch is a multiple of K+1 target tokens or K draft tokens: an exact graph each
+  cg_sizes=$( { seq "$K" "$K" $((K * SEQS)); seq $((K + 1)) $((K + 1)) $(((K + 1) * SEQS)); } | sort -n -u | paste -sd, - )
+  spec_args=(--speculative-config "{\"method\":\"dspark\",\"num_speculative_tokens\":$K,\"draft_sample_method\":\"$DRAFT_SAMPLE\",\"rejection_sample_method\":\"block\",\"enable_adaptive_verification\":false}")
+else
+  cg_sizes=$(seq 1 "$SEQS" | paste -sd, -)
+  spec_args=()
+fi
 
 envs=(
   "VLLM_HOST_IP=$my_ip" HF_HOME=/cache/huggingface HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
@@ -122,7 +132,7 @@ args=(run --gpus all -d --name "$CONTAINER" --restart no --network host --ipc ho
   --shm-size 32g --memory 112g --memory-swap 112g
   --ulimit memlock=-1:-1 --ulimit nofile=1048576:1048576
   --cap-add IPC_LOCK --device /dev/infiniband:/dev/infiniband --oom-score-adj 500
-  --label "dsv41.rank=$rank" --label "dsv41.patch_set=$PATCH_SET" --label "dsv41.gid_index=$gid_index" --label "dsv41.draft_sample=$DRAFT_SAMPLE"
+  --label "dsv41.rank=$rank" --label "dsv41.patch_set=$PATCH_SET" --label "dsv41.gid_index=$gid_index" --label "dsv41.draft_sample=$DRAFT_SAMPLE" --label "dsv41.spec=$SPEC" --label "dsv41.lever_env=${LEVER_ENV:-}"
   -v "$MODEL_DIR:$name_model:ro" -v "$CACHE_DIR:/cache" "${mounts[@]}")
 for e in "${envs[@]}"; do args+=(-e "$e"); done
 args+=("$IMAGE" "$name_model" --served-model-name deepseek-v4.1-flash
@@ -131,7 +141,7 @@ args+=("$IMAGE" "$name_model" --served-model-name deepseek-v4.1-flash
   --max-model-len "$MAXLEN" --max-num-seqs "$SEQS" --max-num-batched-tokens "$MAX_BATCHED"
   --engram-config '{"cpu_offload":false}' --default-chat-template-kwargs '{"thinking":false}'
   --tool-call-parser deepseek_v41 --enable-auto-tool-choice --reasoning-parser deepseek_v41
-  --speculative-config "{\"method\":\"dspark\",\"num_speculative_tokens\":$K,\"draft_sample_method\":\"$DRAFT_SAMPLE\",\"rejection_sample_method\":\"block\",\"enable_adaptive_verification\":false}"
+  "${spec_args[@]}"
   --compilation-config "{\"cudagraph_mode\":\"FULL_AND_PIECEWISE\",\"cudagraph_capture_sizes\":[$cg_sizes]}"
   --distributed-executor-backend mp --nnodes 4 --node-rank "$rank"
   --master-addr "${RAIL_A_IPS[0]}" --master-port "$MASTER_PORT"
@@ -153,6 +163,6 @@ avail=$(awk '/MemAvailable:/ {print int($2/1048576)}' /proc/meminfo)
 [ "$avail" -ge 100 ] || fail "MemAvailable $avail GiB < 100 GiB after dropping caches"
 
 docker "${args[@]}" >/dev/null
-echo "started $CONTAINER rank=$rank gid=$gid_index set=$PATCH_SET k=$K draft=$DRAFT_SAMPLE maxlen=$MAXLEN avail=${avail}GiB"
+echo "started $CONTAINER rank=$rank gid=$gid_index set=$PATCH_SET spec=$SPEC k=$K draft=$DRAFT_SAMPLE maxlen=$MAXLEN avail=${avail}GiB"
 sleep 3
 docker ps --format '{{.Names}}' | grep -q "^$CONTAINER\$" || { docker logs --tail 40 "$CONTAINER" >&2; exit 1; }
