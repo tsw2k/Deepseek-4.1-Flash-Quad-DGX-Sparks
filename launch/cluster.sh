@@ -80,7 +80,7 @@ up)
   done
   "$0" preflight
   for i in 3 2 1 0; do
-    on "${NODES[$i]}" "$node_env LEVER_ENV='${LEVER_ENV:-}' VLLM_EXTRA='${VLLM_EXTRA:-}' bash '$REPO_DIR/launch/node.sh' $i"
+    on "${NODES[$i]}" "$node_env LEVER_ENV='${LEVER_ENV:-}' VLLM_EXTRA='${VLLM_EXTRA:-}' DRAFT_SAMPLE='${DRAFT_SAMPLE:-}' bash '$REPO_DIR/launch/node.sh' $i"
   done
   echo "waiting for http://$API_HOST:$API_PORT/health (weights, draft, autotune and graph capture take many minutes)"
   t0=$(date +%s)
