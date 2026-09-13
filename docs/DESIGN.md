@@ -77,7 +77,7 @@ holes everywhere else. It lives in the model directory under the shard's own nam
 loader and the Engram reader see an ordinary checkpoint.
 
 Upstream, workers kept a slice and fell back to the full shards over NFS when the slice did
-not cover their rows. Here there is no full shard anywhere, so that fallback would read holes,
+not cover their rows. Here no model directory holds a full shard, so that fallback would read holes,
 which are zeros: wrong output, no error. Two guards replace it. `engram-local.json` records
 rank, TP size and revision, and `launch/node.sh` refuses a mismatch. After boot,
 `cluster.sh engram` checks that every rank logged both tables as read node-local.
@@ -95,7 +95,9 @@ pack itself out of the cache on both ends while rsync moves it.
 In the first bring-up each node cut its slice from Hugging Face over range requests instead,
 which broke the rule in the next section and was the slowest step of the window.
 `launch/cluster.sh slice --check` re-cuts every slice the new way into scratch directories and
-compares its digests with the slices already serving.
+compares its digests with the slices already serving. Run next to the serving engine on
+2026-09-13, all four ranks came out identical to the Hugging Face-cut slices, 38.5 minutes for
+the four ([results](../results/2026-09-13-slices-from-download-node/NOTES.md)).
 
 ## Large files: download once, fan out over the fabric
 
@@ -112,9 +114,12 @@ First bring-up, 2026-09-13, same checkpoint:
 | the same 286 GiB, spark-01 to each other node | rail B, rsyncd | ~6 min per node at ~800 MB/s |
 | image, 22 GiB, spark-02 to three nodes | rail B, rsyncd | a few minutes |
 | Engram slices, 4 x 47.5 GiB | Hugging Face, per node, in parallel | 12 to 56 min per node |
+| full Engram shards, 189 GiB, onto spark-01 (second run) | Hugging Face, one node | ~93 MB/s unlimited, sha256 verified |
+| all four slices from the full shards (second run) | cut on spark-01, packs over rail B | 38.5 min total, identical to the first |
 
-The uplink was shared by every node, about 110 MB/s in total, so parallel per-node downloads
-bought nothing. Rail B moved a copy about 7x faster than the uplink, one stream at a time. A
+The uplink is shared by every node: all four leave through one public IP, and a parallel test
+summed to ~125 MB/s while one node alone reached ~93 MB/s. Parallel per-node downloads buy
+nothing here. Rail B moved a copy about 7x faster than the uplink, one stream at a time. A
 single download also brings a full-file sha256 check against the LFS manifest, where per-node
 range slicing can only re-fetch sample rows. And a slice for another rank or TP size can be
 re-cut without going back to the internet.

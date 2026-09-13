@@ -1,0 +1,30 @@
+=== rank 0 (spark-01)
+rows for rank 0/4: {1: [0, 96000564], 14: [0, 96003054]}
+cutting 47.5 GiB into sparse shards in /var/tmp/dsv41-slices/check-rank-0
+ok: 12 ranges, 47.5 GiB allocated, 325s; wrote /var/tmp/dsv41-slices/check-rank-0/engram-local.json
+identical: rank 0/4, 12 range digests (cut:/var/tmp/models/DeepSeek-V4.1-Flash-engram-full vs hf)
+=== rank 1 (spark-02)
+rows for rank 1/4: {1: [96000564, 192001740], 14: [96003054, 192007016]}
+packing 47.5 GiB for rank 1 into /var/tmp/dsv41-slices/rank-1.pack
+ok: pack 47.5 GiB, 12 ranges, 296s
+unpacking rank 1/4 from /var/tmp/dsv41-slices/rank-1.pack into /var/tmp/dsv41-slices/check-rank-1
+ok: 12 ranges verified twice, 230s; wrote /var/tmp/dsv41-slices/check-rank-1/engram-local.json
+identical: rank 1/4, 12 range digests (pack:rank-1.pack vs hf)
+=== rank 2 (spark-03)
+rows for rank 2/4: {1: [192001740, 288003654], 14: [192007016, 288011564]}
+packing 47.5 GiB for rank 2 into /var/tmp/dsv41-slices/rank-2.pack
+ok: pack 47.5 GiB, 12 ranges, 274s
+unpacking rank 2/4 from /var/tmp/dsv41-slices/rank-2.pack into /var/tmp/dsv41-slices/check-rank-2
+ok: 12 ranges verified twice, 255s; wrote /var/tmp/dsv41-slices/check-rank-2/engram-local.json
+identical: rank 2/4, 12 range digests (pack:rank-2.pack vs hf)
+=== rank 3 (spark-04)
+rows for rank 3/4: {1: [288003654, 384006168], 14: [288011564, 384016682]}
+packing 47.5 GiB for rank 3 into /var/tmp/dsv41-slices/rank-3.pack
+ok: pack 47.5 GiB, 12 ranges, 263s
+unpacking rank 3/4 from /var/tmp/dsv41-slices/rank-3.pack into /var/tmp/dsv41-slices/check-rank-3
+ok: 12 ranges verified twice, 281s; wrote /var/tmp/dsv41-slices/check-rank-3/engram-local.json
+identical: rank 3/4, 12 range digests (pack:rank-3.pack vs hf)
+slices OK on all ranks (check: identical to the serving slices)
+launch/cluster.sh slice --check  0.35s user 0.31s system 0% cpu 38:33.33 total
+
+[exited with code 0]
