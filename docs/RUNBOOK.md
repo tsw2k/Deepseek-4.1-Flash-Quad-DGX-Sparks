@@ -143,6 +143,16 @@ the fleet relaunching itself about three minutes after the head is back.
 
 **Roll back to GLM:**
 
+On the mtxc cluster the GLM weights were later removed from spark-01 to make room; they are
+identical on spark-02..04. Restore them over rail B first (mtxc-spark-cluster repo, ~4 min):
+
+```bash
+scripts/fleet-restore models/GLM-5.3-Flash-NVFP4-redhat spark-01
+scripts/fleet-restore models/GLM-5.3-Flash-DFlash2 spark-01
+```
+
+Then:
+
 ```bash
 ssh spark-01 sudo systemctl disable --now dsv41-fleet.service
 launch/cluster.sh down
@@ -152,8 +162,8 @@ ssh spark-01 sudo systemctl enable --now glm53-fleet.service
 
 The watchdog probes `http://127.0.0.1:8000/health` every 60 s. After three failures it removes
 the `vllm_glm53` containers, drops caches and relaunches GLM worker-first, so expect ~3 minutes
-before recovery starts and a full GLM load after that. Nothing GLM needs was deleted, so the
-rollback is a relaunch, not a download.
+before recovery starts and a full GLM load after that. Nothing GLM needs comes from the
+internet again: at worst it is a rail B copy and a relaunch.
 
 The same watchdog is why step 2 stops it first. Left running next to V4.1, it cannot see
 V4.1's health (different container, rail A address), and within three minutes it would
