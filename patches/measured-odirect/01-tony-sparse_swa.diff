@@ -1,0 +1,29 @@
+--- a/vllm/v1/attention/backends/mla/sparse_swa.py
++++ b/vllm/v1/attention/backends/mla/sparse_swa.py
+@@ -139,6 +139,13 @@
+         return [MultipleOf(32)]
+ 
+     @classmethod
++    def get_swa_block_size(cls) -> int:
++        """Tech2Wild/Kai 2026-09-10: tokens per SWA cache page handed to
++        DeepseekV4SWACache. FlashMLA / TRTLLM-gen take the page size at
++        runtime (32); kernels instantiated for one page size override this."""
++        return 32
++
++    @classmethod
+     def get_preferred_block_size(cls, default_block_size: int) -> int:
+         return 256
+ 
+@@ -154,12 +161,6 @@
+             )
+ 
+             return DeepseekV4ROCMAiterSparseSWAMetadataBuilder
+-        if current_platform.is_cpu():
+-            from vllm.models.deepseek_v4.cpu.cpu_mla import (
+-                DeepseekV4CPUSparseSWAMetadataBuilder,
+-            )
+-
+-            return DeepseekV4CPUSparseSWAMetadataBuilder
+         return DeepseekSparseSWAMetadataBuilder
+ 
+ 

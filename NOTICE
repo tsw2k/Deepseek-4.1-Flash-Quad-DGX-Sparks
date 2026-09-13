@@ -16,7 +16,8 @@ Tech2Wild/Kai (tonyd2wild)
   The four-Spark TP4 recipe: disk-backed Engram tables and their staging before the forward
   (CUDA graphs), node-local Engram rows, SM12x page-size and indexer fixes, the image build
   and prewarm approach, the relaunch order, the hang check and the GPU clock-latch check.
-  - patches/*/01..07-tony-*.diff are diffs of their patch files (commit fc725ecf) against vLLM
+  - patches/*/01..07-tony-*.diff are diffs of their patch files (commit fc725ecf) against vLLM;
+    patches/measured-odirect/04-tony-mtxc-engram-odirect.diff adds this repo's O_DIRECT read path
   - bench/tony/v41bench.py, v41needle.py, prompts-v1.json are vendored unmodified
   - build/stable-extension.sh, Dockerfile.runtime, prewarm.py, verify-runtime.py,
     ops/hangcheck.sh, ops/gpu-burn.sh and the Engram slice format derive from their scripts

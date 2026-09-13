@@ -1,0 +1,41 @@
+--- a/vllm/v1/worker/gpu_worker.py
++++ b/vllm/v1/worker/gpu_worker.py
+@@ -578,6 +578,7 @@
+         if (
+             current_platform.is_cuda_alike()
+             and self.vllm_config.compilation_config.cudagraph_mode != CUDAGraphMode.NONE
++            and os.environ.get("DSV41_SKIP_GRAPH_MEMORY_PROFILE", "0") != "1"
+         ):
+             cudagraph_memory_estimate = self.model_runner.profile_cudagraph_memory()
+ 
+@@ -899,6 +900,30 @@
+             else:
+                 self.model_runner._dummy_sampler_run(hidden_states=last_hidden_states)
+ 
++        # Startup-only cleanup: dummy warmup/capture can leave NaNs in cache
++        # slots consumed by masked attention. Preserve graph buffer addresses;
++        # clear in place only before any real requests can be scheduled.
++        if os.environ.get("DSV41_CLEAR_STATE_AFTER_CAPTURE", "0") == "1":
++            if not self.use_v2_model_runner:
++                raise RuntimeError("DSV41 cache cleanup requires the V2 runner")
++            runner = self.model_runner
++            with torch.inference_mode():
++                for cache in runner.kv_caches:
++                    cache.zero_()
++                for module in runner.get_model().modules():
++                    if type(module).__name__ == "NgramHashState":
++                        cache = getattr(module, "_cache", None)
++                        if cache is not None:
++                            cache.zero_()
++                    rows = getattr(module, "staged_rows", None)
++                    if isinstance(rows, torch.Tensor):
++                        rows.zero_()
++                window = runner.model_state.lookback_token_ids
++                if window is not None:
++                    window.fill_(-1)
++                torch.cuda.synchronize()
++            logger.info("DSV41 startup cache cleanup complete: %d KV tensors; graph buffers retained", len(runner.kv_caches))
++
+         # Reset the seed to ensure that the random state is not affected by
+         # the model initialization and profiling.
+         set_random_seed(self.model_config.seed)

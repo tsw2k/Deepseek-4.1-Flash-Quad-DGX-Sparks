@@ -24,7 +24,7 @@ baseline the same way.
 |---|---|---|---|---|---|
 | L0 | baseline | none (`PATCH_SET=measured`, K3, 600K) | reference point | 0xTank | **run** 2026-09-13 ([results](../results/2026-09-13-baseline-measured/NOTES.md)) |
 | L1 | NCCL buffers | `LEVER_ENV="NCCL_BUFFSIZE=1048576 NCCL_LL128_BUFFSIZE=262144 NCCL_PROTO=^LL128 NCCL_MAX_NCHANNELS=8"` | MiaAI measured 4.7 GiB of pinned connection buffers per node, cut to 0.14 GiB. On a unified-memory box that is memory back for the head, and fewer reclaim stalls | MiaAI (SGLang, TP3) | not run |
-| L2 | Engram reads bypass the page cache | new patch: `DiskEngramTable` reads with `O_DIRECT` into aligned per-thread buffers | Rows are read through the page cache today, and on GB10 the cache competes with the engine for the same pool. Tech2Wild saw first runs after startup 30-60 % slower and suspected evicted Engram pages. MiaAI reads with `O_DIRECT` and no row cache ("~0% reuse") | MiaAI's idea; code to be written here, not copied (AGPL) | design below |
+| L2 | Engram reads bypass the page cache | `PATCH_SET=measured-odirect` and `LEVER_ENV="DSV41_ENGRAM_ODIRECT=1"` (the patch is a no-op without the variable) | Rows are read through the page cache today, and on GB10 the cache competes with the engine for the same pool. Tech2Wild saw first runs after startup 30-60 % slower and suspected evicted Engram pages. MiaAI reads with `O_DIRECT` and no row cache ("~0% reuse") | MiaAI's idea; code written here, not copied (AGPL) | implemented (`patches/measured-odirect`), not run |
 | L3 | K5 instead of K3 | `SPEC_K=5`, `MAXLEN=300000` | Tech2Wild's boot 10 shape; K3 was 0xTank's choice for 600K. Content-dependent: acceptance near 6 on code and counting, near 2 on prose | Tech2Wild | not run |
 | L4 | b12x MXFP8 dense kernel | `LEVER_ENV="VLLM_DISABLED_KERNELS=FlashInferCutedslMxfp8LinearKernel,FlashInferCutlassMxfp8LinearKernel,MarlinMxfp8LinearKernel"` | MiaAI's profile: dense FP8 projections 52 ms on Triton, 50 on CUTLASS, 17 on b12x per step. bot-lab-21 accepted the same route in vLLM | MiaAI; bot-lab-21 | not run. `B12xMxfp8LinearKernel` and `VLLM_DISABLED_KERNELS` exist at `172d9a17`, but the kernel reports unsupported unless the `b12x` package is installed (`vllm[b12x]`). Check `python3 -c 'import b12x'` in the image; if missing this lever needs an image layer, and the boot log must show the b12x kernel selected |
 | L5 | minimal patch set | `PATCH_SET=minimal` | keeps the tree's own changes to the indexer, `weight_utils` and `sparse_swa` instead of rolling them back | this repo | not run; gates decide |
@@ -64,7 +64,10 @@ rather than a repacked file:
   queue depth 64 on their Spark's NVMe; ours is not measured, so measure it first
   (`fio --direct=1 --rw=randread --bs=4k --iodepth=64`).
 - Keep the thread pool and the staging before the forward; only `_kai_pread_rows` changes.
-- Switch: `DSV41_ENGRAM_ODIRECT=1`, default off, so L0 is untouched.
+- Switch: `DSV41_ENGRAM_ODIRECT=1`, default off. The patch lives in its own set,
+  `patches/measured-odirect` (the `measured` set plus this change in `04-tony-mtxc-engram-odirect.diff`),
+  so `measured` stays byte-identical to what 0xTank benchmarked. The boot log's
+  `Engram DISK mode ... O_DIRECT True` line confirms it is active.
 
 Measure: per-step time (`bench/tony` counting at C1), `Cached` in `/proc/meminfo` during a
 30-minute mixed run, and the first-run-after-idle penalty (idle 15 minutes, then C1).
