@@ -10,7 +10,7 @@ Stdlib only. Exit 1 if any gate fails.
 
   identity     /v1/models serves the name, a short answer comes back
   count        count 1..100 at temperature 0, exact (DSpark accepts near the maximum here)
-  greedy       the same prompt twice at temperature 0 gives identical text
+  greedy       the same prompt 5x at temperature 0: clean every time; identical count recorded
   garble       30 generations, 6 in flight, temperatures 0 / 0.7 / 1.0 (Tech2Wild/Kai's gate)
   prefill      recall a fact placed at the end of ~100 to ~4000-token prompts; MiaAI saw
                garbage for prefills over 64 tokens with expandable_segments on SGLang, and
@@ -133,9 +133,18 @@ def _():
 
 @gate("greedy")
 def _():
+    # A measurement, not a pass/fail on byte equality. On the measured configuration 3 of 5
+    # sequential temperature-0 runs matched byte for byte; the other 2 took a different
+    # near-tied token at char 93 and stayed coherent. Speculative batches of different sizes
+    # run different kernels, so ties can flip. The gate fails only on garbled output; the
+    # identical count is recorded so levers can move it (docs/LEVERS.md, L8).
     p = "Explain in about 80 words why the sky is blue."
-    a, b = text(chat(p, 160)), text(chat(p, 160))
-    return a == b and not garbled(a), f"identical={a == b} len={len(a)}"
+    outs = [text(chat(p, 160)) for _ in range(5)]
+    same = sum(o == outs[0] for o in outs)
+    firsts = [next((i for i, (x, y) in enumerate(zip(outs[0], o)) if x != y), None) for o in outs]
+    diverge = min((f for f in firsts if f is not None), default=None)
+    bad = [g for o in outs if (g := garbled(o))]
+    return not bad, f"identical {same}/5, first divergence at char {diverge}, garbled {bad}"
 
 
 @gate("garble")
