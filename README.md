@@ -104,7 +104,7 @@ Full sequence, including stopping GLM and rolling back: [docs/RUNBOOK.md](docs/R
 | `bench/gates.py` | correctness gates, run before any benchmark |
 | `bench/run.sh` | configuration snapshot, gates, C1-C6 suite, needle; writes `results/` |
 | `bench/tony/` | Tech2Wild/Kai's benchmark, needle test and prompt set, unmodified |
-| `ops/` | hang check, GPU clock-latch burn |
+| `ops/` | fleet watchdog and its systemd unit, hang check, GPU clock-latch burn |
 | `docs/` | [design](docs/DESIGN.md), [provenance](docs/PROVENANCE.md), [runbook](docs/RUNBOOK.md), [levers](docs/LEVERS.md), [gotchas](docs/GOTCHAS.md) |
 
 ## Credits and license

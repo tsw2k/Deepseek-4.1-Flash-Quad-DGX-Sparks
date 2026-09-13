@@ -1,0 +1,15 @@
+[Unit]
+Description=DeepSeek-V4.1-Flash TP4 fleet watchdog (health and hang probe, orchestrated relaunch)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=mtxc
+Environment=CLUSTER_ENV=/home/mtxc/dsv41/cluster.env
+ExecStart=/bin/bash /home/mtxc/dsv41/ops/fleet-watchdog.sh
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

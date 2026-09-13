@@ -21,7 +21,15 @@ env_file=${CLUSTER_ENV:-$root/cluster.env}
 source "$env_file"
 cmd=${1:?usage: cluster.sh ship|render|slice|preflight|up|down|status|engram|logs}
 
-on() { local n=$1; shift; ssh -o BatchMode=yes -o ConnectTimeout=15 "$n" "$@"; }
+# Run a command on a node. On the node itself (the watchdog runs on the head) it runs locally:
+# a node need not be able to ssh to itself.
+on() {
+  local n=$1; shift
+  if [ "$n" = "$(hostname)" ]; then bash -c "$*"; else ssh -o BatchMode=yes -o ConnectTimeout=15 "$n" "$@"; fi
+}
+# Operator stops pause the watchdog (ops/fleet-watchdog.sh) until the next successful `up`;
+# the watchdog's own recovery passes WATCHDOG=1 so it does not pause itself.
+PAUSE_FLAG=/var/tmp/dsv41-watchdog.pause
 node_env="CLUSTER_ENV=$REPO_DIR/cluster.env"
 
 case "$cmd" in
@@ -86,8 +94,13 @@ up)
   done
   echo "serving after $(( ($(date +%s) - t0) / 60 )) min"
   "$0" engram
+  on "${NODES[0]}" "rm -f $PAUSE_FLAG"
   ;;
 down)
+  if [ "${WATCHDOG:-0}" != 1 ]; then
+    on "${NODES[0]}" "echo 'paused by cluster.sh down at $(date -u +%FT%TZ)' > $PAUSE_FLAG"
+    echo "watchdog paused ($PAUSE_FLAG on ${NODES[0]}) until the next successful up"
+  fi
   ts=$(date -u +%Y%m%dT%H%M%SZ)
   for n in "${NODES[0]}" "${NODES[3]}" "${NODES[2]}" "${NODES[1]}"; do
     on "$n" "if docker container inspect '$CONTAINER' >/dev/null 2>&1; then

@@ -124,19 +124,30 @@ unusual. Commit the result directory.
 
 **Keep V4.1:** add a `deepseek-v4.1-flash` entry to the LiteLLM config in mtxc-spark-cluster
 (`api_base` is the same `VLLM_BASE`, `http://10.77.1.11:8000/v1`), reload the proxy, and point
-a watchdog at the new engine before closing the window. `glm53-fleet.service` stays disabled
-while V4.1 serves:
+the watchdog at the new engine before closing the window. The GLM units stay disabled while
+V4.1 serves, so a reboot cannot bring them back:
 
 ```bash
 ssh spark-01 sudo systemctl disable glm53-fleet.service
+for n in spark-01 spark-02 spark-03 spark-04; do ssh $n sudo systemctl disable glm53-flusher.service; done
+ssh spark-01 'sudo install -m 644 /home/mtxc/dsv41/ops/dsv41-fleet.service /etc/systemd/system/ \
+  && sudo systemctl daemon-reload && sudo systemctl enable --now dsv41-fleet.service'
 ```
+
+`ops/fleet-watchdog.sh` probes `/health` and the hang check every 60 s. After three failures it
+runs `cluster.sh down` and `cluster.sh up`, and it gives up after three failed relaunches in a
+row (`/var/tmp/dsv41-watchdog.gaveup` on the head; delete it to re-arm). Running
+`cluster.sh down` by hand pauses it until the next successful `cluster.sh up`. Log:
+`/var/tmp/dsv41-logs/watchdog.log` on the head. Because it is enabled, a power loss ends with
+the fleet relaunching itself about three minutes after the head is back.
 
 **Roll back to GLM:**
 
 ```bash
+ssh spark-01 sudo systemctl disable --now dsv41-fleet.service
 launch/cluster.sh down
-for n in spark-01 spark-02 spark-03 spark-04; do ssh $n sudo systemctl start glm53-flusher.service; done
-ssh spark-01 sudo systemctl start glm53-fleet.service
+for n in spark-01 spark-02 spark-03 spark-04; do ssh $n sudo systemctl enable --now glm53-flusher.service; done
+ssh spark-01 sudo systemctl enable --now glm53-fleet.service
 ```
 
 The watchdog probes `http://127.0.0.1:8000/health` every 60 s. After three failures it removes
