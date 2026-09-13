@@ -55,9 +55,14 @@ compares directly.
 
 ## How it differs from upstream on this cluster
 
-- **No NFS.** Every node holds shards 1-46 (286 GiB, fanned out over rail B) and its own
-  ~47.5 GiB sparse slice of the Engram shards, cut straight from Hugging Face by byte range.
-  No node stores the full 189 GiB of Engram tables.
+- **Large files come from the internet once.** Anything over 1 GB lands on one download node,
+  is hash-verified there, and reaches the other nodes over rail B from its rsync daemon. In the
+  first bring-up the 286 GiB checkpoint took 73 minutes over the shared datacenter uplink and
+  about 6 minutes per node over rail B. The Engram slices still came from Hugging Face per node
+  that time, and they were the slowest step; moving them to the download node is the next
+  change ([docs/DESIGN.md](docs/DESIGN.md#large-files-download-once-fan-out-over-the-fabric)).
+- **No NFS.** Every node holds shards 1-46 and its own ~47.5 GiB sparse slice of the Engram
+  shards.
 - **Rail A carries NCCL only**, with the switch's PFC class (`NCCL_IB_TC=106`). The GID index is
   looked up per node at every launch, never pinned.
 - **The patches are diffs**, not whole files, checked by hash at render time and again at

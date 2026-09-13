@@ -82,8 +82,41 @@ which are zeros: wrong output, no error. Two guards replace it. `engram-local.js
 rank, TP size and revision, and `launch/node.sh` refuses a mismatch. After boot,
 `cluster.sh engram` checks that every rank logged both tables as read node-local.
 
-The slice comes straight from Hugging Face over range requests. No node ever downloads or
-stores the 189 GiB of full Engram shards, and no slice crosses the fabric.
+In the first bring-up each node cut its slice straight from Hugging Face over range requests,
+so no node had to store the 189 GiB of full Engram shards. That breaks the rule in the next
+section, and it was the slowest step of the window. The slices move to the download node.
+
+## Large files: download once, fan out over the fabric
+
+A file over 1 GB comes from the internet once, onto one node (the download node, spark-01).
+That node verifies the full-file hash, and every other node gets the file over rail B from the
+rsync daemon there. Nothing large is downloaded per node, including per-node byte ranges of the
+same file: four nodes each pulling their quarter of a shard is four downloads.
+
+First bring-up, 2026-09-13, same checkpoint:
+
+| step | path | measured |
+|---|---|---|
+| shards 1-46, 286 GiB, onto spark-01 | Hugging Face, datacenter uplink | 73 min |
+| the same 286 GiB, spark-01 to each other node | rail B, rsyncd | ~6 min per node at ~800 MB/s |
+| image, 22 GiB, spark-02 to three nodes | rail B, rsyncd | a few minutes |
+| Engram slices, 4 x 47.5 GiB | Hugging Face, per node, in parallel | 12 to 56 min per node |
+
+The uplink was shared by every node, about 110 MB/s in total, so parallel per-node downloads
+bought nothing. Rail B moved a copy about 7x faster than the uplink, one stream at a time. A
+single download also brings a full-file sha256 check against the LFS manifest, where per-node
+range slicing can only re-fetch sample rows. And a slice for another rank or TP size can be
+re-cut without going back to the internet.
+
+The cost is disk on the download node: the full Engram shards (189 GiB) sit there next to
+its own 334 GiB of V4.1, which does not fit a 1 TB node that also holds other models. That is
+a disk-planning decision to make up front (clear space, or keep a dedicated cache node or
+storage), not a reason to download per node.
+
+Planned change to the tooling: `weights/fetch.sh` also downloads shards 47-48 to the download
+node and verifies them; `launch/cluster.sh slice` cuts every rank's slice there
+(`engram-slice.py --source <full dir>`) and ships it over rail B with `rsync --sparse`;
+`weights/sync.sh` feeds the three nodes in parallel.
 
 ## Fabric use
 
@@ -91,7 +124,8 @@ stores the 189 GiB of full Engram shards, and no slice crosses the fabric.
 |---|---|
 | NCCL all-reduce, Gloo, vLLM rendezvous | rail A only (`rocep1s0f0`, 10.77.1.0/24), `NCCL_IB_TC=106` |
 | checkpoint fan-out, image copy | rail B (rsyncd bound to 10.77.2.0/24) |
-| Engram slices | Hugging Face, per node |
+| Engram slices | first bring-up: Hugging Face per node; planned: cut on the download node, rail B |
+| anything over 1 GB from the internet | once, onto the download node |
 | API | head's rail A address, where LiteLLM already points; not the management network |
 
 Upstream TP4 recipes run on one NCCL rail, and so does this cluster: a second NCCL rail was
