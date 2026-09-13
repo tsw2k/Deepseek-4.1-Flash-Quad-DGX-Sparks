@@ -95,5 +95,6 @@ Done off-cluster, as text processing only (no build, no GPU):
 - the Engram shards' layout (`embed` tables at offset 0, `wkv`/`q`/`k` weights at the tail)
   was read from the pinned shards' headers over HTTP
 
-Not yet done anywhere on this cluster: build, boot, gates, benchmark. `results/` is empty
-until then, and nothing in this repository is a measurement of ours.
+On the cluster, 2026-09-13: image built and runtime-verified, both patch sets' hashes
+confirmed by rendering on all four nodes, `measured` booted, gates passed, baseline recorded in
+`results/2026-09-13-baseline-measured/`. The `minimal` set has not been booted.

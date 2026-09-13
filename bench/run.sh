@@ -69,5 +69,6 @@ on "$head" "cd '$rdir' && python3 '$REPO_DIR/bench/tony/v41bench.py' --base '$ba
 on "$head" "bash '$REPO_DIR/ops/hangcheck.sh' '$CONTAINER'" || true
 on "$head" "cd '$rdir' && python3 '$REPO_DIR/bench/tony/v41needle.py' --base '$base' --targets 131072 --depth 0.5 --out '$rdir/needle-131k.json'"
 scp -q -r "$head:$rdir/." "$out/"
-on "$head" "docker logs '$CONTAINER' 2>&1 | grep -E 'SpecDecoding metrics|Mean acceptance' | tail -40" > "$out/spec-decode.log" || true
+on "$head" "docker logs '$CONTAINER' 2>&1 | grep 'SpecDecoding metrics'" > "$out/spec-decode.log" || true
+[ -s "$out/spec-decode.log" ] || echo "warning: no SpecDecoding metrics captured" >&2
 echo "recorded in $out"
