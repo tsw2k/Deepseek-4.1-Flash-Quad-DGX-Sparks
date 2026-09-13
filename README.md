@@ -8,11 +8,13 @@ tensor-parallel 4, with vLLM, over a switched RoCEv2 fabric.
 This is a self-contained recipe: pinned sources, patch sets as reviewable diffs, image build,
 weight and Engram tooling, launcher, correctness gates and benchmark.
 
-> **Status (2026-09-13): serving on the mtxc cluster, baseline recorded.** The measured
-> configuration booted in 10 minutes, passed all gates and reproduced 0xTank's numbers within
-> run-to-run spread: C1 40.5 / C6 135.6 tok/s aggregate, 1,632 tok/s prefill at 47K, 131K
-> needle passed ([results](results/2026-09-13-baseline-measured/NOTES.md)). Numbers below
-> labelled with an upstream source come from that group's hardware.
+> **Status (2026-09-14): serving on the mtxc cluster as baseline + L1.** The measured configuration
+> booted in 10 minutes, passed all gates and reproduced 0xTank's numbers within run-to-run spread
+> ([baseline](results/2026-09-13-baseline-measured/NOTES.md)). NCCL buffer sizing (lever L1) then
+> added +13 % single-stream and +11 % at six streams and gave ~10 GiB back per node
+> ([L1](results/2026-09-13-lever-L1-nccl-buffers/NOTES.md)). O_DIRECT Engram reads (L2) and greedy
+> drafting (L8) were measured and rejected ([levers](docs/LEVERS.md)). Numbers below labelled with
+> an upstream source come from that group's hardware.
 
 ## The problem in one table
 
@@ -44,13 +46,12 @@ differ.
 
 Reference numbers, ours next to theirs:
 
-| | **this cluster**, 600K / K3 | 0xTank 600K / K3 | Tech2Wild boot 10, 300K / K5 |
-|---|---|---|---|
-| C1 aggregate / per-stream decode, tok/s | **40.5 / 44.7** | 39.5 / 43.4 | 38.0 / 43.1 |
-| C6 aggregate, tok/s | **135.6** | 140.0 | 131.9 |
-| C1 code, per stream, tok/s | **63.4** | 63.0 | 73.8 |
-| cold prefill at 46,810 tokens, tok/s | **1,632** | 1,635 | 1,539 |
-| needle, 131K | **pass** | pass | n/a |
+| | **this cluster, serving** (baseline + L1) | **this cluster**, baseline | 0xTank 600K / K3 | Tech2Wild boot 10, 300K / K5 |
+|---|---|---|---|---|
+| C1 aggregate / per-stream decode, tok/s | **46.1 / 50.7** | 40.5 / 44.7 | 39.5 / 43.4 | 38.0 / 43.1 |
+| C6 aggregate, tok/s | **151.0** | 135.6 | 140.0 | 131.9 |
+| cold prefill at 46,810 tokens, tok/s | **1,665** | 1,632 | 1,635 | 1,539 |
+| needle, 131K | **pass, 80 s** | pass, 85 s | pass, 85 s | n/a |
 
 Both runs use Tech2Wild's fixed prompt set (`bench/tony/`, vendored unchanged), so a run here
 compares directly.
