@@ -24,10 +24,13 @@ free_gib=$(df --output=avail -BG "$(dirname "$MODEL_DIR")" | tail -1 | tr -dc 0-
 [ "$free_gib" -ge "$need_gib" ] || { echo "only ${free_gib} GiB free under $(dirname "$MODEL_DIR"); need ${need_gib}" >&2; exit 3; }
 
 mkdir -p "$MODEL_DIR"
+# One glob, not two patterns: hf 1.x reads a second value after --exclude as a positional
+# filename, warns "Ignoring --exclude since filenames have been explicitly set", and then
+# downloads exactly the Engram shard this was meant to skip.
 HF_HUB_ENABLE_HF_TRANSFER=0 hf download deepseek-ai/DeepSeek-V4.1-Flash \
   --revision "$MODEL_REVISION" \
   --local-dir "$MODEL_DIR" \
-  --exclude 'model-00047-of-00048.safetensors' 'model-00048-of-00048.safetensors' \
+  --exclude 'model-0004[78]-of-00048.safetensors' \
   --max-workers 8
 
 python3 "$here/verify.py" "$MODEL_DIR"
