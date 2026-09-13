@@ -1,0 +1,11 @@
+name, driver_version, temperature.gpu, power.draw [W], clocks.current.graphics [MHz]
+NVIDIA GB10, 580.173.02, 57, 13.99 W, 2411 MHz
+6.17.0-1031-nvidia
+MemTotal:       127535336 kB
+MemFree:         4269628 kB
+MemAvailable:   17122016 kB
+Buffers:           33684 kB
+Cached:         14295940 kB
+vm.min_free_kbytes = 45155
+vm.watermark_scale_factor = 10
+inactive
