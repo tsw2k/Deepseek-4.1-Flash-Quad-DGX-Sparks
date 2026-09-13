@@ -24,4 +24,5 @@ repo.
 | GLM comes back onto full GPUs minutes after it was stopped | `glm53-fleet.service` watchdog relaunches GLM after three failed health probes | runbook step 2; `node.sh` refuses while it is active |
 | Anything slow or wedged during a big copy | page cache from downloads competing with the unified pool | downloads in the window only; `verify.py` and `engram-slice.py` drop pages as they go |
 | Short tests pass, the first real request crashes | failure only in long decode after long prefill (this cluster, GLM-5.3) | `bench/tony/v41needle.py` at 131K and the C1-C6 suite before calling it serving |
+| A worker rank dies; `/health` stays 200, nothing is logged, client requests hang with no reply | the head blocks in a collective waiting for the dead rank; the engine stops logging stats, so the hang check is blind (this cluster, failover test 2026-09-13) | watchdog checks every rank's container and sends a one-token canary |
 | API reachable from the management network | vLLM has no auth | `API_HOST` is the head's rail A address; LiteLLM in front |

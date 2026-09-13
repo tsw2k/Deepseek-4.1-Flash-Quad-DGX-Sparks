@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Fleet watchdog for the TP4 engine. Runs on the head (rank 0) as dsv41-fleet.service.
 #
-# Every CHECK_INTERVAL seconds it probes /health and runs the hang check. After FAIL_THRESHOLD
-# consecutive failures of either kind it does a full orchestrated relaunch:
+# Every CHECK_INTERVAL seconds it checks that every rank's container runs, probes /health, sends
+# a one-token canary request and runs the hang check. After FAIL_THRESHOLD consecutive failures
+# of any kind it does a full orchestrated relaunch:
 #   launch/cluster.sh down  (head first, every rank's log saved)
 #   launch/cluster.sh up    (preflight, workers 3-2-1 then head, /health, Engram check)
 #
@@ -10,9 +11,10 @@
 # its head dies (so restart policies never fire), and a worker restarted alone joins a stale
 # rendezvous. Same reasoning as the GLM-5.3 watchdog this replaces.
 #
-# Why /health and the hang check: /health returns 503 once the engine is dead, but a padded
-# speculative batch stuck in sparse MLA (FlashInfer #5015) keeps /health at 200 while running
-# requests produce nothing. ops/hangcheck.sh catches that.
+# Why four probes: /health returns 503 once the engine core is dead, but it stays 200 when a
+# worker rank dies (the head waits in a collective forever) and when a padded speculative batch
+# is stuck in sparse MLA (FlashInfer #5015). The per-rank container check and the canary catch
+# the first; the canary and ops/hangcheck.sh catch the second.
 #
 # It stops trying after MAX_RECOVERIES failed relaunches in a row: a boot that keeps failing
 # needs a person, and relaunching a wedged fleet every few minutes only hides the cause.
@@ -43,7 +45,26 @@ flock -n 9 || { echo "watchdog already running ($LOCK)" >&2; exit 1; }
 [ "$(hostname)" = "${NODES[0]}" ] || { log "not the head (${NODES[0]}); exiting"; exit 2; }
 
 probe() {
+  # 1. Every rank's container. Measured 2026-09-13: with one worker killed, the head kept
+  #    /health at 200 and logged nothing, and a client request hung with no reply.
+  local i n state
+  for i in "${!NODES[@]}"; do
+    n=${NODES[$i]}
+    if [ "$n" = "$(hostname)" ]; then
+      state=$(docker inspect -f '{{.State.Status}}' "$CONTAINER" 2>/dev/null || echo missing)
+    else
+      state=$(ssh -o BatchMode=yes -o ConnectTimeout=10 "$n" "docker inspect -f '{{.State.Status}}' '$CONTAINER' 2>/dev/null || echo missing" 2>/dev/null || echo unreachable)
+    fi
+    [ "$state" = running ] || { echo "rank $i on $n: $state"; return 1; }
+  done
+  # 2. Engine alive as the API server sees it.
   curl -sf -m 15 -o /dev/null "$HEALTH_URL" || { echo "health"; return 1; }
+  # 3. A one-token canary: the only probe that sees an engine stuck in a collective, which
+  #    stops logging stats (so the hang check below is blind to it) while /health stays 200.
+  #    Chunked prefill interleaves it with long prompts, so 90 s is generous.
+  curl -sf -m 90 -o /dev/null "http://$API_HOST:$API_PORT/v1/completions" -H 'Content-Type: application/json' \
+    -d '{"model":"deepseek-v4.1-flash","prompt":"1","max_tokens":1,"temperature":0}' || { echo "canary"; return 1; }
+  # 4. Requests running with zero generation for 90 s (FlashInfer #5015 signature).
   bash "$root/ops/hangcheck.sh" "$CONTAINER" >/dev/null || { echo "hang"; return 1; }
   return 0
 }

@@ -134,7 +134,7 @@ ssh spark-01 'sudo install -m 644 /home/mtxc/dsv41/ops/dsv41-fleet.service /etc/
   && sudo systemctl daemon-reload && sudo systemctl enable --now dsv41-fleet.service'
 ```
 
-`ops/fleet-watchdog.sh` probes `/health` and the hang check every 60 s. After three failures it
+`ops/fleet-watchdog.sh` checks every rank's container, `/health`, a one-token canary request and the hang check every 60 s. After three failures it
 runs `cluster.sh down` and `cluster.sh up`, and it gives up after three failed relaunches in a
 row (`/var/tmp/dsv41-watchdog.gaveup` on the head; delete it to re-arm). Running
 `cluster.sh down` by hand pauses it until the next successful `cluster.sh up`. Log:
