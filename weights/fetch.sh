@@ -15,7 +15,9 @@ here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source "${1:?usage: fetch.sh cluster.env}"
 : "${MODEL_DIR:?}" "${MODEL_REVISION:?}"
 
-command -v hf >/dev/null || { echo "hf CLI missing: python3 -m pip install --user -U huggingface_hub" >&2; exit 2; }
+# pip --user installs land in ~/.local/bin, which a non-interactive ssh session does not have
+export PATH="$HOME/.local/bin:$PATH"
+command -v hf >/dev/null ||{ echo "hf CLI missing: python3 -m pip install --user -U huggingface_hub" >&2; exit 2; }
 
 need_gib=300
 free_gib=$(df --output=avail -BG "$(dirname "$MODEL_DIR")" | tail -1 | tr -dc 0-9)
