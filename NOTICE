@@ -1,0 +1,43 @@
+Deepseek-4.1-Flash-Quad-DGX-Sparks
+Copyright 2026 tsw2k
+
+Recipe code and documentation in this repository are Apache-2.0 (LICENSE), except where a
+file or the list below says otherwise.
+
+This recipe stands on three upstream works, credited here by what each contributed.
+
+DeepSeek-AI
+  DeepSeek-V4.1-Flash, its checkpoint and DSpark draft layers (MIT). Weights are downloaded
+  from https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash at a pinned revision and are
+  not redistributed here. weights/manifest-dba1be0a.tsv lists that revision's file hashes.
+
+Tech2Wild/Kai (tonyd2wild)
+  https://github.com/tonyd2wild/DeepSeek-V4.1-Flash-vLLM-DGX-Spark (MIT, licenses/Tech2Wild-MIT.txt)
+  The four-Spark TP4 recipe: disk-backed Engram tables and their staging before the forward
+  (CUDA graphs), node-local Engram rows, SM12x page-size and indexer fixes, the image build
+  and prewarm approach, the relaunch order, the hang check and the GPU clock-latch check.
+  - patches/*/01..07-tony-*.diff are diffs of their patch files (commit fc725ecf) against vLLM
+  - bench/tony/v41bench.py, v41needle.py, prompts-v1.json are vendored unmodified
+  - build/stable-extension.sh, Dockerfile.runtime, prewarm.py, verify-runtime.py,
+    ops/hangcheck.sh, ops/gpu-burn.sh and the Engram slice format derive from their scripts
+
+0xTank
+  https://huggingface.co/0xTank/DeepSeek-V4.1-Flash-vLLM-4x-GB10-Recipe (Apache-2.0 and MIT)
+  The measured 600K/K3 configuration this recipe reproduces, the vLLM 172d9a17 pin, the
+  graph startup-state fix and the compact MXFP8 output-projection decode kernel.
+  - patches/*/08..10-0xtank-*.diff and patches/new/compact_o_proj.py
+  - launch/node.sh follows their parameterized launcher
+
+vLLM contributors (Apache-2.0)
+  Every patched file is a vLLM module; the diffs apply to vllm-project/vllm at
+  172d9a17117219952fd3d4cdbb04ecb2a09163f4 and the per-file SPDX headers remain.
+
+MiaAI-Lab (AGPL-3.0), https://github.com/MiaAI-Lab/DeepSeek-v4.1-Flash-DGX-Sparks
+  Ideas only, no code: O_DIRECT Engram reads, NCCL buffer sizing, the b12x MXFP8 dense route
+  and the prefill-length failure mode tested in bench/gates.py. See docs/LEVERS.md. Anything
+  derived from their code would have to carry AGPL terms, so nothing here is.
+
+Also used at build time, under their own licenses: FlashInfer, NVIDIA CUTLASS and CCCL,
+spdlog, PyTorch, Triton.
+
+Not endorsed by DeepSeek, NVIDIA, the vLLM project or any upstream author.

@@ -1,0 +1,19 @@
+--- a/vllm/model_executor/kernels/linear/mxfp8/emulation.py
++++ b/vllm/model_executor/kernels/linear/mxfp8/emulation.py
+@@ -43,6 +43,16 @@
+         import vllm.envs as envs
+ 
+         if envs.VLLM_MXFP8_EMULATION_DEQUANT_AT_LOAD:
++            import os
++            if (os.environ.get("DSV41_COMPACT_O_PROJ") == "1"
++                    and self.config.bmm_batch_size == 2
++                    and tuple(weight.shape) == (2048, 4096)):
++                # Retain the original compact checkpoint values for decode.
++                # Keep the existing BF16 weight as the unchanged prefill fallback.
++                layer.register_buffer("_dsv41_compact_weight", weight.contiguous(),
++                                      persistent=False)
++                from vllm.logger import init_logger
++                init_logger(__name__).info("DSV41 compact projection retained: %s", tuple(weight.shape))
+             weight = dequant_mxfp8_to_bf16(weight.contiguous(), weight_scale)
+         layer.weight = Parameter(weight.contiguous(), requires_grad=False)
+         layer.weight_scale = Parameter(weight_scale, requires_grad=False)
