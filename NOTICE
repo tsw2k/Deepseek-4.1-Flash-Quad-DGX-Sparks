@@ -21,6 +21,14 @@ Tech2Wild/Kai (tonyd2wild)
   - bench/tony/v41bench.py, v41needle.py, prompts-v1.json are vendored unmodified
   - build/stable-extension.sh, Dockerfile.runtime, prewarm.py, verify-runtime.py,
     ops/hangcheck.sh, ops/gpu-burn.sh and the Engram slice format derive from their scripts
+  - patches/exl3-tp3e names and hashes their EXL3 lane patch set tp3e (commit fc725ecf); the
+    files are fetched from their repository at render time, not copied here
+
+bot-lab-21
+  https://huggingface.co/bot-lab-21/DeepSeek-V4.1-Flash-EXL3-3.5bpw-Pollard
+  The EXL3 3.5 bpw checkpoint of the routed experts and the cuda-exl3 config.py / moe.py that
+  tp3e carries. weights/manifest-exl3-f129e31a.tsv lists that revision's file hashes; nothing
+  of it is redistributed here. cuda-exl3 itself is Zeuss5/cuda-exl3, built at 6a1ffc34.
 
 0xTank
   https://huggingface.co/0xTank/DeepSeek-V4.1-Flash-vLLM-4x-GB10-Recipe (Apache-2.0 and MIT)

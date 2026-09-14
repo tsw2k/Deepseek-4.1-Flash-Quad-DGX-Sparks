@@ -69,7 +69,8 @@ cmp -s "$patch_dir/SHA256SUMS" "$root/patches/$PATCH_SET/SHA256SUMS" || fail "$p
 note "patch set $PATCH_SET ($(wc -l < "$patch_dir/mounts.txt") files, hashes match)"
 
 # ---- model: full shards by size, Engram slice for exactly this rank
-python3 "$root/weights/verify.py" "$MODEL_DIR" --size-only >/dev/null || fail "checkpoint incomplete (weights/verify.py $MODEL_DIR)"
+manifest=$root/weights/${MODEL_MANIFEST:-manifest-dba1be0a.tsv}
+python3 "$root/weights/verify.py" "$MODEL_DIR" --size-only "--manifest=$manifest" >/dev/null || fail "checkpoint incomplete (weights/verify.py $MODEL_DIR --manifest=$manifest)"
 python3 - "$MODEL_DIR" "$rank" "$MODEL_REVISION" <<'PY' || fail "Engram slice does not belong to this rank"
 import json, os, sys
 md, rank, rev = sys.argv[1], int(sys.argv[2]), sys.argv[3]
@@ -87,7 +88,8 @@ name_model=/models/DeepSeek-V4.1-Flash
 
 mounts=()
 while read -r rel; do
-  [ -n "$rel" ] && mounts+=(-v "$patch_dir/vllm/$rel:$site/$rel:ro")
+  # realpath -m: exl3-tp3e also mounts ../cuda_exl3/*, next to the vllm package
+  [ -n "$rel" ] && mounts+=(-v "$(realpath -m "$patch_dir/vllm/$rel"):$(realpath -m "$site/$rel"):ro")
 done < "$patch_dir/mounts.txt"
 
 K=$SPEC_K
@@ -124,6 +126,9 @@ envs=(
   MAX_JOBS=2 FLASHINFER_NVCC_THREADS=1 VLLM_USE_FLASHINFER_SAMPLER=0
   TILELANG_CACHE_DIR=/cache/tilelang TRITON_CACHE_DIR=/cache/triton
 )
+# EXL3 checkpoint: cuda-exl3 finds quantization_config.json through this in every worker,
+# the DSpark drafter's rebuilt quant config included (bot-lab-21's P6 fix in exl3_config.py).
+[ -f "$MODEL_DIR/quantization_config.json" ] && envs+=("CUDA_EXL3_MODEL_PATH=$name_model")
 # Levers (docs/LEVERS.md): extra "-e K=V" pairs, appended last so they win.
 read -r -a lever_envs <<< "${LEVER_ENV:-}"
 for e in "${lever_envs[@]}"; do envs+=("$e"); done

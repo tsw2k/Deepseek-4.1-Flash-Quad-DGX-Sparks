@@ -1,0 +1,6 @@
+# Tech2Wild/Kai's patch set tp3e, as their TP4 EXL3 lane (exl3tp4b) ran it: the boot 10 files, the
+# streaming vl_model.py, the TP3 parts that are no-ops at TP4, and bot-lab-21's cuda-exl3
+# config.py / moe.py. Whole files for vLLM e47aa780b and cuda-exl3 6a1ffc34 (MIT).
+repo=tonyd2wild/DeepSeek-V4.1-Flash-vLLM-DGX-Spark
+commit=fc725ecf10869c184f4347dd73336536d395753c
+dir=patch/exl3-tp3

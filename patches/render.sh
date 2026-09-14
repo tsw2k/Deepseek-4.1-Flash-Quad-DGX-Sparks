@@ -12,6 +12,8 @@
 #   measured  byte-identical to the tree 0xTank benchmarked (whole-file replacements, which
 #             also roll three files back to their dsv41-feat state; see docs/PROVENANCE.md)
 #   minimal   only the functional changes, rebased onto 172d9a17; not yet booted anywhere
+#   exl3-tp3e Tech2Wild's EXL3 lane files for vLLM e47aa780b, fetched whole at a pinned commit
+#             (patches/exl3-tp3e/SOURCE); for the EXL3 checkpoint and the e47aa780 image only
 set -euo pipefail
 
 VLLM_PIN=172d9a17117219952fd3d4cdbb04ecb2a09163f4
@@ -27,6 +29,25 @@ done
 out="$out_root/$set_name"
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
+
+if [ -f "$here/$set_name/SOURCE" ]; then
+  # Whole-file set fetched from its upstream repository at a pinned commit (FILES: "name
+  # rendered-path"); not diffs against 172d9a17. Same guarantee: only the hashed bytes land.
+  # shellcheck source=/dev/null
+  source "$here/$set_name/SOURCE"
+  curl -fsSL --retry 5 "https://codeload.github.com/$repo/tar.gz/$commit" | tar -xz -C "$tmp" --strip-components=1 "${repo#*/}-$commit/$dir"
+  rm -rf "$out"
+  while read -r f path; do
+    mkdir -p "$out/$(dirname "$path")"
+    cp "$tmp/$dir/$f" "$out/$path"
+  done < "$here/$set_name/FILES"
+  (cd "$out" && sha256sum --quiet -c "$here/$set_name/SHA256SUMS") || { rm -rf "$out"; echo "hash mismatch in $set_name" >&2; exit 4; }
+  cp "$here/$set_name/SHA256SUMS" "$out/SHA256SUMS"
+  # vllm-relative like the other sets; ../cuda_exl3/... resolves next to the vllm package
+  awk '{print $2}' "$here/$set_name/FILES" | sed -e 's#^vllm/##' -e 's#^cuda_exl3/#../cuda_exl3/#' > "$out/mounts.txt"
+  echo "rendered $set_name -> $out ($(wc -l < "$out/mounts.txt") files from $repo@${commit:0:8}, hashes verified)"
+  exit 0
+fi
 
 if [ -n "$src" ]; then
   head=$(git -C "$src" rev-parse HEAD)

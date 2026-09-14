@@ -1,0 +1,16 @@
+[Unit]
+Description=DeepSeek-V4.1-Flash EXL3 lane TP4 fleet watchdog (health and hang probe, orchestrated relaunch)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=mtxc
+Environment=CLUSTER_ENV=/home/mtxc/dsv41x/cluster.env
+Environment=WATCHDOG_LOG=/var/tmp/dsv41-logs/watchdog-exl3.log
+ExecStart=/bin/bash /home/mtxc/dsv41x/ops/fleet-watchdog.sh
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

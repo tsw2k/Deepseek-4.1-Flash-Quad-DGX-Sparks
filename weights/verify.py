@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Check a local checkpoint against the pinned Hugging Face manifest.
 
-usage: verify.py MODEL_DIR [--size-only] [--jobs N]
+usage: verify.py MODEL_DIR [--size-only] [--jobs=N] [--manifest=TSV]
+
+--manifest checks a derived checkpoint instead (weights/manifest-exl3-f129e31a.tsv).
 
 weights/manifest-dba1be0a.tsv lists every file of deepseek-ai/DeepSeek-V4.1-Flash at revision
 dba1be0a40aa45a94ad051997016db3960a90277: path, size, and either the LFS sha256 or, for small
@@ -22,7 +24,8 @@ CHUNK = 64 << 20
 model_dir = sys.argv[1]
 size_only = "--size-only" in sys.argv
 jobs = int(next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--jobs=")), "8"))
-manifest = os.path.join(os.path.dirname(os.path.abspath(__file__)), "manifest-dba1be0a.tsv")
+manifest = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--manifest=")),
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), "manifest-dba1be0a.tsv"))
 
 
 def digest(path: str, want: str) -> str:
@@ -61,7 +64,7 @@ def check(row):
 
 rows = []
 for line in open(manifest):
-    path, size, want = line.rstrip("\n").split("\t")
+    path, size, want = line.rstrip("\n").split("\t")[:3]  # derived manifests add a status column
     if path in ENGRAM_SHARDS:
         continue
     rows.append((path, int(size), want))
