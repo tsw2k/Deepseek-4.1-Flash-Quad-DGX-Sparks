@@ -2,7 +2,12 @@
 """Pull the files of a manifest from another node's rsyncd over rail B, and verify each one.
 
 usage: pull-files.py MANIFEST DEST_DIR --source rsync://RAIL_B_IP/models/REL [--only new|all]
-                     [--bwlimit 400m]
+                     [--bwlimit 400m] [--include GLOB ...]
+
+Restoring release shards another node still holds is the same pull against the release manifest:
+    pull-files.py weights/manifest-dba1be0a.tsv MODEL_DIR --source rsync://.../DeepSeek-V4.1-Flash \
+        --only all --include 'model-0000[3-9]-*' --include 'model-000[1-3][0-9]-*' --include 'model-0004[0-2]-*'
+(shards 3-42). The Engram shards are never pulled whole: every rank's slice differs.
 
 The receiving half of fanning a download out (fetch-files.py fetched it once, on one node).
 MANIFEST is the same TSV fetch-files.py reads. One file at a time: rsync --inplace --partial
@@ -13,6 +18,7 @@ cache is the GPU's memory), then hashes it with the cache dropped per chunk and 
 The sending node keeps its side out of the cache with `pagecache-sweep.py SRC_DIR --idle 300`.
 """
 import argparse
+import fnmatch
 import hashlib
 import os
 import subprocess
@@ -27,6 +33,7 @@ ap.add_argument("dest")
 ap.add_argument("--source", required=True)
 ap.add_argument("--only", choices=("new", "all"), default="new")
 ap.add_argument("--bwlimit", default="400m")
+ap.add_argument("--include", action="append", default=[], help="only paths matching this glob (repeatable)")
 args = ap.parse_args()
 
 
@@ -60,8 +67,10 @@ def digest(path, size, want):
 
 rows = []
 for line in open(args.manifest):
-    path, size, want, status = line.rstrip("\n").split("\t")
-    if args.only == "all" or status == "new":
+    path, size, want, *status = line.rstrip("\n").split("\t")  # the release manifest has no status
+    if args.include and not any(fnmatch.fnmatch(path, g) for g in args.include):
+        continue
+    if args.only == "all" or status == ["new"]:
         rows.append((path, int(size), want))
 
 todo = [r for r in rows if not (os.path.exists(os.path.join(args.dest, r[0] + ".verified"))
