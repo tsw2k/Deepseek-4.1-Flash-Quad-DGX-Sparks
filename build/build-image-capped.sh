@@ -119,7 +119,8 @@ cuda-exl3)
     set -euo pipefail
     mkdir -p /opt/cuda-exl3 && curl -fsSL https://codeload.github.com/Zeuss5/cuda-exl3/tar.gz/$CUDA_EXL3_PIN | tar xz -C /opt/cuda-exl3 --strip-components=1
     cd /opt/cuda-exl3 && TORCH_CUDA_ARCH_LIST=12.1a MAX_JOBS=$JOBS pip install --no-deps --no-build-isolation . 2>&1 | tail -25
-    python3 -c 'import cuda_exl3, cuda_exl3._C, torch; print(\"cuda_exl3 import ok\", cuda_exl3.__file__)'
+    # torch first: cuda_exl3._C links libc10.so, which only torch's import puts on the path
+    python3 -c 'import torch, cuda_exl3, cuda_exl3._C; print(\"cuda_exl3 import ok\", cuda_exl3.__file__)'
   "
   commit_as "capped-exl3" "$BASE_TAG" "$TAG" --change "LABEL dsv41.cuda_exl3=$CUDA_EXL3_PIN"
   ;;
