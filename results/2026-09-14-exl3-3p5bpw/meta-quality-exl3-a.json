@@ -1,0 +1,39 @@
+{
+ "base": "http://10.77.1.11:8000",
+ "model": "deepseek-v4.1-flash",
+ "windows": 100,
+ "len": 1024,
+ "topk": 20,
+ "server_models": {
+  "object": "list",
+  "data": [
+   {
+    "id": "deepseek-v4.1-flash",
+    "object": "model",
+    "created": 1789427051,
+    "owned_by": "vllm",
+    "root": "/models/DeepSeek-V4.1-Flash",
+    "parent": null,
+    "max_model_len": 600000,
+    "permission": [
+     {
+      "id": "modelperm-93ad8928fd60a18b",
+      "object": "model_permission",
+      "created": 1789427051,
+      "allow_create_engine": false,
+      "allow_sampling": true,
+      "allow_logprobs": true,
+      "allow_search_indices": false,
+      "allow_view": true,
+      "allow_fine_tuning": false,
+      "organization": "*",
+      "group": null,
+      "is_blocking": false
+     }
+    ]
+   }
+  ]
+ },
+ "started": "2026-09-14T23:04:11Z",
+ "finished": "2026-09-14T23:08:47Z"
+}
