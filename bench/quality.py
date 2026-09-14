@@ -122,7 +122,8 @@ def collect(a):
             if a.tokens_from:
                 ids = json.load(open(f"{a.tokens_from}/{c}.tokens.json"))
             else:
-                text = open(f"{a.corpus_dir}/{c}.txt").read()
+                # the server tokenizes within max_model_len; windows span the first --max-chars
+                text = open(f"{a.corpus_dir}/{c}.txt").read()[:a.max_chars]
                 ids = json.loads(get(f"{a.base}/tokenize", {"model": a.model, "prompt": text, "add_special_tokens": False}))["tokens"]
             json.dump(ids, open(tok_path, "w"))
         ids = json.load(open(tok_path))
@@ -215,6 +216,7 @@ s.add_argument("--windows", type=int, default=40)
 s.add_argument("--len", type=int, default=1024)
 s.add_argument("--topk", type=int, default=20)
 s.add_argument("--bos", type=int, default=0)
+s.add_argument("--max-chars", type=int, default=1_000_000)
 s = sub.add_parser("compare")
 s.add_argument("ref")
 s.add_argument("test")
