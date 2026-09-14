@@ -25,6 +25,6 @@ cmake -S /src -B /src/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DVLLM_TARGET_DE
   -DVLLM_PYTHON_EXECUTABLE=/usr/bin/python3 -DVLLM_PYTHON_PATH="$PYPATH" \
   -DFETCHCONTENT_BASE_DIR=/src/build/_deps -DFETCHCONTENT_SOURCE_DIR_CUTLASS=/src/build/_deps/cutlass-src \
   -DCMAKE_PREFIX_PATH="$TORCH_PREFIX" -DNVCC_THREADS=1 -DCUDA_nvrtc_LIBRARY=/usr/local/cuda/lib64/libnvrtc.so.13
-cmake --build /src/build --target _C_stable_libtorch -j 4
+cmake --build /src/build --target _C_stable_libtorch -j "${JOBS:-4}"
 find /src/build -maxdepth 2 -name '_C_stable_libtorch*.so' -exec cp -v {} /src/vllm/ \;
 test -f /src/vllm/_C_stable_libtorch.abi3.so
