@@ -4,3 +4,4 @@ __pycache__/
 .DS_Store
 ._*
 cluster.exl3.env
+cluster.exl3ctl.env
