@@ -6,8 +6,8 @@ image `vllm-dsv41:exl3-e47aa780` (vLLM e47aa780b + `_C_stable_libtorch` sm_121a 
 serving shape is the release lane's: 600K, DSpark K3 probabilistic, gmu 0.80, L1 NCCL buffers.
 Release lane numbers are `2026-09-13-lever-L1-nccl-buffers` (same shape, vLLM 172d9a17 + measured).
 
-Two things differ from the release lane at once, the checkpoint and the vLLM stack under it. See
-"What this does not settle yet".
+Two things differ from the release lane at once, the checkpoint and the vLLM stack under it; the
+control at the end separates them.
 
 ## Memory and context
 
@@ -56,10 +56,26 @@ concentrate somewhere; this does not. Every rank read its own Engram rows node-l
 The gates passing says the model is coherent, follows formats and retrieves at 131K. It does not say
 the distribution is close: perplexity is 19.5 % higher on English prose.
 
-## What this does not settle yet
+## Control: the release checkpoint on the EXL3 lane's stack (2026-09-15)
 
-The comparison changes the checkpoint and the stack together (vLLM e47aa780 + tp3e against 172d9a17
-+ measured, which also carries 0xTank's MXFP8 emulation change). The control is the release
-checkpoint on the EXL3 lane's stack (`dsv41x` with the release MODEL_DIR): if it lands near the
-release lane, the gap is the quantization; if not, part of it is the stack. It needs the release
-shards back on spark-01/02 first.
+The comparison above changes the checkpoint and the stack together (vLLM e47aa780 + tp3e against
+172d9a17 + measured). The control boots `dsv41x` with the release MODEL_DIR (same image, patch set,
+serving shape; only MODEL_DIR differs) and scores the same positions.
+
+| corpus | release lane vs control: top-1 / KL mean (`release-a-vs-ctl.json`) | control vs EXL3: ppl ratio / top-1 / KL mean (`ctl-vs-exl3-a.json`) |
+|---|---|---|
+| en-wiki | 0.987 / 0.0036 | 1.196 / 0.853 / 0.251 |
+| ru-wiki | 0.989 / 0.0035 | 1.121 / 0.887 / 0.168 |
+| code | 0.999 / 0.0003 | 1.036 / 0.977 / 0.050 |
+
+The two stacks are indistinguishable on the release checkpoint (the control sits exactly on the
+release lane's run-to-run floor), and the EXL3 checkpoint on that same stack reproduces the whole
+gap. **The distance is the quantization.** On this stack the release checkpoint gets a KV pool of
+878,188 tokens against the measured set's 1,737,422 (0xTank's graph-memory changes are not in tp3e).
+
+## Verdict
+
+Not adopted. The EXL3 lane is faster and holds twice the context, and it passes every functional
+gate, but on English prose it is a different model at the next-token level (one argmax in seven
+changes, perplexity +19.5 %). The release lane stays in production. The lane stays reproducible
+(`cluster.exl3.env.example`, deployment `dsv41x`); its EXL3 directories remain on spark-03/04 only.

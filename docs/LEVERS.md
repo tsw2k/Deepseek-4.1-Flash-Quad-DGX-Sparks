@@ -43,9 +43,12 @@ baseline the same way.
   for prefills over 64 tokens. Both vLLM recipes run `True` and pass their checks. The
   `prefill` and `prefill_x4` gates test exactly that failure mode on every boot; if they ever
   fail, this becomes the first lever.
-- **EXL3 3.5 bpw experts.** Triple the KV pool, faster decode, third-party weights with thin
-  quality evidence. A separate lane once L0 exists to evaluate it against, with a quality eval
-  run on both.
+- **EXL3 3.5 bpw experts** (bot-lab-21 Pollard, deployment `dsv41x`). **Run 2026-09-14, not
+  adopted.** +13-24 % throughput and 1.9x the KV pool, gates 10/10, 131K needle found, but the
+  next-token distribution is far from the release: perplexity +19.5 % on English prose, top-1
+  agreement 0.853 and mean KL 0.25 against a run-to-run noise floor of 0.988 and 0.0036. The
+  release checkpoint on the same e47aa780 + tp3e stack sits inside that floor, so the gap is the
+  quantization, not the stack ([results](../results/2026-09-14-exl3-3p5bpw/NOTES.md)).
 - **Dual-rail NCCL.** Measured slower on this cluster for other models; not revisited here.
 
 ## L2 design: O_DIRECT Engram reads
