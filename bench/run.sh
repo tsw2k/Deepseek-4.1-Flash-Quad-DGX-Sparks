@@ -61,6 +61,25 @@ gates_rc=$?
 set -e
 scp -q "$head:$rdir/gates.json" "$out/" || true
 [ $gates_rc -eq 0 ] || { echo "gates failed: no benchmark recorded for a model that fails correctness" >&2; exit 1; }
+
+# ---- numeric check: has the distribution moved since the reference run?
+# Gates pass on a model that answers and formats; they say nothing about its logits. Set
+# QUALITY_REF=none to skip, or to another reference run directory on the head.
+qref=${QUALITY_REF:-/var/tmp/dsv41-quality/release-a}
+if [ "$qref" != none ] && on "$head" "test -f '$qref/meta.json'"; then
+  set +e
+  on "$head" "cd '$(dirname "$qref")' && python3 '$REPO_DIR/bench/quality.py' probe '$qref' \
+    --base 'http://$API_HOST:$API_PORT' --windows ${QUALITY_WINDOWS:-10} --report '$rdir/quality-probe.json'" \
+    | tee "$out/quality-probe.txt"
+  qrc=${PIPESTATUS[0]}
+  set -e
+  scp -q "$head:$rdir/quality-probe.json" "$out/" 2>/dev/null || true
+  echo "quality probe: $([ "$qrc" -eq 0 ] && echo within thresholds || echo OUTSIDE THRESHOLDS) (reference $qref)" >> "$out/run.txt"
+  [ "$qrc" -eq 0 ] || echo "WARNING: the engine's next-token distribution has moved from $qref; see $out/quality-probe.txt" >&2
+else
+  echo "quality probe: skipped (no reference at $qref)" >> "$out/run.txt"
+fi
+
 [ "${2:-}" = --gates-only ] && exit 0
 
 # ---- benchmark and needle
