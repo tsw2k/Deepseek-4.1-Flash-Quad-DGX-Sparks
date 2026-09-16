@@ -4,6 +4,7 @@
   quality.py corpus OUT_DIR
   quality.py collect --base http://10.77.1.11:8000 --corpus-dir DIR --out DIR [--tokens-from REF_DIR]
   quality.py compare REF_DIR TEST_DIR [--out report.json]
+  quality.py probe   REF_DIR [--windows 10] [--min-top1 0.96] [--max-kl 0.03] [--report r.json]
 
 corpus   builds three small corpora and a SHA256SUMS. The texts are not kept in this repository
          (Wikipedia and WikiText are CC BY-SA); the hashes in results/ say which texts were used.
@@ -15,6 +16,10 @@ collect  tokenizes each corpus once through the server's /tokenize (or reuses th
          --windows evenly spaced windows of --len tokens, and asks /v1/completions for
          prompt_logprobs (top --topk) of every position, one request at a time. Resumable.
          Long windows are costly on GB10: the logits of every prompt position are materialized.
+probe    the boot check: collects --windows of the reference's own windows from the serving
+         engine and exits non-zero if any corpus falls below --min-top1 or above --max-kl. The
+         defaults sit far above the release lane's run-to-run floor (top-1 0.988, KL 0.0036) and
+         far below a changed checkpoint (the EXL3 lane: 0.853 and 0.251).
 compare  per corpus: perplexity of each run over the same tokens, top-1 agreement, and
          KL(ref || test) per position approximated over ref's top-k plus one tail bucket (a
          token missing from test's top-k gets test's lowest listed logprob, an upper bound on
@@ -131,12 +136,13 @@ def collect(a):
         if len(ids) < span * a.windows:
             sys.exit(f"{c}: {len(ids)} tokens, need {span * a.windows} for {a.windows} windows of {a.len}")
         step = (len(ids) - span) // max(a.windows - 1, 1)
+        last = min(a.windows, a.limit or a.windows)
         out_path = f"{a.out}/{c}.jsonl"
         done = sum(1 for _ in open(out_path)) if os.path.exists(out_path) else 0
-        log(f"{c}: {len(ids)} tokens, windows {done}/{a.windows} done")
+        log(f"{c}: {len(ids)} tokens, windows {done}/{last} done")
         t0 = time.time()
         with open(out_path, "a") as f:
-            for w in range(done, a.windows):
+            for w in range(done, last):
                 prompt = [a.bos] + ids[w * step: w * step + span]
                 r = json.loads(get(f"{a.base}/v1/completions", {
                     "model": a.model, "prompt": prompt, "max_tokens": 1, "temperature": 0,
@@ -150,7 +156,7 @@ def collect(a):
                     pos.append([prompt[i], actual, top])
                 f.write(json.dumps({"window": w, "start": w * step, "pos": pos}) + "\n")
                 f.flush()
-        log(f"{c}: {a.windows - done} windows in {time.time() - t0:.0f} s")
+        log(f"{c}: {last - done} windows in {time.time() - t0:.0f} s")
     meta["finished"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     json.dump(meta, open(f"{a.out}/meta.json", "w"), indent=1)
 
@@ -200,6 +206,29 @@ def compare(a):
               f"{r['top1_agreement']:6.3f} {r['kl_mean']:8.4f} {r['kl_p90']:7.4f} {r['kl_p99']:7.4f}")
     if a.out:
         json.dump(report, open(a.out, "w"), indent=1)
+    return report
+
+
+def probe(a):
+    """Score a few of the reference's own windows on the serving engine and gate on the distance.
+
+    The functional gates (bench/gates.py) pass on a model whose distribution has moved: the EXL3
+    lane passed all ten while changing one argmax in seven. This is the numeric check to run on
+    every boot, against the reference collected from a known-good one."""
+    meta = json.load(open(f"{a.ref}/meta.json"))
+    out = a.out_dir or f"{os.path.dirname(a.ref.rstrip('/')) or '.'}/probe-{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}"
+    ca = argparse.Namespace(base=a.base, model=a.model, corpus_dir=None, tokens_from=a.ref, out=out,
+                            windows=meta["windows"], len=meta["len"], topk=meta["topk"], bos=a.bos,
+                            limit=a.windows, max_chars=0)
+    collect(ca)
+    rep = compare(argparse.Namespace(ref=a.ref, test=out, out=a.report))
+    bad = [f"{c}: top-1 {r['top1_agreement']:.3f} < {a.min_top1} or KL {r['kl_mean']:.4f} > {a.max_kl}"
+           for c, r in rep["corpora"].items() if r["top1_agreement"] < a.min_top1 or r["kl_mean"] > a.max_kl]
+    for b in bad:
+        print("QUALITY PROBE FAIL " + b)
+    print(f"quality probe: {len(rep['corpora']) - len(bad)}/{len(rep['corpora'])} corpora within "
+          f"top-1 >= {a.min_top1}, KL <= {a.max_kl} of {a.ref}")
+    sys.exit(1 if bad else 0)
 
 
 ap = argparse.ArgumentParser()
@@ -217,6 +246,17 @@ s.add_argument("--len", type=int, default=1024)
 s.add_argument("--topk", type=int, default=20)
 s.add_argument("--bos", type=int, default=0)
 s.add_argument("--max-chars", type=int, default=1_000_000)
+s.add_argument("--limit", type=int, default=0, help="collect only the first N of --windows windows")
+s = sub.add_parser("probe")
+s.add_argument("ref", help="a reference run directory (meta.json, *.tokens.json, *.jsonl)")
+s.add_argument("--base", default="http://10.77.1.11:8000")
+s.add_argument("--model", default="deepseek-v4.1-flash")
+s.add_argument("--windows", type=int, default=10, help="windows per corpus, of the reference's spacing")
+s.add_argument("--min-top1", type=float, default=0.96)
+s.add_argument("--max-kl", type=float, default=0.03)
+s.add_argument("--bos", type=int, default=0)
+s.add_argument("--out-dir")
+s.add_argument("--report", help="write the comparison as JSON here")
 s = sub.add_parser("compare")
 s.add_argument("ref")
 s.add_argument("test")
@@ -224,6 +264,8 @@ s.add_argument("--out")
 a = ap.parse_args()
 if a.cmd == "corpus":
     build_corpus(a.out)
+elif a.cmd == "probe":
+    probe(a)
 elif a.cmd == "collect":
     if not (a.corpus_dir or a.tokens_from):
         sys.exit("collect needs --corpus-dir or --tokens-from")
