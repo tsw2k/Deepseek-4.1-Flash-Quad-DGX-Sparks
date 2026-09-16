@@ -1,0 +1,11 @@
+[10:34:14] en-wiki: 223799 tokens, windows 0/10 done
+[10:34:26] en-wiki: 10 windows in 12 s
+[10:34:26] ru-wiki: 304454 tokens, windows 0/10 done
+[10:34:36] ru-wiki: 10 windows in 11 s
+[10:34:37] code: 254391 tokens, windows 0/10 done
+[10:34:47] code: 10 windows in 11 s
+corpus   positions  ppl ref ppl test  ratio   top1  KL mean     p90     p99
+en-wiki      10230    2.809    2.805  0.998  0.964   0.0187  0.0432  0.2890
+ru-wiki      10230    2.390    2.390  1.000  0.974   0.0103  0.0228  0.1467
+code         10230    1.234    1.232  0.998  0.994   0.0038  0.0006  0.0870
+quality probe: 3/3 corpora within top-1 >= 0.96, KL <= 0.03 of /var/tmp/dsv41-quality/release-a

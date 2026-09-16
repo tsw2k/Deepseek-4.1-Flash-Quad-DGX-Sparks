@@ -31,7 +31,7 @@ baseline the same way.
 | L6 | page-cache flusher on | `glm53-flusher.service` running during serving | the GLM stack needed it at load; during serving it evicts Engram pages every 60 s | mtxc GLM ops | not run; expect negative |
 | L8 | greedy determinism | `DRAFT_SAMPLE=greedy launch/cluster.sh up` (speculative config `"draft_sample_method":"greedy"`) | First boot: 3/5 sequential temperature-0 runs byte-identical, the rest diverged on one near-tied token and stayed coherent. Probabilistic draft sampling varies acceptance, hence verify-batch sizes, hence kernels. Measure the `greedy` gate's identical count and acceptance length together | this cluster, 2026-09-13 | **rejected**: 1/5 identical, logits still move up to ~2.7 nats ([results](../results/2026-09-13-lever-L8-greedy-draft/NOTES.md)) |
 | L9 | no speculative decoding (determinism isolation) | `SPEC=none` in cluster.env | After L8: is the temperature-0 divergence DSpark's or the target's? AtomicChat saw 4 % top-1 disagreement between runs without speculation on B200 | this cluster, 2026-09-13 | **done**: still 4 distinct texts in 10; the divergence is the target's, not DSpark's ([results](../results/2026-09-13-lever-L9-no-spec/NOTES.md)) |
-| L7 | sysctls | `vm.min_free_kbytes=1048576`, `vm.watermark_scale_factor=200` | earlier reclaim on the unified pool | Tech2Wild | not run |
+| L7 | sysctls | `vm.min_free_kbytes=1048576`, `vm.watermark_scale_factor=200` | earlier reclaim on the unified pool | Tech2Wild | **kept on memory grounds** 2026-09-16: MemFree 1-5 GiB to 7-9 GiB per node, prefill and needle flat within 1-4 %; decode not measurable that day (thermals and acceptance drifted) ([results](../results/2026-09-16-L7-sysctls/NOTES.md)) |
 
 ## Rejected or out of scope for now
 

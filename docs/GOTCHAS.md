@@ -26,3 +26,19 @@ repo.
 | Short tests pass, the first real request crashes | failure only in long decode after long prefill (this cluster, GLM-5.3) | `bench/tony/v41needle.py` at 131K and the C1-C6 suite before calling it serving |
 | A worker rank dies; `/health` stays 200, nothing is logged, client requests hang with no reply | the head blocks in a collective waiting for the dead rank; the engine stops logging stats, so the hang check is blind (this cluster, failover test 2026-09-13) | watchdog checks every rank's container and sends a one-token canary |
 | API reachable from the management network | vLLM has no auth | `API_HOST` is the head's rail A address; LiteLLM in front |
+
+## Two benchmarks in a row do not compare
+
+Two things drift within a day of benchmarking and both hit decode, not prefill:
+
+- **The prefix cache.** `bench/tony/v41bench.py` makes each request's tag unique within a run and
+  identical across runs, so a second run against the same live engine reads its prompts out of the
+  first run's KV: prefill jumps to 8,000-194,000 tok/s and the 131K needle answers in 0.6 s instead
+  of 81 s. Relaunch the engine between runs, or do not compare them.
+- **Heat and acceptance.** After three runs the GB10s sat at 2,444-2,476 MHz of a 3,003 MHz maximum
+  at 78-83 C, and DSpark mean acceptance had fallen from 3.22 to 2.89. Aggregate decode came out
+  27 % below a run taken the same way two hours earlier. Prefill and the needle moved by 1-4 %.
+
+A lever whose effect is smaller than that needs a cold cluster: one boot, one benchmark, nothing
+benchmarked before it that day. `nvidia-smi --query-gpu=clocks.current.graphics,temperature.gpu`
+before and after a run is the cheap check; `ops/gpu-burn.sh` is the thorough one.
