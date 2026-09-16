@@ -8,13 +8,15 @@ tensor-parallel 4, with vLLM, over a switched RoCEv2 fabric.
 This is a self-contained recipe: pinned sources, patch sets as reviewable diffs, image build,
 weight and Engram tooling, launcher, correctness gates and benchmark.
 
-> **Status (2026-09-14): serving on the mtxc cluster as baseline + L1.** The measured configuration
+> **Status (2026-09-16): serving on the mtxc cluster as baseline + L1.** The measured configuration
 > booted in 10 minutes, passed all gates and reproduced 0xTank's numbers within run-to-run spread
 > ([baseline](results/2026-09-13-baseline-measured/NOTES.md)). NCCL buffer sizing (lever L1) then
 > added +13 % single-stream and +11 % at six streams and gave ~10 GiB back per node
 > ([L1](results/2026-09-13-lever-L1-nccl-buffers/NOTES.md)). O_DIRECT Engram reads (L2) and greedy
-> drafting (L8) were measured and rejected ([levers](docs/LEVERS.md)). Numbers below labelled with
-> an upstream source come from that group's hardware.
+> drafting (L8) were measured and rejected ([levers](docs/LEVERS.md)). The EXL3 3.5 bpw checkpoint
+> was brought up as a second deployment, measured against this one and not adopted: faster, but a
+> different model at the next-token level ([EXL3](results/2026-09-14-exl3-3p5bpw/NOTES.md)).
+> Numbers below labelled with an upstream source come from that group's hardware.
 
 ## The problem in one table
 
@@ -55,6 +57,27 @@ Reference numbers, ours next to theirs:
 
 Both runs use Tech2Wild's fixed prompt set (`bench/tony/`, vendored unchanged), so a run here
 compares directly.
+
+## Quality, not just gates
+
+`bench/gates.py` proves the engine answers, counts, formats, sees images and survives long
+prefills. It does not prove the distribution is the one the checkpoint defines: the EXL3 lane
+passed all ten gates while changing one next-token argmax in seven.
+
+`bench/quality.py` measures that distance directly. It scores fixed token windows of three corpora
+(WikiText-2, Russian Wikipedia, this node's Python standard library) through `prompt_logprobs` and
+compares two runs position by position: perplexity, top-1 agreement and a top-k KL bound.
+
+| run against the release lane's own positions | top-1 agreement | KL mean |
+|---|---|---|
+| the same lane, a second time (the floor: nondeterministic MoE kernels) | 0.988 | 0.0036 |
+| the release checkpoint on the EXL3 lane's stack (vLLM e47aa780 + tp3e) | 0.987 | 0.0036 |
+| the EXL3 3.5 bpw checkpoint on that stack | 0.853 | 0.251 |
+
+English prose; [reference](results/2026-09-14-quality-reference-release/NOTES.md) and
+[EXL3](results/2026-09-14-exl3-3p5bpw/NOTES.md) have all three corpora. `quality.py probe REF_DIR`
+is the short form for a boot check: ten windows per corpus, about a minute, non-zero exit if the
+engine has moved.
 
 ## How it differs from upstream on this cluster
 
@@ -98,13 +121,16 @@ Full sequence, including stopping GLM and rolling back: [docs/RUNBOOK.md](docs/R
 | path | what |
 |---|---|
 | `patches/measured/`, `patches/minimal/` | diffs against vLLM `172d9a17`, with expected SHA-256 of the rendered files |
+| `patches/exl3-tp3e/` | the EXL3 lane's files: names, hashes and the pinned commit they are fetched from |
 | `patches/render.sh` | fetch pinned upstream files, apply a set, verify hashes |
 | `build/` | image build (stable extension, overlay, FlashInfer runtime, runtime verification), image fan-out |
 | `weights/` | download, manifest verification, rail B fan-out, per-rank Engram slices |
 | `launch/node.sh` | one rank: preflight checks and the measured vLLM command line |
 | `launch/cluster.sh` | ship, render, slice, preflight, up, down, status, Engram check |
+| `cluster.env.example`, `cluster.exl3.env.example` | the release lane and the EXL3 lane as two deployments that take turns |
 | `bench/gates.py` | correctness gates, run before any benchmark |
 | `bench/run.sh` | configuration snapshot, gates, C1-C6 suite, needle; writes `results/` |
+| `bench/quality.py` | corpora, next-token distance between two runs, and the boot probe |
 | `bench/tony/` | Tech2Wild/Kai's benchmark, needle test and prompt set, unmodified |
 | `ops/` | fleet watchdog and its systemd unit, hang check, GPU clock-latch burn |
 | `docs/` | [design](docs/DESIGN.md), [provenance](docs/PROVENANCE.md), [runbook](docs/RUNBOOK.md), [levers](docs/LEVERS.md), [gotchas](docs/GOTCHAS.md) |
