@@ -1,0 +1,57 @@
+{
+ "base": "http://10.77.1.11:8000/v1",
+ "model": "deepseek-v4.1-flash",
+ "time": "2026-09-16T09:47:32Z",
+ "gates": {
+  "identity": {
+   "pass": true,
+   "detail": "models=['deepseek-v4.1-flash'] reply='Hello!'",
+   "seconds": 0.2
+  },
+  "count": {
+   "pass": true,
+   "detail": "100 numbers, tail ' 88 89 90 91 92 93 94 95 96 97 98 99 100'",
+   "seconds": 2.9
+  },
+  "greedy": {
+   "pass": true,
+   "detail": "identical 1/5, first divergence at char 78, garbled []",
+   "seconds": 10.4
+  },
+  "garble": {
+   "pass": true,
+   "detail": "30/30 clean []",
+   "seconds": 6.9
+  },
+  "prefill": {
+   "pass": true,
+   "detail": "4 lengths recalled",
+   "seconds": 1.6
+  },
+  "prefill_x4": {
+   "pass": true,
+   "detail": "4 concurrent prefills recalled",
+   "seconds": 0.6
+  },
+  "json": {
+   "pass": true,
+   "detail": "{\n  \"name\": \"Aurelia\",\n  \"population\": 2845000,\n  \"districts\": [\n    \"The Lumen Quarter\",\n    \"Old Harbor\",\n    \"Skyward",
+   "seconds": 1.1
+  },
+  "tool": {
+   "pass": true,
+   "detail": "get_weather {'city': 'Paris', 'unit': 'c'}",
+   "seconds": 1.3
+  },
+  "vision": {
+   "pass": true,
+   "detail": "'red, green, blue'",
+   "seconds": 0.5
+  },
+  "thinking": {
+   "pass": true,
+   "detail": "reasoning=50 chars, answer='391'",
+   "seconds": 0.6
+  }
+ }
+}
