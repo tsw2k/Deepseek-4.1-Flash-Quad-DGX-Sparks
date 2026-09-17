@@ -165,10 +165,7 @@ esac
 sync -f "$MODEL_DIR"
 echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null
 avail=$(awk '/MemAvailable:/ {print int($2/1048576)}' /proc/meminfo)
-# 95, not 100: lever L7's watermark reserve (ops/99-dsv41-sysctl.conf) is subtracted from
-# MemAvailable, so a healthy node reads ~10 GiB lower than it did before. Boots under L7 came in
-# at 108-110 GiB.
-[ "$avail" -ge 95 ] || fail "MemAvailable $avail GiB < 95 GiB after dropping caches"
+[ "$avail" -ge 100 ] || fail "MemAvailable $avail GiB < 100 GiB after dropping caches"
 
 docker "${args[@]}" >/dev/null
 echo "started $CONTAINER rank=$rank gid=$gid_index set=$PATCH_SET spec=$SPEC k=$K draft=$DRAFT_SAMPLE maxlen=$MAXLEN avail=${avail}GiB"

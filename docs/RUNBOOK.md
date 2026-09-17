@@ -90,11 +90,11 @@ launch/cluster.sh render      # measured set; each node verifies the rendered ha
 ## 6. Host settings for serving
 
 - [ ] `glm53-flusher.service` stopped on all nodes (step 2).
-- [ ] `vm.min_free_kbytes=1048576` and `vm.watermark_scale_factor=200` (lever L7, adopted
-      2026-09-17): `sudo install -m 644 ops/99-dsv41-sysctl.conf /etc/sysctl.d/99-dsv41.conf &&
-      sudo sysctl --system` on every node, then check `sysctl -n vm.min_free_kbytes` reads
-      1048576 on all four. They give 7-9 GiB of hard free memory per node instead of 1-5, and
-      the reserve is why `launch/node.sh` boots at MemAvailable >= 95 GiB rather than 100.
+- [ ] Leave `vm.min_free_kbytes` and `vm.watermark_scale_factor` at the distribution defaults
+      (45155 / 10). Tech2Wild recommend 1048576 / 200; measured here (lever L7) they cost 20-22 %
+      at five and six streams while giving nothing at one, because the memory they hold back comes
+      out of the Engram rows' page cache. Check with `sysctl -n vm.min_free_kbytes` if a node has
+      been rebuilt.
 
 `nofile` does not need a host change: the launcher sets 1048576 on the container.
 
