@@ -90,11 +90,11 @@ launch/cluster.sh render      # measured set; each node verifies the rendered ha
 ## 6. Host settings for serving
 
 - [ ] `glm53-flusher.service` stopped on all nodes (step 2).
-- [ ] Optional, and it changes the host, so record it: Tech2Wild recommends
-      `vm.min_free_kbytes=1048576` and `vm.watermark_scale_factor=200` so the kernel reclaims
-      earlier on the unified pool. The nodes run 45155 / 10 today. Upstream measured with them
-      set, so apply them for the baseline if the goal is a like-for-like comparison, and note
-      it in the result.
+- [ ] `vm.min_free_kbytes=1048576` and `vm.watermark_scale_factor=200` (lever L7, adopted
+      2026-09-17): `sudo install -m 644 ops/99-dsv41-sysctl.conf /etc/sysctl.d/99-dsv41.conf &&
+      sudo sysctl --system` on every node, then check `sysctl -n vm.min_free_kbytes` reads
+      1048576 on all four. They give 7-9 GiB of hard free memory per node instead of 1-5, and
+      the reserve is why `launch/node.sh` boots at MemAvailable >= 95 GiB rather than 100.
 
 `nofile` does not need a host change: the launcher sets 1048576 on the container.
 
