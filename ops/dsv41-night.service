@@ -1,0 +1,9 @@
+[Unit]
+Description=DeepSeek-V4.1-Flash night lever runs (A/B/A benchmarks, baseline restored after)
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+User=mtxc
+ExecStart=/bin/bash /home/mtxc/dsv41/ops/night-levers.sh
+TimeoutStartSec=4h

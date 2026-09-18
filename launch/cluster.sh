@@ -30,7 +30,9 @@ on() {
 # Operator stops pause the watchdog (ops/fleet-watchdog.sh) until the next successful `up`;
 # the watchdog's own recovery passes WATCHDOG=1 so it does not pause itself.
 PAUSE_FLAG=/var/tmp/dsv41-watchdog.pause
-node_env="CLUSTER_ENV=$REPO_DIR/cluster.env"
+# The env file the ranks read. ops/night-levers.sh points it at a per-run copy it has put on every
+# node at the same path; otherwise it is the shipped cluster.env.
+node_env="CLUSTER_ENV=${NODE_CLUSTER_ENV:-$REPO_DIR/cluster.env}"
 
 case "$cmd" in
 ship)

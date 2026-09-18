@@ -1,0 +1,9 @@
+[Unit]
+Description=Start DeepSeek-V4.1-Flash night lever runs at 02:00 operator time
+
+[Timer]
+OnCalendar=*-*-* 02:00:00 Europe/Istanbul
+Persistent=false
+
+[Install]
+WantedBy=timers.target
