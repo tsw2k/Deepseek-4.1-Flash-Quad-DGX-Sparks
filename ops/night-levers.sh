@@ -67,6 +67,7 @@ say "plan: A, then B/A per lever while $per_lever min remain; first A needs $(( 
 [ $dry = 1 ] && exit 0
 [ ${#levers[@]} -gt 0 ] || { say "queue empty: nothing tonight"; exit 0; }
 [ ! -e "$NIGHT_DIR/pause" ] || { say "$NIGHT_DIR/pause exists: skipping tonight"; exit 0; }
+[ "$(left_min)" -ge $(( RUN_MIN + COOL_MIN + per_lever )) ] || { say "$(left_min) min before the deadline: not enough for even one lever"; exit 0; }
 
 # ---- only a healthy fleet is taken apart
 healthy() {
