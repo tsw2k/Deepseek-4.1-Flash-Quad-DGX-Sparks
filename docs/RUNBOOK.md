@@ -170,3 +170,31 @@ internet again: at worst it is a rail B copy and a relaunch.
 The same watchdog is why step 2 stops it first. Left running next to V4.1, it cannot see
 V4.1's health (different container, rail A address), and within three minutes it would
 launch GLM onto GPUs that are already full.
+
+## Night lever runs
+
+Levers are measured at night by `ops/night-levers.sh`, started by `dsv41-night.timer` on the head at
+02:00 Europe/Istanbul (23:00 UTC) and done by 05:00. Daytime benchmarks compete with users and with
+the heat of the previous run; see "Two benchmarks in a row do not compare" in GOTCHAS.
+
+Install once on the head:
+
+    sudo install -m 644 ops/dsv41-night.service ops/dsv41-night.timer /etc/systemd/system/
+    sudo systemctl daemon-reload && sudo systemctl enable --now dsv41-night.timer
+
+Queue a lever by adding a line to `/home/mtxc/dsv41-night/queue` on the head; the values override
+`cluster.env` for that run only:
+
+    L3-k5-300k   SPEC_K=5 MAXLEN=300000
+
+`ops/night-levers.sh --dry-run` shows how the queue parses and the night's plan. Each night runs
+the baseline, the lever and the baseline again (more levers while time allows), each run cold, and
+always ends on the baseline with the watchdog re-armed. Results land in
+`/home/mtxc/dsv41-night/results/<night>/`, the log in `logs/<night>.log`, finished levers in `done`.
+Copy a night into `results/` here when it has been read.
+
+`touch /home/mtxc/dsv41-night/pause` skips nights. Do not `launch/cluster.sh ship` while a night
+runs: it replaces the directory the runner executes from. The runner stops and starts the engine
+with `launch/cluster.sh` and the watchdog unit directly, as `scripts/fleet down|up` would; it is the
+one automated exception to starting models through fleet, and it refuses to start unless the
+baseline is serving and healthy.

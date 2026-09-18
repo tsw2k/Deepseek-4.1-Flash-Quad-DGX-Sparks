@@ -14,7 +14,8 @@ little stricter: upstream measured ±5 % run to run on a single config, and the 
 state (Tech2Wild issue #1) can move one cell by up to 1.5x. Repeat any borderline row before
 deciding.
 
-Apply a lever by setting `LEVER_ENV`, `SPEC`, `DRAFT_SAMPLE` or another value in the operator's
+Levers run at night now (`ops/night-levers.sh`, RUNBOOK "Night lever runs"): one queue line per
+lever, read A/B/A against two same-night baselines. By hand, apply a lever by setting `LEVER_ENV`, `SPEC`, `DRAFT_SAMPLE` or another value in the operator's
 `cluster.env`, then `scripts/fleet down dsv41`, `launch/cluster.sh ship`, `scripts/fleet up dsv41`
 (mtxc-spark-cluster). The value then lives in every node's `cluster.env`, so a watchdog relaunch
 keeps the same configuration. Give the run a label that names the lever, and restore the
