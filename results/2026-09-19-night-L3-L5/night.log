@@ -1,0 +1,967 @@
+[02:00] night 2026-09-19: 2 lever(s) queued, deadline 05:00 Europe/Istanbul (180 min left)
+[02:00]   L3-k5-300k: SPEC_K=5 MAXLEN=300000 
+[02:00]   L5-minimal: PATCH_SET=minimal 
+[02:00] plan: A, then B/A per lever while 120 min remain; first A needs 60 min
+Removed "/etc/systemd/system/multi-user.target.wants/dsv41-fleet.service".
+[02:00] watchdog stopped for the night
+[02:00] GPUs at most 54 C
+watchdog paused (/var/tmp/dsv41-watchdog.pause on spark-01) until the next successful up
+spark-01: stopped, log in /var/tmp/dsv41-logs/20260918T230005Z
+spark-04: stopped, log in /var/tmp/dsv41-logs/20260918T230005Z
+spark-03: stopped, log in /var/tmp/dsv41-logs/20260918T230005Z
+spark-02: stopped, log in /var/tmp/dsv41-logs/20260918T230005Z
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+preflight passed: rank 0
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+preflight passed: rank 1
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+preflight passed: rank 2
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+preflight passed: rank 3
+preflight passed on all ranks (image sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d, recipe 2bd614b)
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+started vllm_dsv41 rank=3 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=116GiB
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+started vllm_dsv41 rank=2 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=117GiB
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+started vllm_dsv41 rank=1 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=116GiB
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+started vllm_dsv41 rank=0 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=115GiB
+waiting for http://10.77.1.11:8000/health (weights, draft, autotune and graph capture take many minutes)
+serving after 5 min
+spark-01 rank 0: 2 tables read node-local, 0 warnings
+spark-02 rank 1: 2 tables read node-local, 0 warnings
+spark-03 rank 2: 2 tables read node-local, 0 warnings
+spark-04 rank 3: 2 tables read node-local, 0 warnings
+label: 01-A-baseline
+utc: 2026-09-18T23:06:13Z
+recipe: 2bd614b
+operator-git: none (run from the shipped recipe) 0 uncommitted
+rank 0 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 1 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 2 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 3 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+args(rank0): serve /models/DeepSeek-V4.1-Flash --served-model-name deepseek-v4.1-flash --host 10.77.1.11 --port 8000 --tensor-parallel-size 4 --gpu-memory-utilization 0.80 --max-model-len 600000 --max-num-seqs 8 --max-num-batched-tokens 8192 --engram-config {"cpu_offload":false} --default-chat-template-kwargs {"thinking":false} --tool-call-parser deepseek_v41 --enable-auto-tool-choice --reasoning-parser deepseek_v41 --speculative-config {"method":"dspark","num_speculative_tokens":3,"draft_sample_method":"probabilistic","rejection_sample_method":"block","enable_adaptive_verification":false} --compilation-config {"cudagraph_mode":"FULL_AND_PIECEWISE","cudagraph_capture_sizes":[3,4,6,8,9,12,15,16,18,20,21,24,28,32]} --distributed-executor-backend mp --nnodes 4 --node-rank 0 --master-addr 10.77.1.11 --master-port 29541 --block-size 128 --limit-mm-per-prompt {"image":4} --mm-processor-cache-gb 1
+image identical across ranks: True
+PASS identity       0.3s  models=['deepseek-v4.1-flash'] reply='Hello!'
+PASS count          3.0s  100 numbers, tail ' 88 89 90 91 92 93 94 95 96 97 98 99 100'
+PASS greedy        10.6s  identical 1/5, first divergence at char 101, garbled []
+PASS garble         7.1s  30/30 clean []
+PASS prefill        4.5s  4 lengths recalled
+PASS prefill_x4     3.0s  4 concurrent prefills recalled
+PASS json           1.2s  {
+  "name": "Aurelia",
+  "population": 2845000,
+  "districts": [
+    "The Lumen Quarter",
+    "Old Harbor",
+    "Verdant
+PASS tool           1.4s  get_weather {'city': 'Paris', 'unit': 'c'}
+PASS vision         0.5s  'red, green, blue'
+PASS thinking       0.6s  reasoning=50 chars, answer='391'
+10/10 gates passed
+[23:06:48] en-wiki: 223799 tokens, windows 0/10 done
+[23:06:58] en-wiki: 10 windows in 10 s
+[23:06:59] ru-wiki: 304454 tokens, windows 0/10 done
+[23:07:08] ru-wiki: 10 windows in 10 s
+[23:07:08] code: 254391 tokens, windows 0/10 done
+[23:07:18] code: 10 windows in 10 s
+corpus   positions  ppl ref ppl test  ratio   top1  KL mean     p90     p99
+en-wiki      10230    2.809    2.805  0.999  0.990   0.0033  0.0063  0.0599
+ru-wiki      10230    2.390    2.390  1.000  0.991   0.0026  0.0042  0.0470
+code         10230    1.234    1.234  1.000  0.999   0.0002  0.0000  0.0015
+quality probe: 3/3 corpora within top-1 >= 0.96, KL <= 0.03 of /var/tmp/dsv41-quality/release-a
+[01-A-baseline] warmup
+  C1 coding        agg   59.30 tok/s  per-stream 63.68  ttft 0.247s
+  C1 json          agg   40.46 tok/s  per-stream 44.81  ttft 0.23s
+  C1 narrative     agg   31.21 tok/s  per-stream 32.67  ttft 0.237s
+  C1 prose         agg   34.42 tok/s  per-stream 36.67  ttft 0.242s
+  C1 math          agg   57.72 tok/s  per-stream 62.61  ttft 0.286s
+  C1 reasoning     agg   53.03 tok/s  per-stream 57.02  ttft 0.281s
+  C1 summary       agg   32.04 tok/s  per-stream 37.42  ttft 0.493s
+  C1 format        agg   54.94 tok/s  per-stream 64.95  ttft 0.301s
+  C1 ceiling_count agg   65.62 tok/s  per-stream 69.91  ttft 0.237s
+  C2 coding        agg  102.20 tok/s  per-stream 55.56  ttft 0.273s
+  C2 json          agg   65.34 tok/s  per-stream 37.14  ttft 0.308s
+  C2 narrative     agg   46.85 tok/s  per-stream 25.36  ttft 0.257s
+  C2 prose         agg   55.32 tok/s  per-stream 30.34  ttft 0.252s
+  C2 math          agg   92.09 tok/s  per-stream 50.17  ttft 0.311s
+  C2 reasoning     agg   82.56 tok/s  per-stream 44.31  ttft 0.296s
+  C2 summary       agg   51.81 tok/s  per-stream 30.92  ttft 0.577s
+  C2 format        agg   99.02 tok/s  per-stream 59.8  ttft 0.335s
+  C2 ceiling_count agg  113.84 tok/s  per-stream 60.0  ttft 0.231s
+  C3 coding        agg  131.58 tok/s  per-stream 47.3  ttft 0.322s
+  C3 json          agg   76.18 tok/s  per-stream 29.94  ttft 0.451s
+  C3 narrative     agg   68.05 tok/s  per-stream 24.32  ttft 0.269s
+  C3 prose         agg   71.47 tok/s  per-stream 26.34  ttft 0.259s
+  C3 math          agg  119.09 tok/s  per-stream 42.72  ttft 0.324s
+  C3 reasoning     agg   97.71 tok/s  per-stream 35.43  ttft 0.335s
+  C3 summary       agg   57.78 tok/s  per-stream 24.07  ttft 0.671s
+  C3 format        agg  137.45 tok/s  per-stream 54.84  ttft 0.357s
+  C3 ceiling_count agg  154.81 tok/s  per-stream 54.54  ttft 0.266s
+  C4 coding        agg  154.92 tok/s  per-stream 42.19  ttft 0.356s
+  C4 json          agg  112.41 tok/s  per-stream 34.48  ttft 0.356s
+  C4 narrative     agg   68.68 tok/s  per-stream 19.31  ttft 0.285s
+  C4 prose         agg   86.46 tok/s  per-stream 22.92  ttft 0.272s
+  C4 math          agg  162.55 tok/s  per-stream 44.07  ttft 0.34s
+  C4 reasoning     agg  117.59 tok/s  per-stream 31.68  ttft 0.34s
+  C4 summary       agg   76.21 tok/s  per-stream 22.82  ttft 0.769s
+  C4 format        agg  147.93 tok/s  per-stream 44.31  ttft 0.401s
+  C4 ceiling_count agg  203.83 tok/s  per-stream 53.86  ttft 0.269s
+  C5 coding        agg  191.59 tok/s  per-stream 41.19  ttft 0.364s
+  C5 json          agg  121.20 tok/s  per-stream 29.53  ttft 0.381s
+  C5 narrative     agg   81.86 tok/s  per-stream 17.72  ttft 0.298s
+  C5 prose         agg   97.76 tok/s  per-stream 21.18  ttft 0.285s
+  C5 math          agg  176.45 tok/s  per-stream 38.06  ttft 0.38s
+  C5 reasoning     agg  123.60 tok/s  per-stream 27.51  ttft 0.386s
+  C5 summary       agg   79.34 tok/s  per-stream 19.66  ttft 1.043s
+  C5 format        agg  203.12 tok/s  per-stream 47.92  ttft 0.401s
+  C5 ceiling_count agg  235.89 tok/s  per-stream 49.95  ttft 0.299s
+  C6 coding        agg  207.04 tok/s  per-stream 37.21  ttft 0.359s
+  C6 json          agg  142.89 tok/s  per-stream 26.71  ttft 0.386s
+  C6 narrative     agg   88.68 tok/s  per-stream 16.21  ttft 0.317s
+  C6 prose         agg  108.96 tok/s  per-stream 19.53  ttft 0.296s
+  C6 math          agg  200.48 tok/s  per-stream 36.16  ttft 0.405s
+  C6 reasoning     agg  142.29 tok/s  per-stream 26.08  ttft 0.37s
+  C6 summary       agg   92.19 tok/s  per-stream 19.36  ttft 1.004s
+  C6 format        agg  235.51 tok/s  per-stream 47.59  ttft 0.431s
+  C6 ceiling_count agg  275.77 tok/s  per-stream 48.69  ttft 0.309s
+  prefill   2000: {'target': 2000, 'prompt_tokens': 2950, 'ttft_s': 2.004, 'prefill_tok_s': 1472.3}
+  prefill   8000: {'target': 8000, 'prompt_tokens': 11592, 'ttft_s': 7.189, 'prefill_tok_s': 1612.6}
+  prefill  32000: {'target': 32000, 'prompt_tokens': 46810, 'ttft_s': 28.185, 'prefill_tok_s': 1660.8}
+  prefill  64000: {'target': 64000, 'prompt_tokens': 93335, 'ttft_s': 56.812, 'prefill_tok_s': 1642.9}
+Prompt set `v1` (identical across boots), temperature 0, thinking off. Tokens from the server's usage block; TTFT = first token delta.
+
+### Throughput by concurrency (8 categories; the counting ceiling is excluded)
+
+| C | aggregate tok/s | per-stream tok/s | mean TTFT (s) |
+|---|---|---|---|
+| C1 | 45.39 | 49.98 | 0.29 |
+| C2 | 74.4 | 41.7 | 0.326 |
+| C3 | 94.91 | 35.62 | 0.373 |
+| C4 | 115.84 | 32.72 | 0.39 |
+| C5 | 134.37 | 30.35 | 0.442 |
+| C6 | 152.25 | 28.61 | 0.446 |
+
+### Per-stream tok/s by category
+
+| category | C1 | C2 | C3 | C4 | C5 | C6 |
+|---|---|---|---|---|---|---|
+| coding | 63.68 | 55.56 | 47.3 | 42.19 | 41.19 | 37.21 |
+| json | 44.81 | 37.14 | 29.94 | 34.48 | 29.53 | 26.71 |
+| narrative | 32.67 | 25.36 | 24.32 | 19.31 | 17.72 | 16.21 |
+| prose | 36.67 | 30.34 | 26.34 | 22.92 | 21.18 | 19.53 |
+| math | 62.61 | 50.17 | 42.72 | 44.07 | 38.06 | 36.16 |
+| reasoning | 57.02 | 44.31 | 35.43 | 31.68 | 27.51 | 26.08 |
+| summary | 37.42 | 30.92 | 24.07 | 22.82 | 19.66 | 19.36 |
+| format | 64.95 | 59.8 | 54.84 | 44.31 | 47.92 | 47.59 |
+| ceiling_count | 69.91 | 60.0 | 54.54 | 53.86 | 49.95 | 48.69 |
+wrote /var/tmp/dsv41-bench/2026-09-18-01-A-baseline/bench-01-A-baseline.json and .md
+ok (generation throughput: 0.0 tokens/s, Running: 1 reqs)
+calibration: 2.732 prompt tokens per filler word
+{"target": 131072, "prompt_tokens": 130258, "depth": 0.5, "ttft_s": 80.7, "prefill_tok_s": 1613.2, "answer": "COPPER-LANTERN-8315", "pass": true}
+recorded in /home/mtxc/dsv41-night/results/2026-09-19/2026-09-18-01-A-baseline
+[02:17] GPUs at most 60 C
+watchdog paused (/var/tmp/dsv41-watchdog.pause on spark-01) until the next successful up
+spark-01: stopped, log in /var/tmp/dsv41-logs/20260918T231801Z
+spark-04: stopped, log in /var/tmp/dsv41-logs/20260918T231801Z
+spark-03: stopped, log in /var/tmp/dsv41-logs/20260918T231801Z
+spark-02: stopped, log in /var/tmp/dsv41-logs/20260918T231801Z
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+preflight passed: rank 0
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+preflight passed: rank 1
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+preflight passed: rank 2
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+preflight passed: rank 3
+preflight passed on all ranks (image sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d, recipe 2bd614b)
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+started vllm_dsv41 rank=3 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=116GiB
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+started vllm_dsv41 rank=2 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=117GiB
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+started vllm_dsv41 rank=1 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=117GiB
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+started vllm_dsv41 rank=0 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=116GiB
+waiting for http://10.77.1.11:8000/health (weights, draft, autotune and graph capture take many minutes)
+serving after 6 min
+spark-01 rank 0: 2 tables read node-local, 0 warnings
+spark-02 rank 1: 2 tables read node-local, 0 warnings
+spark-03 rank 2: 2 tables read node-local, 0 warnings
+spark-04 rank 3: 2 tables read node-local, 0 warnings
+label: 02-L3-k5-300k
+utc: 2026-09-18T23:25:16Z
+recipe: 2bd614b
+operator-git: none (run from the shipped recipe) 0 uncommitted
+rank 0 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 1 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 2 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 3 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+args(rank0): serve /models/DeepSeek-V4.1-Flash --served-model-name deepseek-v4.1-flash --host 10.77.1.11 --port 8000 --tensor-parallel-size 4 --gpu-memory-utilization 0.80 --max-model-len 300000 --max-num-seqs 8 --max-num-batched-tokens 8192 --engram-config {"cpu_offload":false} --default-chat-template-kwargs {"thinking":false} --tool-call-parser deepseek_v41 --enable-auto-tool-choice --reasoning-parser deepseek_v41 --speculative-config {"method":"dspark","num_speculative_tokens":5,"draft_sample_method":"probabilistic","rejection_sample_method":"block","enable_adaptive_verification":false} --compilation-config {"cudagraph_mode":"FULL_AND_PIECEWISE","cudagraph_capture_sizes":[5,6,10,12,15,18,20,24,25,30,35,36,40,42,48]} --distributed-executor-backend mp --nnodes 4 --node-rank 0 --master-addr 10.77.1.11 --master-port 29541 --block-size 128 --limit-mm-per-prompt {"image":4} --mm-processor-cache-gb 1
+image identical across ranks: True
+PASS identity       0.3s  models=['deepseek-v4.1-flash'] reply='Hello there!'
+PASS count          2.4s  100 numbers, tail ' 88 89 90 91 92 93 94 95 96 97 98 99 100'
+PASS greedy        10.8s  identical 1/5, first divergence at char 93, garbled []
+PASS garble         7.0s  30/30 clean []
+PASS prefill        4.6s  4 lengths recalled
+PASS prefill_x4     3.0s  4 concurrent prefills recalled
+PASS json           1.3s  {
+  "name": "Aurelia",
+  "population": 2840000,
+  "districts": [
+    "The Lumen Quarter",
+    "Old Harbor",
+    "Skyward
+PASS tool           1.3s  get_weather {'city': 'Paris', 'unit': 'c'}
+PASS vision         0.5s  'red, green, blue'
+PASS thinking       0.6s  reasoning=50 chars, answer='391'
+10/10 gates passed
+[23:25:52] en-wiki: 223799 tokens, windows 0/10 done
+[23:26:02] en-wiki: 10 windows in 10 s
+[23:26:02] ru-wiki: 304454 tokens, windows 0/10 done
+[23:26:11] ru-wiki: 10 windows in 10 s
+[23:26:11] code: 254391 tokens, windows 0/10 done
+[23:26:21] code: 10 windows in 10 s
+corpus   positions  ppl ref ppl test  ratio   top1  KL mean     p90     p99
+en-wiki      10230    2.809    2.808  1.000  0.989   0.0035  0.0062  0.0671
+ru-wiki      10230    2.390    2.392  1.001  0.992   0.0024  0.0045  0.0453
+code         10230    1.234    1.234  1.000  0.999   0.0003  0.0000  0.0019
+quality probe: 3/3 corpora within top-1 >= 0.96, KL <= 0.03 of /var/tmp/dsv41-quality/release-a
+[02-L3-k5-300k] warmup
+  C1 coding        agg   70.11 tok/s  per-stream 77.33  ttft 0.278s
+  C1 json          agg   45.41 tok/s  per-stream 53.4  ttft 0.291s
+  C1 narrative     agg   27.70 tok/s  per-stream 29.08  ttft 0.264s
+  C1 prose         agg   32.46 tok/s  per-stream 34.47  ttft 0.261s
+  C1 math          agg   70.15 tok/s  per-stream 77.84  ttft 0.294s
+  C1 reasoning     agg   53.19 tok/s  per-stream 57.34  ttft 0.289s
+  C1 summary       agg   27.37 tok/s  per-stream 31.42  ttft 0.53s
+  C1 format        agg   66.74 tok/s  per-stream 83.32  ttft 0.315s
+  C1 ceiling_count agg   82.02 tok/s  per-stream 88.88  ttft 0.236s
+  C2 coding        agg  109.95 tok/s  per-stream 59.98  ttft 0.277s
+  C2 json          agg   67.52 tok/s  per-stream 42.0  ttft 0.317s
+  C2 narrative     agg   41.55 tok/s  per-stream 21.77  ttft 0.269s
+  C2 prose         agg   44.39 tok/s  per-stream 23.13  ttft 0.258s
+  C2 math          agg  108.05 tok/s  per-stream 60.13  ttft 0.349s
+  C2 reasoning     agg   80.93 tok/s  per-stream 43.74  ttft 0.311s
+  C2 summary       agg   47.60 tok/s  per-stream 27.82  ttft 0.585s
+  C2 format        agg  116.80 tok/s  per-stream 72.11  ttft 0.344s
+  C2 ceiling_count agg  143.55 tok/s  per-stream 77.42  ttft 0.254s
+  C3 coding        agg  146.99 tok/s  per-stream 53.56  ttft 0.309s
+  C3 json          agg   89.46 tok/s  per-stream 37.01  ttft 0.349s
+  C3 narrative     agg   51.44 tok/s  per-stream 17.92  ttft 0.282s
+  C3 prose         agg   64.79 tok/s  per-stream 22.81  ttft 0.275s
+  C3 math          agg  151.70 tok/s  per-stream 56.32  ttft 0.364s
+  C3 reasoning     agg   93.52 tok/s  per-stream 34.24  ttft 0.334s
+  C3 summary       agg   60.24 tok/s  per-stream 23.31  ttft 0.686s
+  C3 format        agg  134.87 tok/s  per-stream 55.6  ttft 0.361s
+  C3 ceiling_count agg  197.68 tok/s  per-stream 70.75  ttft 0.261s
+  C4 coding        agg  169.93 tok/s  per-stream 46.4  ttft 0.349s
+  C4 json          agg  103.30 tok/s  per-stream 32.93  ttft 0.38s
+  C4 narrative     agg   58.97 tok/s  per-stream 16.96  ttft 0.295s
+  C4 prose         agg   78.58 tok/s  per-stream 20.78  ttft 0.285s
+  C4 math          agg  161.77 tok/s  per-stream 45.94  ttft 0.383s
+  C4 reasoning     agg  113.59 tok/s  per-stream 31.02  ttft 0.346s
+  C4 summary       agg   66.85 tok/s  per-stream 20.96  ttft 0.777s
+  C4 format        agg  193.03 tok/s  per-stream 58.6  ttft 0.39s
+  C4 ceiling_count agg  232.01 tok/s  per-stream 62.55  ttft 0.28s
+  C5 coding        agg  202.19 tok/s  per-stream 43.98  ttft 0.35s
+  C5 json          agg  124.18 tok/s  per-stream 29.3  ttft 0.387s
+  C5 narrative     agg   72.51 tok/s  per-stream 16.12  ttft 0.317s
+  C5 prose         agg   78.76 tok/s  per-stream 17.27  ttft 0.298s
+  C5 math          agg  212.00 tok/s  per-stream 47.56  ttft 0.374s
+  C5 reasoning     agg  138.76 tok/s  per-stream 29.71  ttft 0.367s
+  C5 summary       agg   72.09 tok/s  per-stream 18.5  ttft 0.938s
+  C5 format        agg  238.17 tok/s  per-stream 58.87  ttft 0.423s
+  C5 ceiling_count agg  270.83 tok/s  per-stream 59.92  ttft 0.317s
+  C6 coding        agg  227.21 tok/s  per-stream 41.73  ttft 0.339s
+  C6 json          agg  139.21 tok/s  per-stream 26.92  ttft 0.394s
+  C6 narrative     agg   77.73 tok/s  per-stream 13.89  ttft 0.318s
+  C6 prose         agg   89.27 tok/s  per-stream 16.57  ttft 0.33s
+  C6 math          agg  210.04 tok/s  per-stream 40.2  ttft 0.397s
+  C6 reasoning     agg  147.10 tok/s  per-stream 27.08  ttft 0.379s
+  C6 summary       agg  100.68 tok/s  per-stream 20.22  ttft 1.025s
+  C6 format        agg  260.58 tok/s  per-stream 54.18  ttft 0.482s
+  C6 ceiling_count agg  305.66 tok/s  per-stream 55.82  ttft 0.322s
+  prefill   2000: {'target': 2000, 'prompt_tokens': 2950, 'ttft_s': 1.952, 'prefill_tok_s': 1511.4}
+  prefill   8000: {'target': 8000, 'prompt_tokens': 11592, 'ttft_s': 7.107, 'prefill_tok_s': 1631.0}
+  prefill  32000: {'target': 32000, 'prompt_tokens': 46810, 'ttft_s': 28.29, 'prefill_tok_s': 1654.7}
+  prefill  64000: {'target': 64000, 'prompt_tokens': 93335, 'ttft_s': 56.617, 'prefill_tok_s': 1648.5}
+Prompt set `v1` (identical across boots), temperature 0, thinking off. Tokens from the server's usage block; TTFT = first token delta.
+
+### Throughput by concurrency (8 categories; the counting ceiling is excluded)
+
+| C | aggregate tok/s | per-stream tok/s | mean TTFT (s) |
+|---|---|---|---|
+| C1 | 49.14 | 55.52 | 0.315 |
+| C2 | 77.1 | 43.84 | 0.339 |
+| C3 | 99.13 | 37.6 | 0.37 |
+| C4 | 118.25 | 34.2 | 0.401 |
+| C5 | 142.33 | 32.66 | 0.432 |
+| C6 | 156.48 | 30.1 | 0.458 |
+
+### Per-stream tok/s by category
+
+| category | C1 | C2 | C3 | C4 | C5 | C6 |
+|---|---|---|---|---|---|---|
+| coding | 77.33 | 59.98 | 53.56 | 46.4 | 43.98 | 41.73 |
+| json | 53.4 | 42.0 | 37.01 | 32.93 | 29.3 | 26.92 |
+| narrative | 29.08 | 21.77 | 17.92 | 16.96 | 16.12 | 13.89 |
+| prose | 34.47 | 23.13 | 22.81 | 20.78 | 17.27 | 16.57 |
+| math | 77.84 | 60.13 | 56.32 | 45.94 | 47.56 | 40.2 |
+| reasoning | 57.34 | 43.74 | 34.24 | 31.02 | 29.71 | 27.08 |
+| summary | 31.42 | 27.82 | 23.31 | 20.96 | 18.5 | 20.22 |
+| format | 83.32 | 72.11 | 55.6 | 58.6 | 58.87 | 54.18 |
+| ceiling_count | 88.88 | 77.42 | 70.75 | 62.55 | 59.92 | 55.82 |
+wrote /var/tmp/dsv41-bench/2026-09-18-02-L3-k5-300k/bench-02-L3-k5-300k.json and .md
+ok (generation throughput: 0.0 tokens/s, Running: 1 reqs)
+calibration: 2.732 prompt tokens per filler word
+{"target": 131072, "prompt_tokens": 130258, "depth": 0.5, "ttft_s": 80.6, "prefill_tok_s": 1616.5, "answer": "COPPER-LANTERN-8315", "pass": true}
+recorded in /home/mtxc/dsv41-night/results/2026-09-19/2026-09-18-02-L3-k5-300k
+[02:37] GPUs at most 60 C
+watchdog paused (/var/tmp/dsv41-watchdog.pause on spark-01) until the next successful up
+spark-01: stopped, log in /var/tmp/dsv41-logs/20260918T233705Z
+spark-04: stopped, log in /var/tmp/dsv41-logs/20260918T233705Z
+spark-03: stopped, log in /var/tmp/dsv41-logs/20260918T233705Z
+spark-02: stopped, log in /var/tmp/dsv41-logs/20260918T233705Z
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+preflight passed: rank 0
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+preflight passed: rank 1
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+preflight passed: rank 2
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+preflight passed: rank 3
+preflight passed on all ranks (image sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d, recipe 2bd614b)
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+started vllm_dsv41 rank=3 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=116GiB
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+started vllm_dsv41 rank=2 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=117GiB
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+started vllm_dsv41 rank=1 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=117GiB
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+started vllm_dsv41 rank=0 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=116GiB
+waiting for http://10.77.1.11:8000/health (weights, draft, autotune and graph capture take many minutes)
+serving after 5 min
+spark-01 rank 0: 2 tables read node-local, 0 warnings
+spark-02 rank 1: 2 tables read node-local, 0 warnings
+spark-03 rank 2: 2 tables read node-local, 0 warnings
+spark-04 rank 3: 2 tables read node-local, 0 warnings
+label: 03-A-baseline
+utc: 2026-09-18T23:43:14Z
+recipe: 2bd614b
+operator-git: none (run from the shipped recipe) 0 uncommitted
+rank 0 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 1 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 2 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 3 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+args(rank0): serve /models/DeepSeek-V4.1-Flash --served-model-name deepseek-v4.1-flash --host 10.77.1.11 --port 8000 --tensor-parallel-size 4 --gpu-memory-utilization 0.80 --max-model-len 600000 --max-num-seqs 8 --max-num-batched-tokens 8192 --engram-config {"cpu_offload":false} --default-chat-template-kwargs {"thinking":false} --tool-call-parser deepseek_v41 --enable-auto-tool-choice --reasoning-parser deepseek_v41 --speculative-config {"method":"dspark","num_speculative_tokens":3,"draft_sample_method":"probabilistic","rejection_sample_method":"block","enable_adaptive_verification":false} --compilation-config {"cudagraph_mode":"FULL_AND_PIECEWISE","cudagraph_capture_sizes":[3,4,6,8,9,12,15,16,18,20,21,24,28,32]} --distributed-executor-backend mp --nnodes 4 --node-rank 0 --master-addr 10.77.1.11 --master-port 29541 --block-size 128 --limit-mm-per-prompt {"image":4} --mm-processor-cache-gb 1
+image identical across ranks: True
+PASS identity       0.3s  models=['deepseek-v4.1-flash'] reply='Hello!'
+PASS count          3.0s  100 numbers, tail ' 88 89 90 91 92 93 94 95 96 97 98 99 100'
+PASS greedy        10.3s  identical 1/5, first divergence at char 93, garbled []
+PASS garble         7.0s  30/30 clean []
+PASS prefill        4.7s  4 lengths recalled
+PASS prefill_x4     3.0s  4 concurrent prefills recalled
+PASS json           1.3s  {
+  "name": "Aurelia",
+  "population": 2450000,
+  "districts": [
+    "The Lumen Quarter",
+    "Old Harbor",
+    "Skyward
+PASS tool           1.4s  get_weather {'city': 'Paris', 'unit': 'c'}
+PASS vision         0.6s  'red, green, blue'
+PASS thinking       0.6s  reasoning=50 chars, answer='391'
+10/10 gates passed
+[23:43:49] en-wiki: 223799 tokens, windows 0/10 done
+[23:44:00] en-wiki: 10 windows in 10 s
+[23:44:00] ru-wiki: 304454 tokens, windows 0/10 done
+[23:44:09] ru-wiki: 10 windows in 10 s
+[23:44:09] code: 254391 tokens, windows 0/10 done
+[23:44:19] code: 10 windows in 10 s
+corpus   positions  ppl ref ppl test  ratio   top1  KL mean     p90     p99
+en-wiki      10230    2.809    2.808  1.000  0.990   0.0033  0.0064  0.0645
+ru-wiki      10230    2.390    2.387  0.999  0.991   0.0028  0.0042  0.0483
+code         10230    1.234    1.234  1.000  1.000   0.0002  0.0000  0.0016
+quality probe: 3/3 corpora within top-1 >= 0.96, KL <= 0.03 of /var/tmp/dsv41-quality/release-a
+[03-A-baseline] warmup
+  C1 coding        agg   60.23 tok/s  per-stream 63.74  ttft 0.198s
+  C1 json          agg   44.72 tok/s  per-stream 50.28  ttft 0.232s
+  C1 narrative     agg   32.65 tok/s  per-stream 34.58  ttft 0.235s
+  C1 prose         agg   37.16 tok/s  per-stream 39.72  ttft 0.237s
+  C1 math          agg   57.77 tok/s  per-stream 62.56  ttft 0.281s
+  C1 reasoning     agg   49.95 tok/s  per-stream 53.56  ttft 0.288s
+  C1 summary       agg   31.56 tok/s  per-stream 35.72  ttft 0.443s
+  C1 format        agg   52.44 tok/s  per-stream 61.17  ttft 0.301s
+  C1 ceiling_count agg   65.40 tok/s  per-stream 69.51  ttft 0.23s
+  C2 coding        agg   94.03 tok/s  per-stream 50.0  ttft 0.272s
+  C2 json          agg   84.45 tok/s  per-stream 49.47  ttft 0.307s
+  C2 narrative     agg   50.23 tok/s  per-stream 27.11  ttft 0.265s
+  C2 prose         agg   58.04 tok/s  per-stream 31.33  ttft 0.251s
+  C2 math          agg   96.13 tok/s  per-stream 52.14  ttft 0.304s
+  C2 reasoning     agg   79.03 tok/s  per-stream 42.4  ttft 0.299s
+  C2 summary       agg   52.13 tok/s  per-stream 30.05  ttft 0.567s
+  C2 format        agg   99.40 tok/s  per-stream 58.81  ttft 0.333s
+  C2 ceiling_count agg  112.89 tok/s  per-stream 59.64  ttft 0.242s
+  C3 coding        agg  125.36 tok/s  per-stream 45.31  ttft 0.328s
+  C3 json          agg   83.87 tok/s  per-stream 32.72  ttft 0.33s
+  C3 narrative     agg   62.01 tok/s  per-stream 22.62  ttft 0.269s
+  C3 prose         agg   72.06 tok/s  per-stream 26.93  ttft 0.26s
+  C3 math          agg  121.03 tok/s  per-stream 43.01  ttft 0.329s
+  C3 reasoning     agg  113.70 tok/s  per-stream 40.44  ttft 0.335s
+  C3 summary       agg   71.70 tok/s  per-stream 29.94  ttft 0.684s
+  C3 format        agg  119.14 tok/s  per-stream 47.36  ttft 0.36s
+  C3 ceiling_count agg  162.94 tok/s  per-stream 57.28  ttft 0.243s
+  C4 coding        agg  164.39 tok/s  per-stream 44.46  ttft 0.345s
+  C4 json          agg   99.45 tok/s  per-stream 28.27  ttft 0.34s
+  C4 narrative     agg   71.20 tok/s  per-stream 19.86  ttft 0.282s
+  C4 prose         agg   90.24 tok/s  per-stream 24.08  ttft 0.273s
+  C4 math          agg  148.25 tok/s  per-stream 40.03  ttft 0.348s
+  C4 reasoning     agg  112.68 tok/s  per-stream 30.83  ttft 0.337s
+  C4 summary       agg   67.44 tok/s  per-stream 21.0  ttft 0.992s
+  C4 format        agg  172.40 tok/s  per-stream 50.88  ttft 0.379s
+  C4 ceiling_count agg  203.21 tok/s  per-stream 53.58  ttft 0.26s
+  C5 coding        agg  173.75 tok/s  per-stream 38.0  ttft 0.348s
+  C5 json          agg  116.82 tok/s  per-stream 27.92  ttft 0.36s
+  C5 narrative     agg   76.44 tok/s  per-stream 17.71  ttft 0.294s
+  C5 prose         agg   87.28 tok/s  per-stream 19.57  ttft 0.286s
+  C5 math          agg  182.79 tok/s  per-stream 39.53  ttft 0.355s
+  C5 reasoning     agg  132.80 tok/s  per-stream 28.14  ttft 0.355s
+  C5 summary       agg   76.14 tok/s  per-stream 19.28  ttft 1.047s
+  C5 format        agg  195.77 tok/s  per-stream 47.01  ttft 0.404s
+  C5 ceiling_count agg  238.62 tok/s  per-stream 50.43  ttft 0.286s
+  C6 coding        agg  202.76 tok/s  per-stream 37.38  ttft 0.387s
+  C6 json          agg  135.30 tok/s  per-stream 25.94  ttft 0.38s
+  C6 narrative     agg   87.36 tok/s  per-stream 16.56  ttft 0.323s
+  C6 prose         agg  106.40 tok/s  per-stream 19.31  ttft 0.296s
+  C6 math          agg  192.58 tok/s  per-stream 34.3  ttft 0.389s
+  C6 reasoning     agg  143.79 tok/s  per-stream 26.46  ttft 0.406s
+  C6 summary       agg  103.98 tok/s  per-stream 21.23  ttft 0.984s
+  C6 format        agg  208.93 tok/s  per-stream 41.8  ttft 0.431s
+  C6 ceiling_count agg  277.64 tok/s  per-stream 48.81  ttft 0.287s
+  prefill   2000: {'target': 2000, 'prompt_tokens': 2950, 'ttft_s': 1.999, 'prefill_tok_s': 1475.8}
+  prefill   8000: {'target': 8000, 'prompt_tokens': 11592, 'ttft_s': 7.081, 'prefill_tok_s': 1637.0}
+  prefill  32000: {'target': 32000, 'prompt_tokens': 46810, 'ttft_s': 28.05, 'prefill_tok_s': 1668.8}
+  prefill  64000: {'target': 64000, 'prompt_tokens': 93335, 'ttft_s': 57.022, 'prefill_tok_s': 1636.8}
+Prompt set `v1` (identical across boots), temperature 0, thinking off. Tokens from the server's usage block; TTFT = first token delta.
+
+### Throughput by concurrency (8 categories; the counting ceiling is excluded)
+
+| C | aggregate tok/s | per-stream tok/s | mean TTFT (s) |
+|---|---|---|---|
+| C1 | 45.81 | 50.17 | 0.277 |
+| C2 | 76.68 | 42.66 | 0.325 |
+| C3 | 96.11 | 36.04 | 0.362 |
+| C4 | 115.76 | 32.43 | 0.412 |
+| C5 | 130.22 | 29.64 | 0.431 |
+| C6 | 147.64 | 27.87 | 0.45 |
+
+### Per-stream tok/s by category
+
+| category | C1 | C2 | C3 | C4 | C5 | C6 |
+|---|---|---|---|---|---|---|
+| coding | 63.74 | 50.0 | 45.31 | 44.46 | 38.0 | 37.38 |
+| json | 50.28 | 49.47 | 32.72 | 28.27 | 27.92 | 25.94 |
+| narrative | 34.58 | 27.11 | 22.62 | 19.86 | 17.71 | 16.56 |
+| prose | 39.72 | 31.33 | 26.93 | 24.08 | 19.57 | 19.31 |
+| math | 62.56 | 52.14 | 43.01 | 40.03 | 39.53 | 34.3 |
+| reasoning | 53.56 | 42.4 | 40.44 | 30.83 | 28.14 | 26.46 |
+| summary | 35.72 | 30.05 | 29.94 | 21.0 | 19.28 | 21.23 |
+| format | 61.17 | 58.81 | 47.36 | 50.88 | 47.01 | 41.8 |
+| ceiling_count | 69.51 | 59.64 | 57.28 | 53.58 | 50.43 | 48.81 |
+wrote /var/tmp/dsv41-bench/2026-09-18-03-A-baseline/bench-03-A-baseline.json and .md
+ok (generation throughput: 0.0 tokens/s, Running: 1 reqs)
+calibration: 2.732 prompt tokens per filler word
+{"target": 131072, "prompt_tokens": 130258, "depth": 0.5, "ttft_s": 81.2, "prefill_tok_s": 1604.1, "answer": "COPPER-LANTERN-8315", "pass": true}
+recorded in /home/mtxc/dsv41-night/results/2026-09-19/2026-09-18-03-A-baseline
+[02:51] L3-k5-300k: ran, recorded in /home/mtxc/dsv41-night/results/2026-09-19
+[02:55] GPUs at most 60 C
+spark-01: rendered minimal -> /var/tmp/dsv41-patches/minimal (11 files, hashes verified)
+spark-01: 44dfa2303e725becce4b54d7745e8095929b7ebdff5240f339a5d24b601d05a0  /var/tmp/dsv41-patches/minimal/mounts.txt
+spark-01: 8d04fc2fe844f661835a06cedb4bb434b201eba73675782a4e93fc776969e968  /var/tmp/dsv41-patches/minimal/SHA256SUMS
+spark-02: rendered minimal -> /var/tmp/dsv41-patches/minimal (11 files, hashes verified)
+spark-02: 44dfa2303e725becce4b54d7745e8095929b7ebdff5240f339a5d24b601d05a0  /var/tmp/dsv41-patches/minimal/mounts.txt
+spark-02: 8d04fc2fe844f661835a06cedb4bb434b201eba73675782a4e93fc776969e968  /var/tmp/dsv41-patches/minimal/SHA256SUMS
+spark-03: rendered minimal -> /var/tmp/dsv41-patches/minimal (11 files, hashes verified)
+spark-03: 44dfa2303e725becce4b54d7745e8095929b7ebdff5240f339a5d24b601d05a0  /var/tmp/dsv41-patches/minimal/mounts.txt
+spark-03: 8d04fc2fe844f661835a06cedb4bb434b201eba73675782a4e93fc776969e968  /var/tmp/dsv41-patches/minimal/SHA256SUMS
+spark-04: rendered minimal -> /var/tmp/dsv41-patches/minimal (11 files, hashes verified)
+spark-04: 44dfa2303e725becce4b54d7745e8095929b7ebdff5240f339a5d24b601d05a0  /var/tmp/dsv41-patches/minimal/mounts.txt
+spark-04: 8d04fc2fe844f661835a06cedb4bb434b201eba73675782a4e93fc776969e968  /var/tmp/dsv41-patches/minimal/SHA256SUMS
+watchdog paused (/var/tmp/dsv41-watchdog.pause on spark-01) until the next successful up
+spark-01: stopped, log in /var/tmp/dsv41-logs/20260918T235508Z
+spark-04: stopped, log in /var/tmp/dsv41-logs/20260918T235508Z
+spark-03: stopped, log in /var/tmp/dsv41-logs/20260918T235508Z
+spark-02: stopped, log in /var/tmp/dsv41-logs/20260918T235508Z
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set minimal (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+preflight passed: rank 0
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set minimal (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+preflight passed: rank 1
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set minimal (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+preflight passed: rank 2
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set minimal (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+preflight passed: rank 3
+preflight passed on all ranks (image sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d, recipe 2bd614b)
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set minimal (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+started vllm_dsv41 rank=3 gid=3 set=minimal spec=dspark k=3 draft=probabilistic maxlen=600000 avail=116GiB
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set minimal (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+started vllm_dsv41 rank=2 gid=3 set=minimal spec=dspark k=3 draft=probabilistic maxlen=600000 avail=117GiB
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set minimal (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+started vllm_dsv41 rank=1 gid=3 set=minimal spec=dspark k=3 draft=probabilistic maxlen=600000 avail=117GiB
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set minimal (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+started vllm_dsv41 rank=0 gid=3 set=minimal spec=dspark k=3 draft=probabilistic maxlen=600000 avail=116GiB
+waiting for http://10.77.1.11:8000/health (weights, draft, autotune and graph capture take many minutes)
+serving after 6 min
+spark-01 rank 0: 2 tables read node-local, 0 warnings
+spark-02 rank 1: 2 tables read node-local, 0 warnings
+spark-03 rank 2: 2 tables read node-local, 0 warnings
+spark-04 rank 3: 2 tables read node-local, 0 warnings
+label: 04-L5-minimal
+utc: 2026-09-19T00:02:22Z
+recipe: 2bd614b
+operator-git: none (run from the shipped recipe) 0 uncommitted
+rank 0 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 1 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 2 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 3 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+args(rank0): serve /models/DeepSeek-V4.1-Flash --served-model-name deepseek-v4.1-flash --host 10.77.1.11 --port 8000 --tensor-parallel-size 4 --gpu-memory-utilization 0.80 --max-model-len 600000 --max-num-seqs 8 --max-num-batched-tokens 8192 --engram-config {"cpu_offload":false} --default-chat-template-kwargs {"thinking":false} --tool-call-parser deepseek_v41 --enable-auto-tool-choice --reasoning-parser deepseek_v41 --speculative-config {"method":"dspark","num_speculative_tokens":3,"draft_sample_method":"probabilistic","rejection_sample_method":"block","enable_adaptive_verification":false} --compilation-config {"cudagraph_mode":"FULL_AND_PIECEWISE","cudagraph_capture_sizes":[3,4,6,8,9,12,15,16,18,20,21,24,28,32]} --distributed-executor-backend mp --nnodes 4 --node-rank 0 --master-addr 10.77.1.11 --master-port 29541 --block-size 128 --limit-mm-per-prompt {"image":4} --mm-processor-cache-gb 1
+image identical across ranks: True
+PASS identity       0.3s  models=['deepseek-v4.1-flash'] reply='Hello!'
+PASS count          3.0s  100 numbers, tail ' 88 89 90 91 92 93 94 95 96 97 98 99 100'
+PASS greedy        10.0s  identical 1/5, first divergence at char 93, garbled []
+PASS garble         7.2s  30/30 clean []
+PASS prefill        6.4s  4 lengths recalled
+PASS prefill_x4     3.0s  4 concurrent prefills recalled
+PASS json           1.4s  {
+  "name": "Aurelia",
+  "population": 2450000,
+  "districts": [
+    "The Lumen Quarter",
+    "Old Harbor",
+    "Skyward
+PASS tool           1.4s  get_weather {'city': 'Paris', 'unit': 'c'}
+PASS vision         0.5s  'red, green, blue'
+PASS thinking       0.6s  reasoning=50 chars, answer='391'
+10/10 gates passed
+[00:02:59] en-wiki: 223799 tokens, windows 0/10 done
+[00:03:09] en-wiki: 10 windows in 10 s
+[00:03:09] ru-wiki: 304454 tokens, windows 0/10 done
+[00:03:19] ru-wiki: 10 windows in 10 s
+[00:03:19] code: 254391 tokens, windows 0/10 done
+[00:03:29] code: 10 windows in 10 s
+corpus   positions  ppl ref ppl test  ratio   top1  KL mean     p90     p99
+en-wiki      10230    2.809    2.801  0.997  0.990   0.0035  0.0065  0.0709
+ru-wiki      10230    2.390    2.391  1.001  0.990   0.0026  0.0042  0.0507
+code         10230    1.234    1.234  1.000  1.000   0.0002  0.0000  0.0016
+quality probe: 3/3 corpora within top-1 >= 0.96, KL <= 0.03 of /var/tmp/dsv41-quality/release-a
+[04-L5-minimal] warmup
+  C1 coding        agg   61.44 tok/s  per-stream 66.11  ttft 0.244s
+  C1 json          agg   38.97 tok/s  per-stream 44.41  ttft 0.286s
+  C1 narrative     agg   33.36 tok/s  per-stream 34.98  ttft 0.235s
+  C1 prose         agg   38.28 tok/s  per-stream 41.09  ttft 0.234s
+  C1 math          agg   56.83 tok/s  per-stream 61.53  ttft 0.284s
+  C1 reasoning     agg   49.95 tok/s  per-stream 53.5  ttft 0.284s
+  C1 summary       agg   32.90 tok/s  per-stream 37.37  ttft 0.441s
+  C1 format        agg   51.78 tok/s  per-stream 60.73  ttft 0.306s
+  C1 ceiling_count agg   63.10 tok/s  per-stream 66.92  ttft 0.23s
+  C2 coding        agg   94.94 tok/s  per-stream 51.21  ttft 0.268s
+  C2 json          agg   77.45 tok/s  per-stream 44.66  ttft 0.306s
+  C2 narrative     agg   48.00 tok/s  per-stream 25.84  ttft 0.273s
+  C2 prose         agg   57.78 tok/s  per-stream 31.09  ttft 0.251s
+  C2 math          agg   93.15 tok/s  per-stream 50.4  ttft 0.308s
+  C2 reasoning     agg   81.98 tok/s  per-stream 43.73  ttft 0.297s
+  C2 summary       agg   48.52 tok/s  per-stream 30.34  ttft 0.55s
+  C2 format        agg   99.14 tok/s  per-stream 58.75  ttft 0.337s
+  C2 ceiling_count agg  113.34 tok/s  per-stream 59.87  ttft 0.241s
+  C3 coding        agg  128.35 tok/s  per-stream 46.65  ttft 0.325s
+  C3 json          agg   83.58 tok/s  per-stream 33.04  ttft 0.332s
+  C3 narrative     agg   59.97 tok/s  per-stream 21.1  ttft 0.267s
+  C3 prose         agg   72.42 tok/s  per-stream 26.42  ttft 0.265s
+  C3 math          agg  131.08 tok/s  per-stream 47.42  ttft 0.327s
+  C3 reasoning     agg   94.66 tok/s  per-stream 34.95  ttft 0.325s
+  C3 summary       agg   57.47 tok/s  per-stream 23.46  ttft 0.809s
+  C3 format        agg  137.08 tok/s  per-stream 54.74  ttft 0.361s
+  C3 ceiling_count agg  161.78 tok/s  per-stream 57.16  ttft 0.267s
+  C4 coding        agg  149.27 tok/s  per-stream 40.52  ttft 0.328s
+  C4 json          agg  106.30 tok/s  per-stream 31.19  ttft 0.351s
+  C4 narrative     agg   67.79 tok/s  per-stream 18.2  ttft 0.283s
+  C4 prose         agg   79.15 tok/s  per-stream 22.01  ttft 0.274s
+  C4 math          agg  142.41 tok/s  per-stream 38.05  ttft 0.341s
+  C4 reasoning     agg  128.50 tok/s  per-stream 36.22  ttft 0.364s
+  C4 summary       agg   72.70 tok/s  per-stream 22.68  ttft 0.77s
+  C4 format        agg  171.47 tok/s  per-stream 52.0  ttft 0.396s
+  C4 ceiling_count agg  203.85 tok/s  per-stream 53.92  ttft 0.274s
+  C5 coding        agg  191.48 tok/s  per-stream 41.72  ttft 0.372s
+  C5 json          agg  116.65 tok/s  per-stream 27.54  ttft 0.372s
+  C5 narrative     agg   82.92 tok/s  per-stream 17.87  ttft 0.303s
+  C5 prose         agg   97.30 tok/s  per-stream 20.86  ttft 0.285s
+  C5 math          agg  182.82 tok/s  per-stream 39.52  ttft 0.363s
+  C5 reasoning     agg  135.17 tok/s  per-stream 29.15  ttft 0.356s
+  C5 summary       agg   82.69 tok/s  per-stream 20.51  ttft 0.893s
+  C5 format        agg  202.94 tok/s  per-stream 48.67  ttft 0.402s
+  C5 ceiling_count agg  241.13 tok/s  per-stream 51.07  ttft 0.294s
+  C6 coding        agg  229.33 tok/s  per-stream 41.38  ttft 0.375s
+  C6 json          agg  130.35 tok/s  per-stream 26.49  ttft 0.413s
+  C6 narrative     agg   89.36 tok/s  per-stream 16.35  ttft 0.306s
+  C6 prose         agg  103.61 tok/s  per-stream 19.5  ttft 0.294s
+  C6 math          agg  212.82 tok/s  per-stream 38.57  ttft 0.384s
+  C6 reasoning     agg  147.46 tok/s  per-stream 27.4  ttft 0.372s
+  C6 summary       agg   89.83 tok/s  per-stream 19.02  ttft 1.167s
+  C6 format        agg  237.85 tok/s  per-stream 47.09  ttft 0.425s
+  C6 ceiling_count agg  264.14 tok/s  per-stream 46.44  ttft 0.302s
+  prefill   2000: {'target': 2000, 'prompt_tokens': 2950, 'ttft_s': 1.97, 'prefill_tok_s': 1497.4}
+  prefill   8000: {'target': 8000, 'prompt_tokens': 11592, 'ttft_s': 7.015, 'prefill_tok_s': 1652.4}
+  prefill  32000: {'target': 32000, 'prompt_tokens': 46810, 'ttft_s': 27.777, 'prefill_tok_s': 1685.2}
+  prefill  64000: {'target': 64000, 'prompt_tokens': 93335, 'ttft_s': 56.775, 'prefill_tok_s': 1644.0}
+Prompt set `v1` (identical across boots), temperature 0, thinking off. Tokens from the server's usage block; TTFT = first token delta.
+
+### Throughput by concurrency (8 categories; the counting ceiling is excluded)
+
+| C | aggregate tok/s | per-stream tok/s | mean TTFT (s) |
+|---|---|---|---|
+| C1 | 45.44 | 49.96 | 0.289 |
+| C2 | 75.12 | 42.0 | 0.324 |
+| C3 | 95.58 | 35.97 | 0.376 |
+| C4 | 114.7 | 32.61 | 0.388 |
+| C5 | 136.5 | 30.73 | 0.418 |
+| C6 | 155.08 | 29.48 | 0.467 |
+
+### Per-stream tok/s by category
+
+| category | C1 | C2 | C3 | C4 | C5 | C6 |
+|---|---|---|---|---|---|---|
+| coding | 66.11 | 51.21 | 46.65 | 40.52 | 41.72 | 41.38 |
+| json | 44.41 | 44.66 | 33.04 | 31.19 | 27.54 | 26.49 |
+| narrative | 34.98 | 25.84 | 21.1 | 18.2 | 17.87 | 16.35 |
+| prose | 41.09 | 31.09 | 26.42 | 22.01 | 20.86 | 19.5 |
+| math | 61.53 | 50.4 | 47.42 | 38.05 | 39.52 | 38.57 |
+| reasoning | 53.5 | 43.73 | 34.95 | 36.22 | 29.15 | 27.4 |
+| summary | 37.37 | 30.34 | 23.46 | 22.68 | 20.51 | 19.02 |
+| format | 60.73 | 58.75 | 54.74 | 52.0 | 48.67 | 47.09 |
+| ceiling_count | 66.92 | 59.87 | 57.16 | 53.92 | 51.07 | 46.44 |
+wrote /var/tmp/dsv41-bench/2026-09-19-04-L5-minimal/bench-04-L5-minimal.json and .md
+ok (generation throughput: 0.0 tokens/s, Running: 1 reqs)
+calibration: 2.732 prompt tokens per filler word
+{"target": 131072, "prompt_tokens": 130258, "depth": 0.5, "ttft_s": 80.7, "prefill_tok_s": 1613.8, "answer": "COPPER-LANTERN-8315", "pass": true}
+recorded in /home/mtxc/dsv41-night/results/2026-09-19/2026-09-19-04-L5-minimal
+[03:14] GPUs at most 60 C
+watchdog paused (/var/tmp/dsv41-watchdog.pause on spark-01) until the next successful up
+spark-01: stopped, log in /var/tmp/dsv41-logs/20260919T001412Z
+spark-04: stopped, log in /var/tmp/dsv41-logs/20260919T001412Z
+spark-03: stopped, log in /var/tmp/dsv41-logs/20260919T001412Z
+spark-02: stopped, log in /var/tmp/dsv41-logs/20260919T001412Z
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+preflight passed: rank 0
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+preflight passed: rank 1
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+preflight passed: rank 2
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+preflight passed: rank 3
+preflight passed on all ranks (image sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d, recipe 2bd614b)
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+started vllm_dsv41 rank=3 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=116GiB
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+started vllm_dsv41 rank=2 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=117GiB
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+started vllm_dsv41 rank=1 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=117GiB
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+started vllm_dsv41 rank=0 gid=3 set=measured spec=dspark k=3 draft=probabilistic maxlen=600000 avail=116GiB
+waiting for http://10.77.1.11:8000/health (weights, draft, autotune and graph capture take many minutes)
+serving after 5 min
+spark-01 rank 0: 2 tables read node-local, 0 warnings
+spark-02 rank 1: 2 tables read node-local, 0 warnings
+spark-03 rank 2: 2 tables read node-local, 0 warnings
+spark-04 rank 3: 2 tables read node-local, 0 warnings
+label: 05-A-baseline
+utc: 2026-09-19T00:20:54Z
+recipe: 2bd614b
+operator-git: none (run from the shipped recipe) 0 uncommitted
+rank 0 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 1 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 2 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 3 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+args(rank0): serve /models/DeepSeek-V4.1-Flash --served-model-name deepseek-v4.1-flash --host 10.77.1.11 --port 8000 --tensor-parallel-size 4 --gpu-memory-utilization 0.80 --max-model-len 600000 --max-num-seqs 8 --max-num-batched-tokens 8192 --engram-config {"cpu_offload":false} --default-chat-template-kwargs {"thinking":false} --tool-call-parser deepseek_v41 --enable-auto-tool-choice --reasoning-parser deepseek_v41 --speculative-config {"method":"dspark","num_speculative_tokens":3,"draft_sample_method":"probabilistic","rejection_sample_method":"block","enable_adaptive_verification":false} --compilation-config {"cudagraph_mode":"FULL_AND_PIECEWISE","cudagraph_capture_sizes":[3,4,6,8,9,12,15,16,18,20,21,24,28,32]} --distributed-executor-backend mp --nnodes 4 --node-rank 0 --master-addr 10.77.1.11 --master-port 29541 --block-size 128 --limit-mm-per-prompt {"image":4} --mm-processor-cache-gb 1
+image identical across ranks: True
+PASS identity       0.3s  models=['deepseek-v4.1-flash'] reply='Hello!'
+PASS count          3.0s  100 numbers, tail ' 88 89 90 91 92 93 94 95 96 97 98 99 100'
+PASS greedy        10.8s  identical 1/5, first divergence at char 93, garbled []
+PASS garble         7.0s  30/30 clean []
+PASS prefill        4.5s  4 lengths recalled
+PASS prefill_x4     3.2s  4 concurrent prefills recalled
+PASS json           1.3s  {
+  "name": "Aurelia",
+  "population": 2450000,
+  "districts": [
+    "The Lumen Quarter",
+    "Old Harbor",
+    "Skyward
+PASS tool           1.4s  get_weather {'city': 'Paris', 'unit': 'c'}
+PASS vision         0.6s  'red, green, blue'
+PASS thinking       0.6s  reasoning=50 chars, answer='391'
+10/10 gates passed
+[00:21:30] en-wiki: 223799 tokens, windows 0/10 done
+[00:21:40] en-wiki: 10 windows in 10 s
+[00:21:40] ru-wiki: 304454 tokens, windows 0/10 done
+[00:21:50] ru-wiki: 10 windows in 10 s
+[00:21:50] code: 254391 tokens, windows 0/10 done
+[00:22:00] code: 10 windows in 10 s
+corpus   positions  ppl ref ppl test  ratio   top1  KL mean     p90     p99
+en-wiki      10230    2.809    2.805  0.999  0.990   0.0035  0.0062  0.0641
+ru-wiki      10230    2.390    2.390  1.000  0.989   0.0026  0.0045  0.0545
+code         10230    1.234    1.234  1.000  1.000   0.0002  0.0000  0.0013
+quality probe: 3/3 corpora within top-1 >= 0.96, KL <= 0.03 of /var/tmp/dsv41-quality/release-a
+[05-A-baseline] warmup
+  C1 coding        agg   60.71 tok/s  per-stream 64.34  ttft 0.201s
+  C1 json          agg   39.16 tok/s  per-stream 44.47  ttft 0.287s
+  C1 narrative     agg   33.20 tok/s  per-stream 34.89  ttft 0.236s
+  C1 prose         agg   38.20 tok/s  per-stream 41.12  ttft 0.243s
+  C1 math          agg   57.58 tok/s  per-stream 62.5  ttft 0.289s
+  C1 reasoning     agg   53.01 tok/s  per-stream 57.1  ttft 0.287s
+  C1 summary       agg   32.39 tok/s  per-stream 36.73  ttft 0.49s
+  C1 format        agg   53.18 tok/s  per-stream 62.71  ttft 0.307s
+  C1 ceiling_count agg   65.40 tok/s  per-stream 69.93  ttft 0.251s
+  C2 coding        agg  110.45 tok/s  per-stream 59.42  ttft 0.271s
+  C2 json          agg   61.78 tok/s  per-stream 35.3  ttft 0.307s
+  C2 narrative     agg   50.93 tok/s  per-stream 26.89  ttft 0.257s
+  C2 prose         agg   56.13 tok/s  per-stream 30.56  ttft 0.26s
+  C2 math          agg   92.06 tok/s  per-stream 50.06  ttft 0.306s
+  C2 reasoning     agg   79.22 tok/s  per-stream 42.53  ttft 0.303s
+  C2 summary       agg   51.52 tok/s  per-stream 29.3  ttft 0.572s
+  C2 format        agg   86.29 tok/s  per-stream 51.25  ttft 0.363s
+  C2 ceiling_count agg  113.50 tok/s  per-stream 59.82  ttft 0.232s
+  C3 coding        agg  124.63 tok/s  per-stream 44.71  ttft 0.31s
+  C3 json          agg   81.45 tok/s  per-stream 32.86  ttft 0.347s
+  C3 narrative     agg   61.20 tok/s  per-stream 22.64  ttft 0.271s
+  C3 prose         agg   71.67 tok/s  per-stream 25.54  ttft 0.266s
+  C3 math          agg  129.65 tok/s  per-stream 46.97  ttft 0.327s
+  C3 reasoning     agg   99.91 tok/s  per-stream 36.38  ttft 0.338s
+  C3 summary       agg   62.09 tok/s  per-stream 26.18  ttft 0.687s
+  C3 format        agg  122.30 tok/s  per-stream 47.92  ttft 0.368s
+  C3 ceiling_count agg  163.09 tok/s  per-stream 57.56  ttft 0.26s
+  C4 coding        agg  151.65 tok/s  per-stream 41.85  ttft 0.345s
+  C4 json          agg  105.12 tok/s  per-stream 30.93  ttft 0.355s
+  C4 narrative     agg   72.03 tok/s  per-stream 19.4  ttft 0.292s
+  C4 prose         agg   88.20 tok/s  per-stream 23.8  ttft 0.283s
+  C4 math          agg  154.98 tok/s  per-stream 41.94  ttft 0.367s
+  C4 reasoning     agg  116.35 tok/s  per-stream 31.91  ttft 0.352s
+  C4 summary       agg   73.78 tok/s  per-stream 21.83  ttft 0.774s
+  C4 format        agg  170.71 tok/s  per-stream 52.2  ttft 0.382s
+  C4 ceiling_count agg  193.09 tok/s  per-stream 50.75  ttft 0.26s
+  C5 coding        agg  185.61 tok/s  per-stream 40.72  ttft 0.38s
+  C5 json          agg  114.95 tok/s  per-stream 28.09  ttft 0.364s
+  C5 narrative     agg   86.27 tok/s  per-stream 18.47  ttft 0.301s
+  C5 prose         agg   88.39 tok/s  per-stream 19.76  ttft 0.288s
+  C5 math          agg  167.03 tok/s  per-stream 35.97  ttft 0.361s
+  C5 reasoning     agg  128.84 tok/s  per-stream 27.71  ttft 0.374s
+  C5 summary       agg   78.12 tok/s  per-stream 21.21  ttft 1.049s
+  C5 format        agg  192.71 tok/s  per-stream 45.91  ttft 0.406s
+  C5 ceiling_count agg  225.34 tok/s  per-stream 47.59  ttft 0.299s
+  C6 coding        agg  203.26 tok/s  per-stream 36.73  ttft 0.399s
+  C6 json          agg  132.91 tok/s  per-stream 26.86  ttft 0.388s
+  C6 narrative     agg   91.32 tok/s  per-stream 16.67  ttft 0.313s
+  C6 prose         agg  109.38 tok/s  per-stream 19.63  ttft 0.302s
+  C6 math          agg  196.54 tok/s  per-stream 35.48  ttft 0.395s
+  C6 reasoning     agg  151.57 tok/s  per-stream 27.34  ttft 0.389s
+  C6 summary       agg   84.89 tok/s  per-stream 18.1  ttft 1.267s
+  C6 format        agg  208.14 tok/s  per-stream 42.22  ttft 0.431s
+  C6 ceiling_count agg  277.63 tok/s  per-stream 48.84  ttft 0.289s
+  prefill   2000: {'target': 2000, 'prompt_tokens': 2950, 'ttft_s': 1.997, 'prefill_tok_s': 1476.9}
+  prefill   8000: {'target': 8000, 'prompt_tokens': 11592, 'ttft_s': 7.032, 'prefill_tok_s': 1648.5}
+  prefill  32000: {'target': 32000, 'prompt_tokens': 46810, 'ttft_s': 28.051, 'prefill_tok_s': 1668.7}
+  prefill  64000: {'target': 64000, 'prompt_tokens': 93335, 'ttft_s': 56.961, 'prefill_tok_s': 1638.6}
+Prompt set `v1` (identical across boots), temperature 0, thinking off. Tokens from the server's usage block; TTFT = first token delta.
+
+### Throughput by concurrency (8 categories; the counting ceiling is excluded)
+
+| C | aggregate tok/s | per-stream tok/s | mean TTFT (s) |
+|---|---|---|---|
+| C1 | 45.93 | 50.48 | 0.292 |
+| C2 | 73.55 | 40.66 | 0.33 |
+| C3 | 94.11 | 35.4 | 0.364 |
+| C4 | 116.6 | 32.98 | 0.394 |
+| C5 | 130.24 | 29.73 | 0.44 |
+| C6 | 147.25 | 27.88 | 0.485 |
+
+### Per-stream tok/s by category
+
+| category | C1 | C2 | C3 | C4 | C5 | C6 |
+|---|---|---|---|---|---|---|
+| coding | 64.34 | 59.42 | 44.71 | 41.85 | 40.72 | 36.73 |
+| json | 44.47 | 35.3 | 32.86 | 30.93 | 28.09 | 26.86 |
+| narrative | 34.89 | 26.89 | 22.64 | 19.4 | 18.47 | 16.67 |
+| prose | 41.12 | 30.56 | 25.54 | 23.8 | 19.76 | 19.63 |
+| math | 62.5 | 50.06 | 46.97 | 41.94 | 35.97 | 35.48 |
+| reasoning | 57.1 | 42.53 | 36.38 | 31.91 | 27.71 | 27.34 |
+| summary | 36.73 | 29.3 | 26.18 | 21.83 | 21.21 | 18.1 |
+| format | 62.71 | 51.25 | 47.92 | 52.2 | 45.91 | 42.22 |
+| ceiling_count | 69.93 | 59.82 | 57.56 | 50.75 | 47.59 | 48.84 |
+wrote /var/tmp/dsv41-bench/2026-09-19-05-A-baseline/bench-05-A-baseline.json and .md
+ok (generation throughput: 0.0 tokens/s, Running: 1 reqs)
+calibration: 2.732 prompt tokens per filler word
+{"target": 131072, "prompt_tokens": 130258, "depth": 0.5, "ttft_s": 80.9, "prefill_tok_s": 1610.3, "answer": "COPPER-LANTERN-8315", "pass": true}
+recorded in /home/mtxc/dsv41-night/results/2026-09-19/2026-09-19-05-A-baseline
+[03:29] L5-minimal: ran, recorded in /home/mtxc/dsv41-night/results/2026-09-19
+Created symlink /etc/systemd/system/multi-user.target.wants/dsv41-fleet.service → /etc/systemd/system/dsv41-fleet.service.
+[03:29] watchdog dsv41-fleet.service armed; night over (90 min before the deadline)
