@@ -8,6 +8,9 @@
 #   L3-k5-300k   SPEC_K=5 MAXLEN=300000
 #   L5-minimal   PATCH_SET=minimal
 # Blank lines and # comments are skipped. A lever that has run moves to $NIGHT_DIR/done.
+# A line "@baseline" asks for a night of the baseline alone: one cold relaunch and one benchmark,
+# for instance after the baseline itself changed in cluster.env (that change only takes effect at
+# a relaunch).
 #
 # A night is A/B/A: the baseline, the lever, the baseline again, so each lever is read against two
 # baselines taken the same night (a single run on this cluster drifts: docs/GOTCHAS.md). Further
@@ -42,9 +45,10 @@ deadline=$(TZ=$TZ_LOCAL date -d "$night $DEADLINE" +%s)
 left_min() { echo $(( (deadline - $(date +%s)) / 60 )); }
 
 # ---- the queue
-levers=()
+levers=(); baseline_only=0
 while IFS= read -r line; do
-  line=${line%%#*}; [ -n "${line// }" ] && levers+=("$line")
+  line=${line%%#*}; [ -n "${line// }" ] || continue
+  if [ "${line// }" = "@baseline" ]; then baseline_only=1; else levers+=("$line"); fi
 done < "$NIGHT_DIR/queue"
 
 mkenv() {  # mkenv NAME [KEY=VALUE ...] -> the env file, base cluster.env plus the overrides
@@ -64,10 +68,12 @@ for l in "${levers[@]}"; do
 done
 per_lever=$(( 2 * (RUN_MIN + COOL_MIN) ))
 say "plan: A, then B/A per lever while $per_lever min remain; first A needs $(( RUN_MIN + COOL_MIN )) min"
+[ $baseline_only = 1 ] && say "@baseline queued: the baseline is relaunched and benchmarked once"
 [ $dry = 1 ] && exit 0
-[ ${#levers[@]} -gt 0 ] || { say "queue empty: nothing tonight"; exit 0; }
+[ ${#levers[@]} -gt 0 ] || [ $baseline_only = 1 ] || { say "queue empty: nothing tonight"; exit 0; }
 [ ! -e "$NIGHT_DIR/pause" ] || { say "$NIGHT_DIR/pause exists: skipping tonight"; exit 0; }
-[ "$(left_min)" -ge $(( RUN_MIN + COOL_MIN + per_lever )) ] || { say "$(left_min) min before the deadline: not enough for even one lever"; exit 0; }
+need=$(( RUN_MIN + COOL_MIN )); [ ${#levers[@]} -gt 0 ] && need=$(( need + per_lever ))
+[ "$(left_min)" -ge "$need" ] || { say "$(left_min) min before the deadline, $need needed: skipping tonight"; exit 0; }
 
 # ---- only a healthy fleet is taken apart
 healthy() {
@@ -123,6 +129,10 @@ A=$(mkenv A-baseline)
 cool || exit 1
 relaunch "$A" || { serving=unknown; exit 1; }
 bench A-baseline "$A" || say "baseline run failed its gates"
+if [ $baseline_only = 1 ]; then
+  printf '%s\t%s\t%s\t%s\n' "$night" ran "$res" "@baseline" >> "$NIGHT_DIR/done"
+  grep -vx '[[:space:]]*@baseline[[:space:]]*' "$NIGHT_DIR/queue" > "$NIGHT_DIR/queue.new"; mv "$NIGHT_DIR/queue.new" "$NIGHT_DIR/queue"
+fi
 
 for l in "${levers[@]}"; do
   read -r label rest <<< "$l"
