@@ -15,7 +15,10 @@ weight and Engram tooling, launcher, correctness gates and benchmark.
 > ([L1](results/2026-09-13-lever-L1-nccl-buffers/NOTES.md)). O_DIRECT Engram reads (L2) and greedy
 > drafting (L8) were measured and rejected ([levers](docs/LEVERS.md)). The EXL3 3.5 bpw checkpoint
 > was brought up as a second deployment, measured against this one and not adopted: faster, but a
-> different model at the next-token level ([EXL3](results/2026-09-14-exl3-3p5bpw/NOTES.md)).
+> different model at the next-token level ([EXL3](results/2026-09-14-exl3-3p5bpw/NOTES.md)). Levers
+> are measured at night now, each against a baseline before and after it; that is how L7 (sysctls)
+> was rejected and L3 (DSpark K5 at 300K, +8.8 % single-stream) accepted
+> ([new baseline](results/2026-09-20-night-L3-baseline/NOTES.md)).
 > Numbers below labelled with an upstream source come from that group's hardware.
 
 ## The problem in one table
@@ -52,7 +55,7 @@ Reference numbers, ours next to theirs:
 |---|---|---|---|---|
 | C1 aggregate / per-stream decode, tok/s | **48.7 / 54.6** | 40.5 / 44.7 | 39.5 / 43.4 | 38.0 / 43.1 |
 | C6 aggregate, tok/s | **153.9** | 135.6 | 140.0 | 131.9 |
-| cold prefill at 46,810 tokens, tok/s | **1,665** | 1,632 | 1,635 | 1,539 |
+| cold prefill at 46,810 tokens, tok/s | **1,678** | 1,632 | 1,635 | 1,539 |
 | needle, 131K | **pass, 80 s** | pass, 85 s | pass, 85 s | n/a |
 
 Both runs use Tech2Wild's fixed prompt set (`bench/tony/`, vendored unchanged), so a run here
