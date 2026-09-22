@@ -129,6 +129,16 @@ envs=(
 # EXL3 checkpoint: cuda-exl3 finds quantization_config.json through this in every worker,
 # the DSpark drafter's rebuilt quant config included (bot-lab-21's P6 fix in exl3_config.py).
 [ -f "$MODEL_DIR/quantization_config.json" ] && envs+=("CUDA_EXL3_MODEL_PATH=$name_model")
+# A pip --target directory mounted beside the image's site-packages and put first on PYTHONPATH.
+# Lever L4 installs b12x==1.3.0 there (pure Python; every dependency it pins is already in the
+# image at the same version), so a kernel can be tried without rebuilding and shipping 23 GB.
+extra_py=()
+if [ -n "${EXTRA_PY_DIR:-}" ]; then
+  [ -d "$EXTRA_PY_DIR" ] || fail "EXTRA_PY_DIR=$EXTRA_PY_DIR does not exist on this node"
+  extra_py=(-v "$EXTRA_PY_DIR:/opt/extra-py:ro")
+  envs+=("PYTHONPATH=/opt/extra-py")
+  note "extra python path $EXTRA_PY_DIR ($(ls "$EXTRA_PY_DIR" | tr '\n' ' '))"
+fi
 # Levers (docs/LEVERS.md): extra "-e K=V" pairs, appended last so they win.
 read -r -a lever_envs <<< "${LEVER_ENV:-}"
 for e in "${lever_envs[@]}"; do envs+=("$e"); done
@@ -138,7 +148,7 @@ args=(run --gpus all -d --name "$CONTAINER" --restart no --network host --ipc ho
   --ulimit memlock=-1:-1 --ulimit nofile=1048576:1048576
   --cap-add IPC_LOCK --device /dev/infiniband:/dev/infiniband --oom-score-adj 500
   --label "dsv41.rank=$rank" --label "dsv41.patch_set=$PATCH_SET" --label "dsv41.gid_index=$gid_index" --label "dsv41.draft_sample=$DRAFT_SAMPLE" --label "dsv41.spec=$SPEC" --label "dsv41.lever_env=${LEVER_ENV:-}"
-  -v "$MODEL_DIR:$name_model:ro" -v "$CACHE_DIR:/cache" "${mounts[@]}")
+  -v "$MODEL_DIR:$name_model:ro" -v "$CACHE_DIR:/cache" "${mounts[@]}" "${extra_py[@]}")
 for e in "${envs[@]}"; do args+=(-e "$e"); done
 args+=("$IMAGE" "$name_model" --served-model-name deepseek-v4.1-flash
   --host "$API_HOST" --port "$API_PORT"

@@ -53,6 +53,9 @@ with open(f"{out}/run.txt", "a") as fh:
     same = len({r[1] for r in rows}) == 1
     fh.write(f"image identical across ranks: {same}\n")
 PY
+# Which kernels the engine actually chose: a lever that fails to select its kernel otherwise
+# measures the next one in the list without saying so.
+on "$head" "docker logs '$CONTAINER' 2>&1 | grep -oE 'Using [A-Za-z0-9]+ for [A-Z0-9]+ GEMM' | sort -u" >> "$out/run.txt" 2>/dev/null || true
 cat "$out/run.txt"
 
 # ---- gates first; a failed gate stops the run
