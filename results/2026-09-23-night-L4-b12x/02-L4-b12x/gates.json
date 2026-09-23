@@ -1,0 +1,57 @@
+{
+ "base": "http://10.77.1.11:8000/v1",
+ "model": "deepseek-v4.1-flash",
+ "time": "2026-09-22T23:26:04Z",
+ "gates": {
+  "identity": {
+   "pass": true,
+   "detail": "models=['deepseek-v4.1-flash'] reply='Hello there!'",
+   "seconds": 0.7
+  },
+  "count": {
+   "pass": false,
+   "detail": "102 numbers, tail '9 90 91\u6572\u95e8 91 92 93 94 95 96 97 98 99 100'",
+   "seconds": 2.9
+  },
+  "greedy": {
+   "pass": false,
+   "detail": "identical 1/5, first divergence at char 3, garbled ['CJK 3']",
+   "seconds": 12.7
+  },
+  "garble": {
+   "pass": true,
+   "detail": "30/30 clean []",
+   "seconds": 9.6
+  },
+  "prefill": {
+   "pass": false,
+   "detail": "failures [(596, '902Fly')]",
+   "seconds": 5.4
+  },
+  "prefill_x4": {
+   "pass": true,
+   "detail": "4 concurrent prefills recalled",
+   "seconds": 3.4
+  },
+  "json": {
+   "pass": true,
+   "detail": "{\n  \"name\": \"Aurelia\",\n  \"population\": 284942924,\n  \"districts\": [\n    \"The L\u5ea7\u7761\u7740 Musical\u548c\u652f\u6301\",\n    \"Caffeinated Canrof\",\n",
+   "seconds": 2.1
+  },
+  "tool": {
+   "pass": false,
+   "detail": "get_\u662f\u6211\u4eec\u7684weather {}",
+   "seconds": 2.2
+  },
+  "vision": {
+   "pass": false,
+   "detail": "'redanjingakon'",
+   "seconds": 0.7
+  },
+  "thinking": {
+   "pass": true,
+   "detail": "reasoning=85 chars, answer='391 Trap? User asks \"What is 17 * 23? An'",
+   "seconds": 2.6
+  }
+ }
+}
