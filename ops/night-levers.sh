@@ -8,6 +8,9 @@
 #   L3-k5-300k   SPEC_K=5 MAXLEN=300000
 #   L5-minimal   PATCH_SET=minimal
 # Blank lines and # comments are skipped. A lever that has run moves to $NIGHT_DIR/done.
+# Two keys are for the runner, not the engine: NIGHT_NODE_START runs on every node once the lever
+# is serving, NIGHT_NODE_STOP after its benchmark and whenever the night is cut short. Lever L6:
+#   L6-flusher   NIGHT_NODE_START="sudo -n systemctl start glm53-flusher.service" NIGHT_NODE_STOP="sudo -n systemctl stop glm53-flusher.service"
 # A line "@baseline" asks for a night of the baseline alone: one cold relaunch and one benchmark,
 # for instance after the baseline itself changed in cluster.env (that change only takes effect at
 # a relaunch).
@@ -104,6 +107,15 @@ relaunch() {  # relaunch ENVFILE: every rank reads the same file, at the same pa
   if [ "$(source "$f"; echo "$PATCH_SET")" != "$PATCH_SET" ]; then bash "$root/launch/cluster.sh" render || return 1; fi
   bash "$root/launch/cluster.sh" down && bash "$root/launch/cluster.sh" up
 }
+node_hook() {  # node_hook ENVFILE START|STOP: the lever's runner-side command on every node
+  local cmd n
+  # shellcheck source=/dev/null
+  cmd=$(source "$1"; v=NIGHT_NODE_$2; echo "${!v:-}")
+  [ -n "$cmd" ] || return 0
+  say "node hook $2 on every node: $cmd"
+  for n in "${NODES[@]}"; do on "$n" "$cmd" || say "  $n: hook $2 failed"; done
+}
+lever_env=""
 seq_no=0
 bench() {  # bench LABEL ENVFILE
   seq_no=$((seq_no + 1))
@@ -113,6 +125,7 @@ bench() {  # bench LABEL ENVFILE
 serving=baseline
 restore() {
   trap - EXIT
+  [ -z "$lever_env" ] || node_hook "$lever_env" STOP
   if [ "$serving" != baseline ] || ! healthy; then
     say "restore: relaunching the baseline"
     unset NODE_CLUSTER_ENV; export CLUSTER_ENV=$base_env
@@ -141,7 +154,9 @@ for l in "${levers[@]}"; do
   cool || break
   serving=lever
   if relaunch "$B"; then
+    lever_env=$B; node_hook "$B" START
     bench "$label" "$B" || say "$label failed its gates"
+    node_hook "$B" STOP; lever_env=""
     outcome=ran
   else
     say "$label did not boot"; outcome=boot-failed
