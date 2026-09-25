@@ -71,7 +71,7 @@ fetch "$rdir/gates.json" "$out/" || true
 # ---- numeric check: has the distribution moved since the reference run?
 # Gates pass on a model that answers and formats; they say nothing about its logits. Set
 # QUALITY_REF=none to skip, or to another reference run directory on the head.
-qref=${QUALITY_REF:-/var/tmp/dsv41-quality/release-a}
+qref=${QUALITY_REF:-/home/mtxc/dsv41-quality/release-a}
 if [ "$qref" != none ] && on "$head" "test -f '$qref/meta.json'"; then
   set +e
   on "$head" "cd '$(dirname "$qref")' && python3 '$REPO_DIR/bench/quality.py' probe '$qref' \

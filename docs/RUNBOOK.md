@@ -198,3 +198,16 @@ runs: it replaces the directory the runner executes from. The runner stops and s
 with `launch/cluster.sh` and the watchdog unit directly, as `scripts/fleet down|up` would; it is the
 one automated exception to starting models through fleet, and it refuses to start unless the
 baseline is serving and healthy.
+
+## The quality reference
+
+`bench/run.sh` runs `bench/quality.py probe` after the gates against the reference run in
+`/home/mtxc/dsv41-quality/release-a` on the head (a second copy on spark-03, same path). It holds the
+token ids and the release lane's top-20 logprobs for 300 windows; without it the probe is skipped.
+If both copies are lost, rebuild it from the serving release lane in the daytime, no relaunch needed:
+
+    python3 bench/quality.py corpus corpus          # check corpus/SHA256SUMS against results/2026-09-14-quality-reference-release
+    python3 bench/quality.py collect --corpus-dir corpus --out release-a --windows 100
+
+A reference collected from anything but the release lane at the measured configuration is a
+different reference, and every probe after it compares against that.

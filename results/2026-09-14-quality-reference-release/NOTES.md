@@ -7,7 +7,7 @@ patch set measured, L1 in LEVER_ENV, DSpark K3), at one request at a time next t
 prompt logprobs for every position. Run `release-a` tokenized the corpora through the server; run
 `release-b` scored the same token ids again (`--tokens-from release-a`). Corpora: `corpus-SHA256SUMS`
 (the texts are not in this repository; `quality.py corpus` rebuilds them, and a rebuild whose hashes
-differ is a different corpus). Per-position data stays on spark-01 in `/var/tmp/dsv41-quality`
+differ is a different corpus). Per-position data stays on spark-01 in `/home/mtxc/dsv41-quality` (moved from `/var/tmp` on 2026-09-26; a copy on spark-03)
 (176 MB per run).
 
 ## Release against itself (`noise-release-a-b.json`)

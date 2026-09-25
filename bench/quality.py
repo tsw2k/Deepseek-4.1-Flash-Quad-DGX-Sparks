@@ -31,7 +31,9 @@ import html.parser
 import json
 import math
 import os
+import shutil
 import sys
+import tempfile
 import time
 import urllib.parse
 import urllib.request
@@ -216,12 +218,18 @@ def probe(a):
     lane passed all ten while changing one argmax in seven. This is the numeric check to run on
     every boot, against the reference collected from a known-good one."""
     meta = json.load(open(f"{a.ref}/meta.json"))
-    out = a.out_dir or f"{os.path.dirname(a.ref.rstrip('/')) or '.'}/probe-{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}"
+    # The per-position data of a probe is only an input to the comparison; the report keeps the
+    # numbers. It goes to a scratch directory the probe removes, unless --out-dir asks to keep it.
+    out = a.out_dir or tempfile.mkdtemp(prefix=".probe-", dir=os.path.dirname(a.ref.rstrip("/")) or ".")
     ca = argparse.Namespace(base=a.base, model=a.model, corpus_dir=None, tokens_from=a.ref, out=out,
                             windows=meta["windows"], len=meta["len"], topk=meta["topk"], bos=a.bos,
                             limit=a.windows, max_chars=0)
     collect(ca)
-    rep = compare(argparse.Namespace(ref=a.ref, test=out, out=a.report))
+    try:
+        rep = compare(argparse.Namespace(ref=a.ref, test=out, out=a.report))
+    finally:
+        if not a.out_dir:
+            shutil.rmtree(out, ignore_errors=True)
     bad = [f"{c}: top-1 {r['top1_agreement']:.3f} < {a.min_top1} or KL {r['kl_mean']:.4f} > {a.max_kl}"
            for c, r in rep["corpora"].items() if r["top1_agreement"] < a.min_top1 or r["kl_mean"] > a.max_kl]
     for b in bad:
@@ -255,7 +263,7 @@ s.add_argument("--windows", type=int, default=10, help="windows per corpus, of t
 s.add_argument("--min-top1", type=float, default=0.96)
 s.add_argument("--max-kl", type=float, default=0.03)
 s.add_argument("--bos", type=int, default=0)
-s.add_argument("--out-dir")
+s.add_argument("--out-dir", help="keep the probe's per-position data here (default: scratch, removed)")
 s.add_argument("--report", help="write the comparison as JSON here")
 s = sub.add_parser("compare")
 s.add_argument("ref")
