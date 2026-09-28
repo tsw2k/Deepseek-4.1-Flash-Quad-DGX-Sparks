@@ -8,7 +8,7 @@ tensor-parallel 4, with vLLM, over a switched RoCEv2 fabric.
 This is a self-contained recipe: pinned sources, patch sets as reviewable diffs, image build,
 weight and Engram tooling, launcher, correctness gates and benchmark.
 
-> **Status (2026-09-20): serving on the mtxc cluster as baseline + L1 + L3 (DSpark K5, 300K).** The measured configuration
+> **Status (2026-09-28): serving on the mtxc cluster as baseline + L1 + L3 (DSpark K5, 300K), every rank under a memory guard.** The measured configuration
 > booted in 10 minutes, passed all gates and reproduced 0xTank's numbers within run-to-run spread
 > ([baseline](results/2026-09-13-baseline-measured/NOTES.md)). NCCL buffer sizing (lever L1) then
 > added +13 % single-stream and +11 % at six streams and gave ~10 GiB back per node
@@ -18,7 +18,11 @@ weight and Engram tooling, launcher, correctness gates and benchmark.
 > different model at the next-token level ([EXL3](results/2026-09-14-exl3-3p5bpw/NOTES.md)). Levers
 > are measured at night now, each against a baseline before and after it; that is how L7 (sysctls)
 > was rejected and L3 (DSpark K5 at 300K, +8.8 % single-stream) accepted
-> ([new baseline](results/2026-09-20-night-L3-baseline/NOTES.md)).
+> ([new baseline](results/2026-09-20-night-L3-baseline/NOTES.md)). NVIDIA's NVFP4 checkpoint
+> exhausted unified memory while loading and hung three nodes for 53 hours
+> ([incident](results/2026-09-26-nvfp4-incident/NOTES.md)); since then every rank runs a memory guard
+> that kills it before a node can hang, which turned the same boot into a clean failure
+> ([NVFP4 under the guard](results/2026-09-28-nvfp4-guarded/NOTES.md)), and failures reach Telegram.
 > Numbers below labelled with an upstream source come from that group's hardware.
 
 ## The problem in one table
@@ -82,6 +86,18 @@ English prose; [reference](results/2026-09-14-quality-reference-release/NOTES.md
 is the short form for a boot check: ten windows per corpus, about a minute, non-zero exit if the
 engine has moved.
 
+## If a GB10 runs out of memory, it does not crash, it hangs
+
+The GPU of a GB10 allocates from the host's memory. When a load or a workload takes the last of it,
+the kernel cannot take GPU memory back: processes starve, ssh stops answering, the node still
+answers ping, and only a power cycle brings it back. That is what an untried checkpoint did to
+three of these nodes. `ops/memguard.sh` runs beside every rank (started by `launch/node.sh`) and
+kills the rank by PID once MemAvailable falls below `MEMGUARD_FLOOR_GIB`. The floor, 6 GiB, comes
+from an observed healthy boot, whose lowest point was 11.2 GiB; MemFree is no use as the trigger,
+since a healthy weight load takes it to about 1 GiB
+([observation](results/2026-09-28-memguard-observe/NOTES.md)). `ops/notify.sh` sends failed boots,
+watchdog relaunches, guard trips and the end of every night run to Telegram.
+
 ## How it differs from upstream on this cluster
 
 - **Large files come from the internet once.** Anything over 1 GB lands on one download node,
@@ -135,7 +151,7 @@ Full sequence, including stopping GLM and rolling back: [docs/RUNBOOK.md](docs/R
 | `bench/run.sh` | configuration snapshot, gates, C1-C6 suite, needle; writes `results/` |
 | `bench/quality.py` | corpora, next-token distance between two runs, and the boot probe |
 | `bench/tony/` | Tech2Wild/Kai's benchmark, needle test and prompt set, unmodified |
-| `ops/` | fleet watchdog and its systemd unit, hang check, GPU clock-latch burn |
+| `ops/` | fleet watchdog and its systemd unit, memory guard, Telegram notifier, night lever runner, hang check, GPU clock-latch burn |
 | `docs/` | [design](docs/DESIGN.md), [provenance](docs/PROVENANCE.md), [runbook](docs/RUNBOOK.md), [levers](docs/LEVERS.md), [gotchas](docs/GOTCHAS.md) |
 
 ## Credits and license
