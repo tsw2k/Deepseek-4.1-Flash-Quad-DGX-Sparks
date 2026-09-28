@@ -38,7 +38,7 @@ RUN_MIN=${RUN_MIN:-35}                  # relaunch + bench/run.sh, as measured
 COOL_MIN=${COOL_MIN:-25}                # longest wait for the GPUs to cool
 UNIT=dsv41-fleet.service
 night=$(TZ=$TZ_LOCAL date +%F)
-res=$NIGHT_DIR/results/$night
+res=$NIGHT_DIR/results/$night-$(TZ=$TZ_LOCAL date +%H%M)   # one directory per runner start
 mkdir -p "$NIGHT_DIR/logs" "$NIGHT_DIR/run"; touch "$NIGHT_DIR/queue" "$NIGHT_DIR/done"
 [ $dry = 1 ] || exec > >(tee -a "$NIGHT_DIR/logs/$night.log") 2>&1
 

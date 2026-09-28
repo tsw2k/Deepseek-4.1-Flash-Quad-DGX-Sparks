@@ -50,6 +50,7 @@ baseline the same way.
   agreement 0.853 and mean KL 0.25 against a run-to-run noise floor of 0.988 and 0.0036. The
   release checkpoint on the same e47aa780 + tp3e stack sits inside that floor, so the gap is the
   quantization, not the stack ([results](../results/2026-09-14-exl3-3p5bpw/NOTES.md)).
+- **NVFP4 experts** (`nvidia/DeepSeek-V4.1-Flash-NVFP4` at 3431dde3; only the 40 expert shards differ from the release, the Engram tables are the same values reordered). **Does not load on this stack.** 2026-09-26: the boot exhausted unified memory on three workers and hung them for 53 hours ([incident](../results/2026-09-26-nvfp4-incident/NOTES.md)). 2026-09-28, under the memory guard at 6 GiB: MemAvailable fell ~1 GiB/s during weight loading with MemFree flat near 1 GiB, all three worker ranks were killed cleanly and the nodes were unaffected ([results](../results/2026-09-28-nvfp4-guarded/NOTES.md)). Where the load's memory goes is not established yet.
 - **Dual-rail NCCL.** Measured slower on this cluster for other models; not revisited here.
 
 ## L2 design: O_DIRECT Engram reads
