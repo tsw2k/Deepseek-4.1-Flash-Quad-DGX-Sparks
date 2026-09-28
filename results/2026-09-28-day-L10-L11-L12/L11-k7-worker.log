@@ -1,0 +1,29 @@
+2026-09-28T17:24:36.506029333Z INFO 09-28 17:24:36 [config.py:840] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+2026-09-28T17:24:36.510896306Z INFO 09-28 17:24:36 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+2026-09-28T17:24:36.510908546Z INFO 09-28 17:24:36 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+2026-09-28T17:24:36.510909970Z INFO 09-28 17:24:36 [model.py:2030] Using max model len 300000
+2026-09-28T17:24:40.125473676Z INFO 09-28 17:24:40 [arg_utils.py:2268] Inferred data_parallel_rank 0 from node_rank 2
+2026-09-28T17:24:40.127400513Z INFO 09-28 17:24:40 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+2026-09-28T17:24:40.127416609Z INFO 09-28 17:24:40 [model.py:2030] Using max model len 1048576
+2026-09-28T17:24:40.599358107Z Traceback (most recent call last):
+2026-09-28T17:24:40.599377259Z   File "/usr/local/bin/vllm", line 10, in <module>
+2026-09-28T17:24:40.599378923Z     sys.exit(main())
+2026-09-28T17:24:40.599380011Z              ^^^^^^
+2026-09-28T17:24:40.599381115Z   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main
+2026-09-28T17:24:40.599382203Z     args.dispatch_function(args)
+2026-09-28T17:24:40.599383275Z   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 147, in cmd
+2026-09-28T17:24:40.599384347Z     run_headless(args)
+2026-09-28T17:24:40.599385403Z   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 185, in run_headless
+2026-09-28T17:24:40.599386555Z     vllm_config = engine_args.create_engine_config(
+2026-09-28T17:24:40.599387627Z                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-28T17:24:40.599388619Z   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2387, in create_engine_config
+2026-09-28T17:24:40.599389771Z     speculative_config = self.create_speculative_config(
+2026-09-28T17:24:40.599390747Z                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-28T17:24:40.599391787Z   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1946, in create_speculative_config
+2026-09-28T17:24:40.599849468Z     return SpeculativeConfig(**self.speculative_config)
+2026-09-28T17:24:40.599866284Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-28T17:24:40.599867676Z   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__
+2026-09-28T17:24:40.599868892Z     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)
+2026-09-28T17:24:40.601121871Z pydantic_core._pydantic_core.ValidationError: 1 validation error for SpeculativeConfig
+2026-09-28T17:24:40.601135551Z   Value error, num_speculative_tokens:7 must be divisible by n_predict=5 [type=value_error, input_value=ArgsKwargs((), {'method':...very_timeout_sec=120))}), input_type=ArgsKwargs]
+2026-09-28T17:24:40.601137503Z     For further information visit https://errors.pydantic.dev/2.13/v/value_error

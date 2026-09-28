@@ -1,0 +1,11 @@
+[16:57:39] en-wiki: 223799 tokens, windows 0/10 done
+[16:57:49] en-wiki: 10 windows in 10 s
+[16:57:49] ru-wiki: 304454 tokens, windows 0/10 done
+[16:57:58] ru-wiki: 10 windows in 9 s
+[16:57:58] code: 254391 tokens, windows 0/10 done
+[16:58:08] code: 10 windows in 10 s
+corpus   positions  ppl ref ppl test  ratio   top1  KL mean     p90     p99
+en-wiki      10230    2.809    2.807  0.999  0.990   0.0032  0.0063  0.0571
+ru-wiki      10230    2.390    2.393  1.002  0.991   0.0025  0.0042  0.0494
+code         10230    1.234    1.234  1.000  1.000   0.0003  0.0000  0.0017
+quality probe: 3/3 corpora within top-1 >= 0.96, KL <= 0.03 of /home/mtxc/dsv41-quality/release-a
