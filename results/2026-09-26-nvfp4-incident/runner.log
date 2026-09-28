@@ -1,0 +1,325 @@
+[02:00] night 2026-09-26: 0 lever(s) queued, deadline 05:00 Europe/Istanbul (180 min left)
+[02:00] plan: A, then B/A per lever while 120 min remain; first A needs 60 min
+[02:00] queue empty: nothing tonight
+[11:16] night 2026-09-26: 1 lever(s) queued, deadline 23:00 Europe/Istanbul (703 min left)
+[11:16]   NVFP4-nvidia: MODEL_DIR=/var/tmp/models/DeepSeek-V4.1-Flash-NVFP4 MODEL_MANIFEST=manifest-nvfp4-3431dde3.tsv 
+[11:16] plan: A, then B/A per lever while 120 min remain; first A needs 60 min
+Removed "/etc/systemd/system/multi-user.target.wants/dsv41-fleet.service".
+[11:16] watchdog stopped for the night
+[11:16] GPUs at most 54 C
+watchdog paused (/var/tmp/dsv41-watchdog.pause on spark-01) until the next successful up
+spark-01: stopped, log in /var/tmp/dsv41-logs/20260926T081657Z
+spark-04: stopped, log in /var/tmp/dsv41-logs/20260926T081657Z
+spark-03: stopped, log in /var/tmp/dsv41-logs/20260926T081657Z
+spark-02: stopped, log in /var/tmp/dsv41-logs/20260926T081657Z
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+preflight passed: rank 0
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+preflight passed: rank 1
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+preflight passed: rank 2
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+preflight passed: rank 3
+preflight passed on all ranks (image sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d, recipe 283b657)
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+started vllm_dsv41 rank=3 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=116GiB
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+started vllm_dsv41 rank=2 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=116GiB
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+started vllm_dsv41 rank=1 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=116GiB
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+started vllm_dsv41 rank=0 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=116GiB
+waiting for http://10.77.1.11:8000/health (weights, draft, autotune and graph capture take many minutes)
+serving after 5 min
+spark-01 rank 0: 2 tables read node-local, 0 warnings
+spark-02 rank 1: 2 tables read node-local, 0 warnings
+spark-03 rank 2: 2 tables read node-local, 0 warnings
+spark-04 rank 3: 2 tables read node-local, 0 warnings
+label: 01-A-baseline
+utc: 2026-09-26T08:23:34Z
+recipe: 283b657
+operator-git: none (run from the shipped recipe) 0 uncommitted
+rank 0 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 1 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 2 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+rank 3 image sha256:389e58bbfe25 gid 3 tc 106 compact_o_proj 1
+args(rank0): serve /models/DeepSeek-V4.1-Flash --served-model-name deepseek-v4.1-flash --host 10.77.1.11 --port 8000 --tensor-parallel-size 4 --gpu-memory-utilization 0.80 --max-model-len 300000 --max-num-seqs 8 --max-num-batched-tokens 8192 --engram-config {"cpu_offload":false} --default-chat-template-kwargs {"thinking":false} --tool-call-parser deepseek_v41 --enable-auto-tool-choice --reasoning-parser deepseek_v41 --speculative-config {"method":"dspark","num_speculative_tokens":5,"draft_sample_method":"probabilistic","rejection_sample_method":"block","enable_adaptive_verification":false} --compilation-config {"cudagraph_mode":"FULL_AND_PIECEWISE","cudagraph_capture_sizes":[5,6,10,12,15,18,20,24,25,30,35,36,40,42,48]} --distributed-executor-backend mp --nnodes 4 --node-rank 0 --master-addr 10.77.1.11 --master-port 29541 --block-size 128 --limit-mm-per-prompt {"image":4} --mm-processor-cache-gb 1
+image identical across ranks: True
+Using EmulationMxfp8LinearKernel for MXFP8 GEMM
+Using FlashInferCutlassMxfp8LinearKernel for MXFP8 GEMM
+PASS identity       0.3s  models=['deepseek-v4.1-flash'] reply='Hello there!'
+PASS count          2.4s  100 numbers, tail ' 88 89 90 91 92 93 94 95 96 97 98 99 100'
+PASS greedy         9.9s  identical 2/5, first divergence at char 93, garbled []
+PASS garble         6.8s  30/30 clean []
+PASS prefill        4.6s  4 lengths recalled
+PASS prefill_x4     3.0s  4 concurrent prefills recalled
+PASS json           1.4s  {
+  "name": "Aurelia Prime",
+  "population": 4820000,
+  "districts": [
+    "The Lumen Quarter",
+    "Ironhaven Docks",
+ 
+PASS tool           1.4s  get_weather {'city': 'Paris', 'unit': 'c'}
+PASS vision         0.5s  'red, green, blue'
+PASS thinking       0.5s  reasoning=50 chars, answer='391'
+10/10 gates passed
+[08:24:09] en-wiki: 223799 tokens, windows 0/10 done
+[08:24:19] en-wiki: 10 windows in 10 s
+[08:24:19] ru-wiki: 304454 tokens, windows 0/10 done
+[08:24:29] ru-wiki: 10 windows in 10 s
+[08:24:29] code: 254391 tokens, windows 0/10 done
+[08:24:39] code: 10 windows in 10 s
+corpus   positions  ppl ref ppl test  ratio   top1  KL mean     p90     p99
+en-wiki      10230    2.809    2.806  0.999  0.990   0.0036  0.0061  0.0655
+ru-wiki      10230    2.390    2.391  1.001  0.992   0.0025  0.0044  0.0460
+code         10230    1.234    1.234  1.000  1.000   0.0002  0.0000  0.0015
+quality probe: 3/3 corpora within top-1 >= 0.96, KL <= 0.03 of /home/mtxc/dsv41-quality/release-a
+[01-A-baseline] warmup
+  C1 coding        agg   71.62 tok/s  per-stream 77.43  ttft 0.222s
+  C1 json          agg   42.80 tok/s  per-stream 49.54  ttft 0.296s
+  C1 narrative     agg   26.84 tok/s  per-stream 28.17  ttft 0.275s
+  C1 prose         agg   31.23 tok/s  per-stream 33.13  ttft 0.263s
+  C1 math          agg   67.98 tok/s  per-stream 75.26  ttft 0.297s
+  C1 reasoning     agg   55.03 tok/s  per-stream 59.59  ttft 0.294s
+  C1 summary       agg   27.74 tok/s  per-stream 31.05  ttft 0.447s
+  C1 format        agg   64.95 tok/s  per-stream 80.29  ttft 0.311s
+  C1 ceiling_count agg   82.76 tok/s  per-stream 89.76  ttft 0.236s
+  C2 coding        agg  118.52 tok/s  per-stream 66.17  ttft 0.28s
+  C2 json          agg   62.36 tok/s  per-stream 36.68  ttft 0.319s
+  C2 narrative     agg   47.70 tok/s  per-stream 25.06  ttft 0.271s
+  C2 prose         agg   45.24 tok/s  per-stream 23.81  ttft 0.268s
+  C2 math          agg   98.33 tok/s  per-stream 54.61  ttft 0.313s
+  C2 reasoning     agg   84.98 tok/s  per-stream 45.68  ttft 0.303s
+  C2 summary       agg   44.48 tok/s  per-stream 26.62  ttft 0.677s
+  C2 format        agg  117.69 tok/s  per-stream 72.74  ttft 0.344s
+  C2 ceiling_count agg  146.31 tok/s  per-stream 78.98  ttft 0.252s
+  C3 coding        agg  140.29 tok/s  per-stream 52.42  ttft 0.337s
+  C3 json          agg   79.59 tok/s  per-stream 30.79  ttft 0.338s
+  C3 narrative     agg   49.33 tok/s  per-stream 18.34  ttft 0.28s
+  C3 prose         agg   57.56 tok/s  per-stream 21.42  ttft 0.272s
+  C3 math          agg  148.25 tok/s  per-stream 54.19  ttft 0.34s
+  C3 reasoning     agg   99.24 tok/s  per-stream 37.7  ttft 0.377s
+  C3 summary       agg   58.16 tok/s  per-stream 23.42  ttft 0.696s
+  C3 format        agg  154.06 tok/s  per-stream 63.88  ttft 0.369s
+  C3 ceiling_count agg  197.96 tok/s  per-stream 71.25  ttft 0.279s
+  C4 coding        agg  215.06 tok/s  per-stream 61.13  ttft 0.377s
+  C4 json          agg  113.07 tok/s  per-stream 35.47  ttft 0.388s
+  C4 narrative     agg   63.37 tok/s  per-stream 17.11  ttft 0.29s
+  C4 prose         agg   69.16 tok/s  per-stream 18.89  ttft 0.28s
+  C4 math          agg  162.65 tok/s  per-stream 45.05  ttft 0.354s
+  C4 reasoning     agg  119.45 tok/s  per-stream 33.53  ttft 0.492s
+  C4 summary       agg   63.71 tok/s  per-stream 20.97  ttft 0.95s
+  C4 format        agg  192.07 tok/s  per-stream 59.02  ttft 0.384s
+  C4 ceiling_count agg  230.70 tok/s  per-stream 62.67  ttft 0.274s
+  C5 coding        agg  207.06 tok/s  per-stream 45.61  ttft 0.349s
+  C5 json          agg  117.06 tok/s  per-stream 29.49  ttft 0.409s
+  C5 narrative     agg   67.56 tok/s  per-stream 14.89  ttft 0.311s
+  C5 prose         agg   76.33 tok/s  per-stream 17.47  ttft 0.301s
+  C5 math          agg  190.07 tok/s  per-stream 42.59  ttft 0.376s
+  C5 reasoning     agg  134.02 tok/s  per-stream 29.28  ttft 0.369s
+  C5 summary       agg   74.34 tok/s  per-stream 19.36  ttft 0.913s
+  C5 format        agg  225.26 tok/s  per-stream 56.37  ttft 0.423s
+  C5 ceiling_count agg  270.90 tok/s  per-stream 59.02  ttft 0.288s
+  C6 coding        agg  230.79 tok/s  per-stream 41.97  ttft 0.344s
+  C6 json          agg  130.09 tok/s  per-stream 29.14  ttft 0.421s
+  C6 narrative     agg   79.95 tok/s  per-stream 14.99  ttft 0.321s
+  C6 prose         agg   89.17 tok/s  per-stream 16.07  ttft 0.304s
+  C6 math          agg  212.04 tok/s  per-stream 39.19  ttft 0.396s
+  C6 reasoning     agg  154.47 tok/s  per-stream 28.8  ttft 0.387s
+  C6 summary       agg   79.95 tok/s  per-stream 17.04  ttft 1.184s
+  C6 format        agg  259.15 tok/s  per-stream 54.39  ttft 0.445s
+  C6 ceiling_count agg  313.09 tok/s  per-stream 56.17  ttft 0.298s
+  prefill   2000: {'target': 2000, 'prompt_tokens': 2950, 'ttft_s': 1.964, 'prefill_tok_s': 1502.3}
+  prefill   8000: {'target': 8000, 'prompt_tokens': 11592, 'ttft_s': 7.086, 'prefill_tok_s': 1636.0}
+  prefill  32000: {'target': 32000, 'prompt_tokens': 46810, 'ttft_s': 27.955, 'prefill_tok_s': 1674.5}
+  prefill  64000: {'target': 64000, 'prompt_tokens': 93335, 'ttft_s': 56.632, 'prefill_tok_s': 1648.1}
+Prompt set `v1` (identical across boots), temperature 0, thinking off. Tokens from the server's usage block; TTFT = first token delta.
+
+### Throughput by concurrency (8 categories; the counting ceiling is excluded)
+
+| C | aggregate tok/s | per-stream tok/s | mean TTFT (s) |
+|---|---|---|---|
+| C1 | 48.52 | 54.31 | 0.301 |
+| C2 | 77.41 | 43.92 | 0.347 |
+| C3 | 98.31 | 37.77 | 0.376 |
+| C4 | 124.82 | 36.4 | 0.439 |
+| C5 | 136.46 | 31.88 | 0.431 |
+| C6 | 154.45 | 30.2 | 0.475 |
+
+### Per-stream tok/s by category
+
+| category | C1 | C2 | C3 | C4 | C5 | C6 |
+|---|---|---|---|---|---|---|
+| coding | 77.43 | 66.17 | 52.42 | 61.13 | 45.61 | 41.97 |
+| json | 49.54 | 36.68 | 30.79 | 35.47 | 29.49 | 29.14 |
+| narrative | 28.17 | 25.06 | 18.34 | 17.11 | 14.89 | 14.99 |
+| prose | 33.13 | 23.81 | 21.42 | 18.89 | 17.47 | 16.07 |
+| math | 75.26 | 54.61 | 54.19 | 45.05 | 42.59 | 39.19 |
+| reasoning | 59.59 | 45.68 | 37.7 | 33.53 | 29.28 | 28.8 |
+| summary | 31.05 | 26.62 | 23.42 | 20.97 | 19.36 | 17.04 |
+| format | 80.29 | 72.74 | 63.88 | 59.02 | 56.37 | 54.39 |
+| ceiling_count | 89.76 | 78.98 | 71.25 | 62.67 | 59.02 | 56.17 |
+wrote /var/tmp/dsv41-bench/2026-09-26-01-A-baseline/bench-01-A-baseline.json and .md
+ok (generation throughput: 0.0 tokens/s, Running: 1 reqs)
+calibration: 2.732 prompt tokens per filler word
+{"target": 131072, "prompt_tokens": 130258, "depth": 0.5, "ttft_s": 80.6, "prefill_tok_s": 1616.1, "answer": "COPPER-LANTERN-8315", "pass": true}
+recorded in /home/mtxc/dsv41-night/results/2026-09-26/2026-09-26-01-A-baseline
+[11:36] GPUs at most 59 C
+watchdog paused (/var/tmp/dsv41-watchdog.pause on spark-01) until the next successful up
+spark-01: stopped, log in /var/tmp/dsv41-logs/20260926T083628Z
+spark-04: stopped, log in /var/tmp/dsv41-logs/20260926T083628Z
+spark-03: stopped, log in /var/tmp/dsv41-logs/20260926T083628Z
+spark-02: stopped, log in /var/tmp/dsv41-logs/20260926T083628Z
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+preflight passed: rank 0
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+preflight passed: rank 1
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+preflight passed: rank 2
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+preflight passed: rank 3
+preflight passed on all ranks (image sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d, recipe 283b657)
+  ok: spark-04 rank 3, rail A 10.77.1.14 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [288003654, 384006168], '14': [288011564, 384016682]} for rank 3
+started vllm_dsv41 rank=3 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=116GiB
+  ok: spark-03 rank 2, rail A 10.77.1.13 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [192001740, 288003654], '14': [192007016, 288011564]} for rank 2
+started vllm_dsv41 rank=2 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=116GiB
+  ok: spark-02 rank 1, rail A 10.77.1.12 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [96000564, 192001740], '14': [96003054, 192007016]} for rank 1
+started vllm_dsv41 rank=1 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=116GiB
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+started vllm_dsv41 rank=0 gid=3 set=measured spec=dspark k=5 draft=probabilistic maxlen=300000 avail=116GiB
+waiting for http://10.77.1.11:8000/health (weights, draft, autotune and graph capture take many minutes)
+spark-02: vllm_dsv41 is gone
+Connection timed out during banner exchange
+Connection to 10.81.16.11 port 22 timed out
+[12:01] NVFP4-nvidia did not boot
+Connection timed out during banner exchange
+Connection to 10.81.16.11 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.12 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.13 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.11 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.12 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.13 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.11 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.12 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.13 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.11 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.12 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.13 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.11 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.12 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.13 port 22 timed out
+[12:29] GPUs still at 62 C after 25 min
+[12:29] restore: relaunching the baseline
+watchdog paused (/var/tmp/dsv41-watchdog.pause on spark-01) until the next successful up
+spark-01: stopped, log in /var/tmp/dsv41-logs/20260926T093009Z
+Connection timed out during banner exchange
+Connection to 10.81.16.13 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.11 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.12 port 22 timed out
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 10.81.16.13 port 22
+  ok: spark-01 rank 0, rail A 10.77.1.11 on enp1s0f0np0
+  ok: NCCL_IB_GID_INDEX=3
+  ok: image vllm-dsv41:172d9a17 sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+  ok: patch set measured (11 files, hashes match)
+  ok: Engram rows {'1': [0, 96000564], '14': [0, 96003054]} for rank 0
+preflight passed: rank 0
+Connection timed out during banner exchange
+Connection to 10.81.16.11 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.12 port 22 timed out
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 10.81.16.13 port 22
+image IDs differ across nodes:
+missing
+sha256:389e58bbfe255af8e537acbf6237b4c10b4fe92c65535e23211f9d9c57b72e5d
+Connection timed out during banner exchange
+Connection to 10.81.16.11 port 22 timed out
+Connection timed out during banner exchange
+Connection to 10.81.16.12 port 22 timed out
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 10.81.16.13 port 22
+[12:44] baseline did not come up; the watchdog takes over
+Created symlink /etc/systemd/system/multi-user.target.wants/dsv41-fleet.service → /etc/systemd/system/dsv41-fleet.service.
+[12:44] watchdog dsv41-fleet.service armed; night over (615 min before the deadline)

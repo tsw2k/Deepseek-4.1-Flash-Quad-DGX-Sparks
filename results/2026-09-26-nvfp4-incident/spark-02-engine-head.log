@@ -1,0 +1,400 @@
+2026-09-26T08:37:11.990032146Z INFO 09-26 08:37:11 [config.py:840] Detected quantization_config.scale_fmt=ue8m0; enabling UE8M0 for DeepGEMM.
+2026-09-26T08:37:11.995576578Z INFO 09-26 08:37:11 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+2026-09-26T08:37:11.995594466Z INFO 09-26 08:37:11 [model.py:715] Defaulting to tokenizer_mode='deepseek_v41' for DeepseekV41ForCausalLM
+2026-09-26T08:37:11.996061572Z INFO 09-26 08:37:11 [model.py:2030] Using max model len 300000
+2026-09-26T08:37:15.715779911Z INFO 09-26 08:37:15 [arg_utils.py:2268] Inferred data_parallel_rank 0 from node_rank 1
+2026-09-26T08:37:15.718300814Z INFO 09-26 08:37:15 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+2026-09-26T08:37:15.718319038Z INFO 09-26 08:37:15 [model.py:2030] Using max model len 1048576
+2026-09-26T08:37:16.263822704Z INFO 09-26 08:37:16 [speculative.py:1643] Overriding draft model max model len from 1048576 to 300000
+2026-09-26T08:37:16.263842816Z INFO 09-26 08:37:16 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=8192.
+2026-09-26T08:37:16.264317409Z INFO 09-26 08:37:16 [vllm.py:1147] Resolved Engram configuration: EngramConfig(cpu_offload=False, embedding_across_dp=False)
+2026-09-26T08:37:16.264546466Z INFO 09-26 08:37:16 [kernel.py:370] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+2026-09-26T08:37:16.264574194Z WARNING 09-26 08:37:16 [cuda.py:342] Forcing --disable_chunked_mm_input for models with multimodal-bidirectional attention.
+2026-09-26T08:37:16.376994998Z INFO 09-26 08:37:16 [compilation.py:329] Enabled custom fusions: norm_quant, act_quant
+2026-09-26T08:37:16.377017974Z INFO 09-26 08:37:16 [serve.py:217] Launching vLLM (v0.28.1rc1.dev388+g8a728663c) headless multiproc executor, with head node address 10.77.1.11:29541 for torch.distributed process group.
+2026-09-26T08:37:22.582497641Z (Worker pid=187) INFO 09-26 08:37:22 [parallel_state.py:1807] world_size=4 rank=1 local_rank=0 distributed_init_method=tcp://10.77.1.11:29541 backend=nccl
+2026-09-26T08:37:38.443429283Z (Worker pid=187) WARNING 09-26 08:37:38 [symm_mem.py:67] SymmMemCommunicator: Device capability 12.1 not supported, communicator is not available.
+2026-09-26T08:37:38.459510754Z (Worker pid=187) WARNING 09-26 08:37:38 [flashinfer_all_reduce.py:383] FlashInfer All Reduce is disabled because it is not supported for world_size=4.
+2026-09-26T08:37:38.476993460Z (Worker pid=187) WARNING 09-26 08:37:38 [custom_all_reduce.py:201] Custom collectives are disabled because this multi-node group does not have MNNVL-capable GPUs on every rank.
+2026-09-26T08:37:39.188165465Z (Worker pid=187) INFO 09-26 08:37:39 [parallel_state.py:2173] rank 1 in world size 4 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 1, ETP rank 1, EP rank 1, EPLB rank N/A
+2026-09-26T08:37:39.188187033Z (Worker pid=187) INFO 09-26 08:37:39 [gpu_worker.py:438] Using V2 Model Runner
+2026-09-26T08:37:39.661373861Z (Worker_TP1 pid=187) INFO 09-26 08:37:39 [model_runner.py:394] Loading model from scratch...
+2026-09-26T08:37:39.670406079Z (Worker_TP1 pid=187) INFO 09-26 08:37:39 [cuda.py:587] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+2026-09-26T08:37:39.670436175Z (Worker_TP1 pid=187) INFO 09-26 08:37:39 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+2026-09-26T08:37:39.721245888Z (Worker_TP1 pid=187) INFO 09-26 08:37:39 [quant_config.py:79] DeepSeek V4 expert_dtype resolved to 'fp4'
+2026-09-26T08:37:39.724626234Z (Worker_TP1 pid=187) INFO 09-26 08:37:39 [__init__.py:898] Using FlashInferCutlassMxfp8LinearKernel for MXFP8 GEMM
+2026-09-26T08:37:39.854559918Z (Worker_TP1 pid=187) INFO 09-26 08:37:39 [attention.py:140] Using DeepSeek's fp8_ds_mla KV cache format.
+2026-09-26T08:37:39.864344218Z (Worker_TP1 pid=187) INFO 09-26 08:37:39 [nvfp4.py:304] Using 'FLASHINFER_CUTLASS' NvFp4 MoE backend out of potential backends: ['FLASHINFER_TRTLLM', 'FLASHINFER_CUTEDSL', 'FLASHINFER_CUTLASS', 'VLLM_CUTLASS', 'MARLIN', 'HUMMING', 'EMULATION'].
+2026-09-26T08:37:41.287420230Z (Worker_TP1 pid=187) INFO 09-26 08:37:41 [engram.py:705] Engram layer 1 rows [96000564, 192001740) read from node-local /models/DeepSeek-V4.1-Flash
+2026-09-26T08:37:41.365794855Z (Worker_TP1 pid=187) INFO 09-26 08:37:41 [engram.py:756] Engram DISK mode: layer 1 rows [96000564, 192001740) read from model-00047-of-00048.safetensors (off=24576145048) and model-00047-of-00048.safetensors (off=99073584184); 32 threads, chunk 16
+2026-09-26T08:37:41.373057147Z (Worker_TP1 pid=187) INFO 09-26 08:37:41 [engram.py:884] Engram table DISK-backed: 96001176 rows x 256 per rank stay on disk (23.60 GiB not allocated)
+2026-09-26T08:37:41.515096034Z (Worker_TP1 pid=187) INFO 09-26 08:37:41 [attention.py:1088] Using FP8 indexer cache for Lightning Indexer.
+2026-09-26T08:37:42.415217300Z (Worker_TP1 pid=187) INFO 09-26 08:37:42 [engram.py:705] Engram layer 14 rows [96003054, 192007016) read from node-local /models/DeepSeek-V4.1-Flash
+2026-09-26T08:37:42.465957077Z (Worker_TP1 pid=187) INFO 09-26 08:37:42 [engram.py:756] Engram DISK mode: layer 14 rows [96003054, 192007016) read from model-00048-of-00048.safetensors (off=24576782496) and model-00048-of-00048.safetensors (off=99076295696); 32 threads, chunk 16
+2026-09-26T08:37:42.479388091Z (Worker_TP1 pid=187) INFO 09-26 08:37:42 [engram.py:884] Engram table DISK-backed: 96003962 rows x 256 per rank stay on disk (23.60 GiB not allocated)
+2026-09-26T08:37:45.072002137Z (Worker_TP1 pid=187) INFO 09-26 08:37:45 [engram.py:438] Built engram token map (129280 -> 99092 ids) for layers (1, 14)
+2026-09-26T08:37:45.160242837Z (Worker_TP1 pid=187) WARNING 09-26 08:37:45 [compilation.py:1354] Op 'quant_fp8' not present in model, enabling with '+quant_fp8' has no effect
+2026-09-26T08:37:45.302794333Z (Worker_TP1 pid=187) INFO 09-26 08:37:45 [weight_utils.py:865] Filesystem type for checkpoints: EXT4. Checkpoint size: 491.08 GiB. Available RAM: 34.85 GiB.
+2026-09-26T08:37:45.302825341Z (Worker_TP1 pid=187) INFO 09-26 08:37:45 [weight_utils.py:895] Auto-prefetch is disabled because the filesystem (EXT4) is not a recognized network FS (NFS/Lustre) and the checkpoint size (491.08 GiB) exceeds 90% of available RAM (34.85 GiB).
+2026-09-26T09:44:19.343433392Z [2026-09-26 08:45:03] spark-02:187:293 [0] misc/socket.cc:85 (ncclSocketShutdown) NCCL WARN Call to shutdown failed: Transport endpoint is not connected
+2026-09-26T09:44:21.900776823Z [rank1]:[W926 09:44:16.446545876 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+2026-09-26T09:44:29.198354902Z [rank1]:[W926 09:43:35.405743739 TCPStore.cpp:125] [c10d] recvValue failed on SocketImpl(fd=46, addr=[fdff:ffff::]:3693, remote=[::ffff:10.77.1.11]:29541): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+2026-09-26T09:44:29.657242445Z Exception raised from recvBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:787 (most recent call first):
+2026-09-26T09:44:37.448555686Z [rank1]:[W926 09:44:28.404926199 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+2026-09-26T09:44:40.677526386Z [rank1]:[W926 09:44:34.037565613 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T09:44:41.344286955Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T09:44:52.077685859Z [rank1]:[W926 09:44:42.921942265 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T09:44:59.953061339Z [rank1]:[W926 09:44:48.037880019 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T09:45:01.109675135Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T09:45:15.922240346Z [rank1]:[W926 09:45:01.374827555 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T09:45:37.711703488Z [rank1]:[W926 09:45:08.786282560 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T09:45:40.886263710Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T09:46:46.833562617Z [rank1]:[W926 09:45:42.826484896 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T09:47:59.601948537Z [rank1]:[W926 09:46:00.755522087 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T09:48:10.725569879Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T09:50:39.961292105Z [rank1]:[W926 09:48:31.867774088 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T09:51:13.487560894Z [rank1]:[W926 09:49:31.159889512 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T09:51:17.475555130Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T09:51:58.938714591Z [rank1]:[W926 09:51:14.348237030 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T09:52:46.537477222Z [rank1]:[W926 09:51:36.537944483 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T09:52:49.598635809Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T09:54:17.240093143Z [rank1]:[W926 09:52:49.305423268 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T09:54:36.549422748Z [rank1]:[W926 09:53:12.048933717 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T09:54:38.650161567Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T09:55:33.624075792Z [rank1]:[W926 09:54:41.831184332 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T09:56:42.342056758Z [rank1]:[W926 09:55:02.958194671 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T09:56:45.760381583Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T09:57:31.720297611Z [rank1]:[W926 09:56:43.493291168 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T09:58:27.321906310Z [rank1]:[W926 09:57:10.948526491 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T09:58:33.498344763Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T10:00:04.625629557Z [rank1]:[W926 09:58:35.748305278 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T10:01:32.208770681Z [rank1]:[W926 09:59:13.988201745 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T10:01:46.706470050Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T10:05:30.514065877Z [rank1]:[W926 10:01:47.574152577 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T10:10:51.871778680Z [rank1]:[W926 10:02:47.258597464 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T10:11:09.173515702Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T10:15:28.995793089Z [rank1]:[W926 10:10:42.390931854 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T10:19:24.160852117Z [rank1]:[W926 10:12:38.547211022 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T10:19:29.210614312Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T10:25:33.805248473Z [rank1]:[W926 10:20:01.239636794 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T10:29:41.962776539Z [rank1]:[W926 10:22:12.818919174 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T10:30:05.464053184Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T10:36:03.279066259Z [rank1]:[W926 10:29:05.107480705 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T10:41:56.999379453Z [rank1]:[W926 10:31:43.152691830 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T10:42:03.230581959Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T10:48:53.422904744Z [rank1]:[W926 10:42:14.400949809 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T10:56:44.862099956Z [rank1]:[W926 10:44:44.220378224 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T10:56:49.142850248Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T11:02:31.053085296Z [rank1]:[W926 10:56:45.961492138 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T11:12:23.433383776Z [rank1]:[W926 11:00:04.356021903 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T11:13:05.053868727Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T11:17:59.237781701Z [rank1]:[W926 11:12:42.857282073 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T11:25:49.478523743Z [rank1]:[W926 11:15:49.548464235 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T11:25:57.550570641Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T11:30:43.698874361Z [rank1]:[W926 11:27:07.535198776 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T11:43:31.292215763Z [rank1]:[W926 11:30:12.402557403 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T11:43:40.928607947Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T11:51:47.686566126Z [rank1]:[W926 11:43:12.647697951 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T11:57:46.534427713Z [rank1]:[W926 11:46:12.557071043 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T11:58:22.849519663Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:05:18.494427738Z [rank1]:[W926 11:58:27.162672289 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:11:26.381131205Z [rank1]:[W926 12:02:00.582713953 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:11:37.394656466Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:15:59.199740678Z [rank1]:[W926 12:11:05.296309753 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:17:14.931377931Z [rank1]:[W926 12:12:20.685850555 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:17:22.682080130Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:22:44.863650229Z [rank1]:[W926 12:18:04.529333103 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:24:19.663997379Z [rank1]:[W926 12:19:59.581761284 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:24:38.535999436Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:27:46.628769604Z [rank1]:[W926 12:24:00.498812128 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:28:35.449839764Z [rank1]:[W926 12:24:56.445348346 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:29:00.405847284Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:32:18.133713245Z [rank1]:[W926 12:28:52.520437048 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:34:17.864958818Z [rank1]:[W926 12:30:33.276313484 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:34:24.699666005Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:36:58.001423051Z [rank1]:[W926 12:34:33.350435196 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:39:50.786158497Z [rank1]:[W926 12:35:37.257015680 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:40:12.818521209Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:41:37.624177802Z [rank1]:[W926 12:39:37.130323198 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:41:37.650314253Z [rank1]:[W926 12:40:52.678094494 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:41:37.680527246Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:41:37.853262472Z [rank1]:[W926 12:41:37.589309714 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:41:41.260102460Z [rank1]:[W926 12:41:39.858715786 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:41:41.408749739Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:41:42.877189761Z [rank1]:[W926 12:41:41.276869093 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:41:44.435378456Z [rank1]:[W926 12:41:43.012871562 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:41:44.669629594Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:41:46.108755313Z [rank1]:[W926 12:41:44.614919206 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:41:47.356987610Z [rank1]:[W926 12:41:46.158827864 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:41:47.531755756Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:41:49.627833531Z [rank1]:[W926 12:41:47.486542540 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:41:53.417470128Z [rank1]:[W926 12:41:50.923367566 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:41:53.538682344Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:41:55.236261581Z [rank1]:[W926 12:41:54.850305943 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:41:59.660101892Z [rank1]:[W926 12:41:55.825503280 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:41:59.748518529Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:42:06.085240183Z [rank1]:[W926 12:42:00.190670379 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:42:12.445926504Z [rank1]:[W926 12:42:04.948652857 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:42:13.651832371Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:42:25.942539458Z [rank1]:[W926 12:42:14.756424554 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:42:38.995453384Z [rank1]:[W926 12:42:20.085896547 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:42:39.680430394Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:42:50.988708252Z [rank1]:[W926 12:42:40.750442960 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:43:00.043492973Z [rank1]:[W926 12:42:45.627508340 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:43:00.542922853Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:43:15.302970490Z [rank1]:[W926 12:43:02.019470629 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:43:27.688092711Z [rank1]:[W926 12:43:09.614367809 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:43:29.093016863Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:43:40.732861800Z [rank1]:[W926 12:43:29.040594645 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:43:49.906694030Z [rank1]:[W926 12:43:36.264166412 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:43:50.806807531Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:44:00.587444831Z [rank1]:[W926 12:43:50.454199046 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:44:05.775693399Z [rank1]:[W926 12:43:55.038191199 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:44:06.442222276Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:44:16.987237623Z [rank1]:[W926 12:44:07.287688381 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:44:24.699532147Z [rank1]:[W926 12:44:12.044211969 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:44:25.593262248Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:44:39.545191656Z [rank1]:[W926 12:44:26.649696332 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:44:41.873826568Z [rank1]:[W926 12:44:31.771441535 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:44:42.533741292Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:44:53.357737310Z [rank1]:[W926 12:44:42.702544707 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:44:55.942943764Z [rank1]:[W926 12:44:46.808846839 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:44:56.651860897Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:45:04.722685494Z [rank1]:[W926 12:44:55.516626474 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:45:05.772929417Z [rank1]:[W926 12:45:00.935717945 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:45:06.212388143Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:45:11.170367164Z [rank1]:[W926 12:45:06.161314026 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:45:13.810144607Z [rank1]:[W926 12:45:09.869804080 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:45:14.328956417Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:45:21.502774757Z [rank1]:[W926 12:45:14.472731769 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:45:22.785342867Z [rank1]:[W926 12:45:17.658074531 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:45:23.363278227Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:45:28.311557532Z [rank1]:[W926 12:45:23.018740813 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:45:28.480138279Z [rank1]:[W926 12:45:25.724747514 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:45:28.834104987Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:45:32.697132366Z [rank1]:[W926 12:45:29.864714010 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:45:34.831840276Z [rank1]:[W926 12:45:31.403914787 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:45:35.008025852Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:45:37.367731089Z [rank1]:[W926 12:45:35.152830280 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:45:39.450301492Z [rank1]:[W926 12:45:37.375239993 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:45:39.624518516Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:45:42.219654960Z [rank1]:[W926 12:45:39.601561336 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:45:43.812704223Z [rank1]:[W926 12:45:41.328264302 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:45:44.013129330Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:45:46.888954671Z [rank1]:[W926 12:45:44.103416816 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:45:48.508446673Z [rank1]:[W926 12:45:46.119330632 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:45:48.931794924Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:45:51.653487669Z [rank1]:[W926 12:45:49.949874587 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:45:53.730981876Z [rank1]:[W926 12:45:51.175404231 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:45:53.904940771Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:45:56.579775756Z [rank1]:[W926 12:45:54.918701954 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:45:57.864273297Z [rank1]:[W926 12:45:56.914686014 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:45:58.125762570Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:01.853730993Z [rank1]:[W926 12:45:58.996555998 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:02.981209846Z [rank1]:[W926 12:46:00.238381368 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:03.292102089Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:06.567972634Z [rank1]:[W926 12:46:03.379309069 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:08.176608116Z [rank1]:[W926 12:46:06.845297299 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:08.335071880Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:14.276355551Z [rank1]:[W926 12:46:08.744223368 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:17.387094113Z [rank1]:[W926 12:46:11.048928783 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:17.680818500Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:22.032293431Z [rank1]:[W926 12:46:18.288405807 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:25.452962489Z [rank1]:[W926 12:46:21.472324949 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:25.520103606Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:28.651848888Z [rank1]:[W926 12:46:25.529965046 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:30.559604601Z [rank1]:[W926 12:46:27.823512084 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:30.756809776Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:33.946187179Z [rank1]:[W926 12:46:30.681181982 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:35.986327759Z [rank1]:[W926 12:46:33.958820496 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:36.037675312Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:38.373686766Z [rank1]:[W926 12:46:36.101180330 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:39.799425607Z [rank1]:[W926 12:46:38.148196487 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:40.047350333Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:42.537649104Z [rank1]:[W926 12:46:40.165069699 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:44.208897750Z [rank1]:[W926 12:46:42.209316710 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:44.498470232Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:46.365006542Z [rank1]:[W926 12:46:44.407991999 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:47.962263502Z [rank1]:[W926 12:46:46.494130463 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:48.068883023Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:51.493197248Z [rank1]:[W926 12:46:48.974555287 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:52.860075004Z [rank1]:[W926 12:46:50.552564260 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:52.997246944Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:46:55.035739390Z [rank1]:[W926 12:46:53.141092329 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:46:56.680316096Z [rank1]:[W926 12:46:55.079792719 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:46:56.908122714Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:00.098358281Z [rank1]:[W926 12:46:57.006598520 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:03.586574491Z [rank1]:[W926 12:46:59.503982694 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:03.824665051Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:07.766972539Z [rank1]:[W926 12:47:04.615833898 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:09.022398676Z [rank1]:[W926 12:47:07.156338683 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:09.305032668Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:12.539551571Z [rank1]:[W926 12:47:09.966662573 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:13.730128055Z [rank1]:[W926 12:47:11.481092651 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:14.028366858Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:16.103497426Z [rank1]:[W926 12:47:13.690995071 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:17.641284738Z [rank1]:[W926 12:47:15.795432709 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:17.823464336Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:20.668022266Z [rank1]:[W926 12:47:17.691648523 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:21.238257358Z [rank1]:[W926 12:47:20.085932901 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:21.504359560Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:23.855942577Z [rank1]:[W926 12:47:21.323501274 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:25.582023222Z [rank1]:[W926 12:47:23.380391245 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:25.691067345Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:28.497023386Z [rank1]:[W926 12:47:25.804490375 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:30.203210900Z [rank1]:[W926 12:47:28.100184702 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:30.360951318Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:33.645797434Z [rank1]:[W926 12:47:30.696030527 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:35.011198129Z [rank1]:[W926 12:47:33.000427847 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:35.104783602Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:38.067577641Z [rank1]:[W926 12:47:35.047120980 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:38.600715553Z [rank1]:[W926 12:47:37.191253760 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:38.741667156Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:40.965610525Z [rank1]:[W926 12:47:38.834141484 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:44.396527768Z [rank1]:[W926 12:47:40.824430324 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:44.827575903Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:47.617371580Z [rank1]:[W926 12:47:44.840626508 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:49.603252948Z [rank1]:[W926 12:47:47.160860463 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:49.734906548Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:51.648522987Z [rank1]:[W926 12:47:49.789518972 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:54.334108719Z [rank1]:[W926 12:47:52.028045420 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:54.501766167Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:47:57.683034662Z [rank1]:[W926 12:47:55.952149010 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:47:59.538719523Z [rank1]:[W926 12:47:57.292187936 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:47:59.891198515Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:01.589959906Z [rank1]:[W926 12:48:00.056628989 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:04.223397969Z [rank1]:[W926 12:48:02.305483620 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:04.299279407Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:05.664176452Z [rank1]:[W926 12:48:04.363353947 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:08.422365626Z [rank1]:[W926 12:48:06.464231269 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:08.714165813Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:10.418589833Z [rank1]:[W926 12:48:08.550070486 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:12.446283039Z [rank1]:[W926 12:48:10.482277396 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:12.933927164Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:17.494964392Z [rank1]:[W926 12:48:13.364296780 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:18.053752577Z [rank1]:[W926 12:48:16.954773706 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:18.115497658Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:20.151037277Z [rank1]:[W926 12:48:18.129278201 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:21.513683226Z [rank1]:[W926 12:48:20.079653596 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:21.723636913Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:24.176625161Z [rank1]:[W926 12:48:21.648353649 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:24.655683734Z [rank1]:[W926 12:48:23.775357725 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:24.672249316Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:25.199781399Z [rank1]:[W926 12:48:24.805279428 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:27.070339358Z [rank1]:[W926 12:48:26.230849726 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:27.212306164Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:29.031112408Z [rank1]:[W926 12:48:27.089846466 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:30.862184632Z [rank1]:[W926 12:48:29.978944014 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:30.982973759Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:32.623275345Z [rank1]:[W926 12:48:31.134398388 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:33.817573187Z [rank1]:[W926 12:48:32.705416850 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:33.953597780Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:35.292834969Z [rank1]:[W926 12:48:34.906484125 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:36.445232414Z [rank1]:[W926 12:48:35.519600074 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:36.549616391Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:38.105119131Z [rank1]:[W926 12:48:36.533654566 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:39.175029001Z [rank1]:[W926 12:48:38.238957454 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:39.329014013Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:41.177076159Z [rank1]:[W926 12:48:39.237088270 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:42.383695312Z [rank1]:[W926 12:48:40.833456108 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:42.460610146Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:43.604227718Z [rank1]:[W926 12:48:42.382938153 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:45.504289564Z [rank1]:[W926 12:48:44.963090825 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:45.601168217Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:47.165054892Z [rank1]:[W926 12:48:45.609094706 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:48.447681644Z [rank1]:[W926 12:48:47.325012754 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:48.464028761Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:49.617620323Z [rank1]:[W926 12:48:48.467315361 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:51.343544024Z [rank1]:[W926 12:48:50.102355664 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:51.442993535Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:53.499572146Z [rank1]:[W926 12:48:51.414839456 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:54.369440223Z [rank1]:[W926 12:48:53.327223700 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:54.501725489Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:48:56.042103660Z [rank1]:[W926 12:48:54.371650819 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:48:58.054237896Z [rank1]:[W926 12:48:56.013386747 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:48:58.270202662Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:01.672704247Z [rank1]:[W926 12:48:58.049317345 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:03.413579253Z [rank1]:[W926 12:49:00.323373799 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:03.653238748Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:07.672820451Z [rank1]:[W926 12:49:03.773360780 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:09.301257417Z [rank1]:[W926 12:49:06.658993843 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:09.392975859Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:12.786480403Z [rank1]:[W926 12:49:09.406510161 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:13.749202077Z [rank1]:[W926 12:49:11.643587900 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:13.755141764Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:17.561028869Z [rank1]:[W926 12:49:14.120623696 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:19.127105713Z [rank1]:[W926 12:49:16.821432702 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:19.365075602Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:23.957254981Z [rank1]:[W926 12:49:19.950026321 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:24.764261269Z [rank1]:[W926 12:49:21.488176347 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:24.956214521Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:26.872853757Z [rank1]:[W926 12:49:25.868512953 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:28.926480581Z [rank1]:[W926 12:49:26.799107522 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:29.174094474Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:32.327623235Z [rank1]:[W926 12:49:29.225896281 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:34.349946741Z [rank1]:[W926 12:49:31.721379074 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:34.547320781Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:37.750814017Z [rank1]:[W926 12:49:34.807612381 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:40.066231252Z [rank1]:[W926 12:49:37.115941301 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:40.273832770Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:43.520926379Z [rank1]:[W926 12:49:40.390884087 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:48.890862946Z [rank1]:[W926 12:49:43.117257014 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:49.350431749Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:52.614587614Z [rank1]:[W926 12:49:49.010659952 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:54.291157339Z [rank1]:[W926 12:49:51.744103594 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:54.362124326Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:49:55.121812212Z [rank1]:[W926 12:49:54.293813936 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:49:59.338311506Z [rank1]:[W926 12:49:56.320204434 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:49:59.515233644Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:50:01.911515136Z [rank1]:[W926 12:49:59.637203491 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:50:05.753635291Z [rank1]:[W926 12:50:02.587932032 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:50:06.214523155Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:50:11.322403247Z [rank1]:[W926 12:50:06.310474152 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:50:12.264407164Z [rank1]:[W926 12:50:09.039102688 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:50:12.654756731Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:50:15.995217940Z [rank1]:[W926 12:50:13.975260654 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:50:20.053957632Z [rank1]:[W926 12:50:16.991396177 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:50:20.355296911Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:50:25.807703901Z [rank1]:[W926 12:50:21.243751181 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:50:28.381589470Z [rank1]:[W926 12:50:24.106046845 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:50:28.530001790Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:50:31.968459464Z [rank1]:[W926 12:50:28.117326550 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:50:33.818535555Z [rank1]:[W926 12:50:30.395207516 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:50:34.033214875Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:50:37.686470991Z [rank1]:[W926 12:50:34.031751009 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:50:40.424501099Z [rank1]:[W926 12:50:36.476890605 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:50:41.082669531Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:50:46.266214021Z [rank1]:[W926 12:50:40.540498780 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:50:48.633016842Z [rank1]:[W926 12:50:43.974357134 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:50:49.130763582Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:50:53.981343921Z [rank1]:[W926 12:50:49.999630075 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:50:57.061996376Z [rank1]:[W926 12:50:52.089442020 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:50:57.232377450Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:51:00.451906924Z [rank1]:[W926 12:50:57.053307603 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:51:01.482122038Z [rank1]:[W926 12:50:59.759329286 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:51:01.618756409Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:51:05.792549207Z [rank1]:[W926 12:51:01.541727442 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:51:06.420875062Z [rank1]:[W926 12:51:03.790361994 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:51:06.553049496Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:51:09.414480197Z [rank1]:[W926 12:51:06.731335171 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:51:11.472856353Z [rank1]:[W926 12:51:09.290833951 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:51:11.797967386Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:51:15.539426235Z [rank1]:[W926 12:51:11.817877296 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:51:16.426199448Z [rank1]:[W926 12:51:14.182010764 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:51:16.506228342Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:51:19.698560754Z [rank1]:[W926 12:51:16.577654398 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:51:21.653099014Z [rank1]:[W926 12:51:19.217633561 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:51:21.801079892Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:51:24.377426591Z [rank1]:[W926 12:51:22.996349135 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:51:25.696266744Z [rank1]:[W926 12:51:24.250028506 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:51:25.803124699Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:51:28.413035733Z [rank1]:[W926 12:51:26.872766284 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:51:29.508018002Z [rank1]:[W926 12:51:28.351506936 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:51:29.625206300Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:51:32.983981947Z [rank1]:[W926 12:51:29.644226255 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:51:33.880701230Z [rank1]:[W926 12:51:31.536146951 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:51:34.207115276Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:51:36.635043016Z [rank1]:[W926 12:51:34.189717366 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
+2026-09-26T12:51:38.239386165Z [rank1]:[W926 12:51:36.107812577 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=46, addr=[::]:3693, remote=[::ffff:10.77.1.11]:29541): Broken pipe
+2026-09-26T12:51:38.411454654Z Exception raised from sendBytes at /__w/pytorch/pytorch/torch/csrc/distributed/c10d/Utils.hpp:758 (most recent call first):
+2026-09-26T12:51:40.259871394Z [rank1]:[W926 12:51:38.572958953 ProcessGroupNCCL.cpp:1876] [PG ID 0 PG GUID 0 Rank 1] Failed to check the "should dump" flag on TCPStore, (maybe TCPStore server has shut down too early), with error: Broken pipe
