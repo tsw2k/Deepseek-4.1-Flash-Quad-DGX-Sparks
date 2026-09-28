@@ -178,6 +178,13 @@ avail=$(awk '/MemAvailable:/ {print int($2/1048576)}' /proc/meminfo)
 [ "$avail" -ge 100 ] || fail "MemAvailable $avail GiB < 100 GiB after dropping caches"
 
 docker "${args[@]}" >/dev/null
+# Memory guard for the container's lifetime (ops/memguard.sh): a boot that would exhaust the GB10's
+# unified memory is killed before the node hangs. Root, so it can kill by PID and shield itself
+# from the OOM killer; detached, so this ssh session is not held open.
+if [ "${MEMGUARD_MODE:-observe}" != off ]; then
+  sudo -n env "MEMGUARD_MODE=${MEMGUARD_MODE:-observe}" "MEMGUARD_FLOOR_GIB=${MEMGUARD_FLOOR_GIB:-4}" \
+    setsid nohup bash "$root/ops/memguard.sh" "$CONTAINER" >/dev/null 2>&1 < /dev/null &
+fi
 echo "started $CONTAINER rank=$rank gid=$gid_index set=$PATCH_SET spec=$SPEC k=$K draft=$DRAFT_SAMPLE maxlen=$MAXLEN avail=${avail}GiB"
 sleep 3
 docker ps --format '{{.Names}}' | grep -q "^$CONTAINER\$" || { docker logs --tail 40 "$CONTAINER" >&2; exit 1; }

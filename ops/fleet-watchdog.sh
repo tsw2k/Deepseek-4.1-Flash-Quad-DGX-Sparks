@@ -69,15 +69,20 @@ probe() {
   return 0
 }
 
+notify() { bash "$root/ops/notify.sh" "$*" >> "$LOG" 2>&1 || true; }
+guard_trips() { for n in "${NODES[@]}"; do if [ "$n" = "$(hostname)" ]; then cat /var/tmp/dsv41-memguard.tripped 2>/dev/null; else ssh -o BatchMode=yes -o ConnectTimeout=10 "$n" cat /var/tmp/dsv41-memguard.tripped 2>/dev/null; fi; done | tr '\n' ' '; }
 recover() {
   log "=== RECOVERY: $FAIL_THRESHOLD consecutive failures ($1)"
+  notify "engine unhealthy ($1) for $FAIL_THRESHOLD checks: relaunching. $(guard_trips)"
   WATCHDOG=1 bash "$root/launch/cluster.sh" down >> "$LOG" 2>&1
   sleep 10   # master port TIME_WAIT
   if WATCHDOG=1 bash "$root/launch/cluster.sh" up >> "$LOG" 2>&1; then
     log "=== RECOVERY OK"
+    notify "recovered: serving again"
     return 0
   fi
   log "=== RECOVERY FAILED (see the lines above; rank logs in /var/tmp/dsv41-logs/)"
+  notify "RECOVERY FAILED: relaunch did not come up. $(guard_trips)"
   return 1
 }
 
@@ -108,6 +113,7 @@ while true; do
         if [ "$failed_recoveries" -ge "$MAX_RECOVERIES" ]; then
           echo "gave up at $(date -u +%FT%TZ) after $failed_recoveries failed relaunches" > "$GIVEUP_FLAG"
           log "=== GIVING UP after $failed_recoveries failed relaunches; remove $GIVEUP_FLAG to re-arm"
+          notify "GAVE UP after $failed_recoveries failed relaunches: the model is DOWN and needs a person"
         fi
       fi
       fails=0

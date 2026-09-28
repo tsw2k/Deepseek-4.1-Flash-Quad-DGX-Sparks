@@ -129,7 +129,13 @@ up)
   until on "${NODES[0]}" "curl -sf -m 5 http://$API_HOST:$API_PORT/health >/dev/null"; do
     for n in "${NODES[@]}"; do
       state=$(on "$n" "docker inspect -f '{{.State.Status}}' '$CONTAINER'" 2>/dev/null || echo gone)
-      [ "$state" = running ] || { echo "$n: $CONTAINER is $state"; on "$n" "docker logs --tail 60 '$CONTAINER'" >&2; exit 1; }
+      if [ "$state" != running ]; then
+        echo "$n: $CONTAINER is $state"; on "$n" "docker logs --tail 60 '$CONTAINER'" >&2
+        trips=$(for m in "${NODES[@]}"; do on "$m" "cat /var/tmp/dsv41-memguard.tripped 2>/dev/null" 2>/dev/null; done)
+        [ -z "$trips" ] || echo "$trips"
+        on "${NODES[0]}" "bash '$REPO_DIR/ops/notify.sh' \"boot failed: $n $CONTAINER $state after $(( ($(date +%s) - t0) / 60 )) min (MODEL_DIR ${MODEL_DIR##*/}). ${trips//$'\n'/ }\"" || true
+        exit 1
+      fi
     done
     [ $(( $(date +%s) - t0 )) -lt 3600 ] || { echo "no /health after 60 min" >&2; exit 1; }
     sleep 30

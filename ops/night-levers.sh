@@ -123,15 +123,21 @@ bench() {  # bench LABEL ENVFILE
 }
 
 serving=baseline
+notify() { bash "$root/ops/notify.sh" "$*" || true; }
 restore() {
   trap - EXIT
   [ -z "$lever_env" ] || node_hook "$lever_env" STOP
   if [ "$serving" != baseline ] || ! healthy; then
     say "restore: relaunching the baseline"
     unset NODE_CLUSTER_ENV; export CLUSTER_ENV=$base_env
-    bash "$root/launch/cluster.sh" down; bash "$root/launch/cluster.sh" up || say "baseline did not come up; the watchdog takes over"
+    bash "$root/launch/cluster.sh" down
+    if ! bash "$root/launch/cluster.sh" up; then
+      say "baseline did not come up; the watchdog takes over"
+      notify "NIGHT RUN: the baseline did NOT come back up after the night; the model is DOWN. Log $NIGHT_DIR/logs/$night.log"
+    fi
   fi
   sudo -n systemctl enable --now "$UNIT" && say "watchdog $UNIT armed; night over ($(left_min) min before the deadline)"
+  notify "night $night over: $(awk -F'\t' -v n="$night" '$1==n {printf "%s %s; ", $4, $2}' "$NIGHT_DIR/done" | cut -c1-600)serving $(curl -sf -m 5 -o /dev/null "http://$API_HOST:$API_PORT/health" && echo ok || echo DOWN)"
 }
 
 # ---- the night
