@@ -211,3 +211,25 @@ If both copies are lost, rebuild it from the serving release lane in the daytime
 
 A reference collected from anything but the release lane at the measured configuration is a
 different reference, and every probe after it compares against that.
+
+## Memory guard and alerts
+
+Every rank runs `ops/memguard.sh` beside its container, started by `launch/node.sh`. In `enforce`
+mode it kills the container by PID when MemAvailable falls below `MEMGUARD_FLOOR_GIB`, which turns a
+boot that would exhaust GB10 unified memory into a failed boot instead of a hung node (2026-09-26:
+three nodes, 53 hours). `observe` records the lowest MemAvailable and MemFree per run in
+`/var/tmp/dsv41-logs/memguard-*.log` and never kills. A trip leaves `/var/tmp/dsv41-memguard.tripped`,
+which the head reports. The floor is set from observed healthy boots, not guessed.
+
+Alerts go to Telegram through `ops/notify.sh` on the head: failed boots, watchdog relaunches and their
+outcome, the watchdog giving up, guard trips, and the end of every night run. Configure it once on
+spark-01, outside this repository:
+
+    install -d -m 700 /home/mtxc/.config/dsv41
+    install -m 600 /dev/null /home/mtxc/.config/dsv41/telegram.env
+    # then put two lines in it:
+    #   TELEGRAM_BOT_TOKEN=<from @BotFather>
+    #   TELEGRAM_CHAT_ID=<the chat or group the bot was added to>
+    bash /home/mtxc/dsv41/ops/notify.sh "test"
+
+Without the file every caller still works; the message is only logged as not sent.
