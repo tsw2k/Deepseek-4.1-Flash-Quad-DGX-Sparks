@@ -1,0 +1,25 @@
+2026-09-28T13:59:43Z guarding vllm_dsv41 (pid 87266), mode observe, floor 4 GiB MemAvailable
+2026-09-28T13:59:43Z low: MemAvailable 120152 MiB, MemFree 120765 MiB, t+0 s
+2026-09-28T13:59:44Z low: MemAvailable 119794 MiB, MemFree 120252 MiB, t+1 s
+2026-09-28T13:59:56Z low: MemAvailable 118071 MiB, MemFree 117923 MiB, t+13 s
+2026-09-28T14:00:03Z low: MemAvailable 117100 MiB, MemFree 116815 MiB, t+20 s
+2026-09-28T14:00:40Z low: MemAvailable 116189 MiB, MemFree 115833 MiB, t+57 s
+2026-09-28T14:00:41Z low: MemAvailable 112938 MiB, MemFree 112508 MiB, t+58 s
+2026-09-28T14:00:42Z low: MemAvailable 101830 MiB, MemFree 101373 MiB, t+59 s
+2026-09-28T14:00:43Z low: MemAvailable 77126 MiB, MemFree 76670 MiB, t+60 s
+2026-09-28T14:00:44Z low: MemAvailable 51427 MiB, MemFree 50971 MiB, t+61 s
+2026-09-28T14:00:45Z low: MemAvailable 33219 MiB, MemFree 32763 MiB, t+62 s
+2026-09-28T14:00:46Z low: MemAvailable 32592 MiB, MemFree 31763 MiB, t+63 s
+2026-09-28T14:01:15Z low: MemAvailable 31610 MiB, MemFree 5887 MiB, t+92 s
+2026-09-28T14:01:34Z low: MemAvailable 30682 MiB, MemFree 987 MiB, t+111 s
+2026-09-28T14:01:52Z low: MemAvailable 29693 MiB, MemFree 967 MiB, t+129 s
+2026-09-28T14:02:15Z low: MemAvailable 28669 MiB, MemFree 976 MiB, t+152 s
+2026-09-28T14:02:43Z low: MemAvailable 27604 MiB, MemFree 971 MiB, t+180 s
+2026-09-28T14:03:12Z low: MemAvailable 26603 MiB, MemFree 970 MiB, t+209 s
+2026-09-28T14:04:53Z low: MemAvailable 24920 MiB, MemFree 3746 MiB, t+310 s
+2026-09-28T14:04:58Z low: MemAvailable 22209 MiB, MemFree 3623 MiB, t+315 s
+2026-09-28T14:04:59Z low: MemAvailable 18321 MiB, MemFree 3933 MiB, t+316 s
+2026-09-28T14:05:05Z low: MemAvailable 15910 MiB, MemFree 4738 MiB, t+322 s
+2026-09-28T14:05:09Z low: MemAvailable 14594 MiB, MemFree 4933 MiB, t+326 s
+2026-09-28T14:06:05Z low: MemAvailable 14312 MiB, MemFree 4139 MiB, t+382 s
+2026-09-28T14:11:25Z low: MemAvailable 13175 MiB, MemFree 2283 MiB, t+702 s
