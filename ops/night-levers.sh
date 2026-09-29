@@ -41,7 +41,9 @@ NIGHT_DIR=${NIGHT_DIR:-/home/mtxc/dsv41-night}
 TZ_LOCAL=${TZ_LOCAL:-Europe/Istanbul}   # the operator's clock; the nodes run UTC
 DEADLINE=${DEADLINE:-05:00}             # local time by which the baseline serves again
 COOL_C=${COOL_C:-60}
-RUN_MIN=${RUN_MIN:-35}                  # relaunch + bench/run.sh, as measured
+RUN_MIN=${RUN_MIN:-30}                  # relaunch + bench/run.sh: ~17 min measured (A/B/A nights of 09-23/24
+                                        # in 42-51 min), ~21 with bench/longctx.py; a round 30 keeps a
+                                        # one-lever night inside 02:00-05:00 even when the timer fires late
 COOL_MIN=${COOL_MIN:-25}                # longest wait for the GPUs to cool
 QUIET_MIN=${QUIET_MIN:-15}              # minutes without a client request before a relaunch
 UNIT=dsv41-fleet.service
