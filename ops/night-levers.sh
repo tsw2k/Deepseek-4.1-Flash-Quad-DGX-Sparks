@@ -20,6 +20,13 @@
 # levers add B/A while the next pair still fits before DEADLINE. Every run starts cold: the GPUs
 # at or below COOL_C, then a relaunch, so the prefix cache is empty; then bench/run.sh.
 #
+# A relaunch drops whatever the engine is serving, so none happens while a client is using it: the
+# runner waits until no request is in flight and no client request has arrived for QUIET_MIN minutes,
+# and gives the night up if that does not happen in time. A client is any address other than
+# API_HOST: the runner, bench/run.sh and the watchdog's canary all call from the head itself, while
+# a proxy in a docker bridge network or on another host shows its own address in the access log. (A
+# proxy with host networking on the head would look like the runner; the gate cannot see it.)
+#
 # Whatever happens, the night ends with the baseline serving and the watchdog armed (trap on EXIT).
 # It does not start if the fleet is unhealthy, if the watchdog has given up, or if $NIGHT_DIR/pause
 # exists. Do not `launch/cluster.sh ship` while it runs: it replaces the directory this runs from.
@@ -36,6 +43,7 @@ DEADLINE=${DEADLINE:-05:00}             # local time by which the baseline serve
 COOL_C=${COOL_C:-60}
 RUN_MIN=${RUN_MIN:-35}                  # relaunch + bench/run.sh, as measured
 COOL_MIN=${COOL_MIN:-25}                # longest wait for the GPUs to cool
+QUIET_MIN=${QUIET_MIN:-15}              # minutes without a client request before a relaunch
 UNIT=dsv41-fleet.service
 night=$(TZ=$TZ_LOCAL date +%F)
 res=$NIGHT_DIR/results/$night-$(TZ=$TZ_LOCAL date +%H%M)   # one directory per runner start
@@ -88,12 +96,32 @@ healthy() {
 healthy || { say "fleet not healthy at start: leaving it to the watchdog"; exit 1; }
 [ ! -e /var/tmp/dsv41-watchdog.gaveup ] || { say "watchdog has given up: a person is needed, not a benchmark"; exit 1; }
 
-cool() {
-  local t0 max; t0=$(date +%s)
+# Client requests to the engine since N minutes ago: access log lines not from the head itself.
+client_requests() {
+  docker logs --since "${1}m" "$CONTAINER" 2>&1 | grep -F '"POST /v1/' | grep -vcE "INFO: +${API_HOST//./\\.}:" || true
+}
+client_busy() {
+  local inflight
+  inflight=$(curl -sf -m 5 "http://$API_HOST:$API_PORT/metrics" \
+    | awk '/^vllm:num_requests_(running|waiting)\{/ {s += $NF} END {printf "%d", s}')
+  [ "${inflight:-0}" -gt 0 ] || [ "$(client_requests "$QUIET_MIN")" -gt 0 ]
+}
+ready() {  # ready NEED_MIN [cold-only]: GPUs at or below COOL_C and, unless cold-only, no client for
+           # QUIET_MIN minutes. Fails when the GPUs stay hot for COOL_MIN, or NEED_MIN no longer fit.
+  local need=$1 t0 max waiting=0
+  t0=$(date +%s)
   while :; do
-    max=$(for n in "${NODES[@]}"; do on "$n" "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader"; done | sort -rn | head -1)
-    [ "${max:-99}" -le "$COOL_C" ] && { say "GPUs at most ${max} C"; return 0; }
-    [ $(( $(date +%s) - t0 )) -lt $(( COOL_MIN * 60 )) ] || { say "GPUs still at ${max} C after $COOL_MIN min"; return 1; }
+    if [ "${2:-}" != cold-only ] && client_busy; then
+      [ $waiting = 1 ] || say "a client is using the engine or was in the last $QUIET_MIN min: waiting"
+      waiting=1; t0=$(date +%s)
+    else
+      max=$(for n in "${NODES[@]}"; do on "$n" "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader"; done | sort -rn | head -1)
+      if [ "${max:-99}" -le "$COOL_C" ]; then
+        say "GPUs at most ${max} C$([ "${2:-}" = cold-only ] || echo ", no client for $QUIET_MIN min")"; return 0
+      fi
+      [ $(( $(date +%s) - t0 )) -lt $(( COOL_MIN * 60 )) ] || { say "GPUs still at ${max} C after $COOL_MIN min"; return 1; }
+    fi
+    [ "$(left_min)" -ge "$need" ] || { say "$(left_min) min before the deadline, $need needed: stopping here"; return 1; }
     sleep 60
   done
 }
@@ -117,9 +145,14 @@ node_hook() {  # node_hook ENVFILE START|STOP: the lever's runner-side command o
 }
 lever_env=""
 seq_no=0
-bench() {  # bench LABEL ENVFILE
-  seq_no=$((seq_no + 1))
-  CLUSTER_ENV=$2 RESULTS_DIR=$res bash "$root/bench/run.sh" "$(printf '%02d' $seq_no)-$1"
+bench() {  # bench LABEL ENVFILE; a run that shared the engine with a client says so in its run.txt
+  local rc t0 name n
+  seq_no=$((seq_no + 1)); name=$(printf '%02d' $seq_no)-$1; t0=$(date +%s)
+  CLUSTER_ENV=$2 RESULTS_DIR=$res bash "$root/bench/run.sh" "$name"; rc=$?
+  n=$(client_requests $(( ($(date +%s) - t0) / 60 + 1 )))
+  for f in "$res"/*-"$name"/run.txt; do [ -f "$f" ] && echo "client requests during this run: $n" >> "$f"; done
+  [ "$n" -eq 0 ] || say "$name shared the engine with $n client request(s): its numbers are not clean"
+  return $rc
 }
 
 serving=baseline
@@ -145,7 +178,8 @@ sudo -n systemctl disable --now "$UNIT" || { say "cannot stop $UNIT; not touchin
 trap restore EXIT
 say "watchdog stopped for the night"
 A=$(mkenv A-baseline)
-cool || exit 1
+first=$(( RUN_MIN + COOL_MIN )); [ $baseline_only = 1 ] || first=$(( first + per_lever ))
+ready "$first" || exit 1
 relaunch "$A" || { serving=unknown; exit 1; }
 bench A-baseline "$A" || say "baseline run failed its gates"
 if [ $baseline_only = 1 ]; then
@@ -157,17 +191,19 @@ for l in "${levers[@]}"; do
   read -r label rest <<< "$l"
   [ "$(left_min)" -ge "$per_lever" ] || { say "$(left_min) min left, $label needs $per_lever: next night"; break; }
   eval "kvs=($rest)"; B=$(mkenv "$label" "${kvs[@]}")
-  cool || break
-  serving=lever
+  ready "$per_lever" || break
+  serving=lever; gate=""
   if relaunch "$B"; then
     lever_env=$B; node_hook "$B" START
-    bench "$label" "$B" || say "$label failed its gates"
+    bench "$label" "$B" || { say "$label failed its gates"; gate=cold-only; }
     node_hook "$B" STOP; lever_env=""
     outcome=ran
   else
-    say "$label did not boot"; outcome=boot-failed
+    say "$label did not boot"; outcome=boot-failed; gate=cold-only
   fi
-  cool || break
+  # A lever that failed its gates, or is not serving, is replaced at once; a sound one keeps serving
+  # a client until the client is done, and the restore on exit takes over at the deadline.
+  ready "$RUN_MIN" $gate || break
   relaunch "$A" && serving=baseline || { serving=unknown; break; }
   bench A-baseline "$A" || say "baseline run failed its gates"
   printf '%s\t%s\t%s\t%s\n' "$night" "$outcome" "$res" "$l" >> "$NIGHT_DIR/done"

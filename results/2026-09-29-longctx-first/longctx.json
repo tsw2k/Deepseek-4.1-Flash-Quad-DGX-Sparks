@@ -1,0 +1,41 @@
+{
+ "version": "v1",
+ "corpus": "/home/mtxc/dsv41-quality/corpus/code.txt",
+ "corpus_sha256": "c8490cd916e5ddcd2582e9a8c1bd887ab635273c08bf7bd0cea386c0315626b0",
+ "tokens": 150000,
+ "append": 2000,
+ "answer": 256,
+ "summary": {
+  "cold.ttft_s": 89.03,
+  "cold.prefill_tok_s": 1684.14,
+  "cold.decode_tok_s": 44.62,
+  "warm.ttft_s": 2.04,
+  "warm.decode_tok_s": 43.78
+ },
+ "cold_runs_that_hit_the_cache": [],
+ "reps": [
+  {
+   "cold": {
+    "prompt_tokens": 149947,
+    "completion_tokens": 256,
+    "ttft_s": 89.03489565849304,
+    "total_s": 94.75027799606323,
+    "decode_tok_s": 44.616437700720724,
+    "cache_queried_tokens": 149948,
+    "cache_hit_tokens": 0,
+    "prefill_tok_s": 1684.1374260171501
+   },
+   "warm": {
+    "prompt_tokens": 152212,
+    "completion_tokens": 256,
+    "ttft_s": 2.036716938018799,
+    "total_s": 7.861152410507202,
+    "decode_tok_s": 43.78106705868527,
+    "cache_queried_tokens": 152212,
+    "cache_hit_tokens": 149760,
+    "prefill_tok_s": 1203.898270903155
+   }
+  }
+ ],
+ "utc": "2026-09-29T18:22:49Z"
+}

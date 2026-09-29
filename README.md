@@ -148,7 +148,8 @@ Full sequence, including stopping GLM and rolling back: [docs/RUNBOOK.md](docs/R
 | `launch/cluster.sh` | ship, render, slice, preflight, up, down, status, Engram check |
 | `cluster.env.example`, `cluster.exl3.env.example` | the release lane and the EXL3 lane as two deployments that take turns |
 | `bench/gates.py` | correctness gates, run before any benchmark |
-| `bench/run.sh` | configuration snapshot, gates, C1-C6 suite, needle; writes `results/` |
+| `bench/run.sh` | configuration snapshot, gates, C1-C6 suite, needle, long-context timings; writes `results/` |
+| `bench/longctx.py` | one stream at a 150K-token prompt: cold and warm time to first token, decode |
 | `bench/quality.py` | corpora, next-token distance between two runs, and the boot probe |
 | `bench/tony/` | Tech2Wild/Kai's benchmark, needle test and prompt set, unmodified |
 | `ops/` | fleet watchdog and its systemd unit, memory guard, Telegram notifier, night lever runner, hang check, GPU clock-latch burn |

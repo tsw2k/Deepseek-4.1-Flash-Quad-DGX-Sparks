@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# One recorded run: configuration snapshot, correctness gates, then the fixed-prompt benchmark
-# and the needle test. Numbers without the configuration that produced them are not kept.
+# One recorded run: configuration snapshot, correctness gates, then the fixed-prompt benchmark,
+# the needle test and the long-context timings. Numbers without the configuration that produced
+# them are not kept.
 #
 #   bench/run.sh LABEL [--gates-only]         # from the operator host, cluster serving
 #
@@ -93,6 +94,16 @@ on "$head" "cd '$rdir' && python3 '$REPO_DIR/bench/tony/v41bench.py' --base '$ba
   --levels 1,2,3,4,5,6 --prefill 2000,8000,32000,64000 --notes 'set=$PATCH_SET k=$SPEC_K maxlen=$MAXLEN gmu=$GMU lever_env=${LEVER_ENV:-none} draft=${DRAFT_SAMPLE:-probabilistic} spec=${SPEC:-dspark}'"
 on "$head" "bash '$REPO_DIR/ops/hangcheck.sh' '$CONTAINER'" || true
 on "$head" "cd '$rdir' && python3 '$REPO_DIR/bench/tony/v41needle.py' --base '$base' --targets 131072 --depth 0.5 --out '$rdir/needle-131k.json'"
+# ---- long context, one stream: cold and warm time to first token at the size of the prompts the
+# proxy actually sees (bench/longctx.py). Uses the quality corpus; LONGCTX_CORPUS=none skips it.
+lcorpus=${LONGCTX_CORPUS:-/home/mtxc/dsv41-quality/corpus/code.txt}
+if [ "$lcorpus" != none ] && on "$head" "test -f '$lcorpus'"; then
+  on "$head" "python3 '$REPO_DIR/bench/longctx.py' --base 'http://$API_HOST:$API_PORT' --corpus '$lcorpus' \
+    --out '$rdir/longctx.json'" | tee "$out/longctx.txt" || echo "warning: long-context run failed" >&2
+  echo "longctx: $(grep '^summary:' "$out/longctx.txt" | cut -d' ' -f2- || echo failed)" >> "$out/run.txt"
+else
+  echo "longctx: skipped (no corpus at $lcorpus)" >> "$out/run.txt"
+fi
 fetch "$rdir/." "$out/"
 on "$head" "docker logs '$CONTAINER' 2>&1 | grep 'SpecDecoding metrics'" > "$out/spec-decode.log" || true
 [ -s "$out/spec-decode.log" ] || echo "warning: no SpecDecoding metrics captured" >&2

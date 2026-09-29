@@ -189,8 +189,13 @@ Queue a lever by adding a line to `/home/mtxc/dsv41-night/queue` on the head; th
 
 `ops/night-levers.sh --dry-run` shows how the queue parses and the night's plan. Each night runs
 the baseline, the lever and the baseline again (more levers while time allows), each run cold, and
-always ends on the baseline with the watchdog re-armed. Results land in
-`/home/mtxc/dsv41-night/results/<night>/`, the log in `logs/<night>.log`, finished levers in `done`.
+always ends on the baseline with the watchdog re-armed. No relaunch happens while a client is being
+served or has sent a request in the last `QUIET_MIN` minutes (15): the runner reads the engine's
+access log for requests from any address other than the head's, so LiteLLM in its docker network
+counts as a client and the runner's own benchmark and the watchdog canary do not. A run that shared
+the engine with a client anyway gets `client requests during this run: N` in its `run.txt`. If the
+client does not go quiet in time the night stops there and ends on the baseline. Results land in
+`/home/mtxc/dsv41-night/results/<night>-<HHMM>/`, the log in `logs/<night>.log`, finished levers in `done`.
 Copy a night into `results/` here when it has been read.
 
 `touch /home/mtxc/dsv41-night/pause` skips nights. Do not `launch/cluster.sh ship` while a night
