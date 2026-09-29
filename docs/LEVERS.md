@@ -79,3 +79,26 @@ rather than a repacked file:
 
 Measure: per-step time (`bench/tony` counting at C1), `Cached` in `/proc/meminfo` during a
 30-minute mixed run, and the first-run-after-idle penalty (idle 15 minutes, then C1).
+
+## Upstream watch list: when a newer vLLM becomes worth porting to
+
+Checked 2026-09-28. DeepSeek-V4.1 is in vLLM main since `e77daef89e18` (#56214, 2026-09-11) and in
+v0.30.0, but on SM12x it still needs everything this recipe patches, and no 4x GB10 report shows a
+newer tree with good output (one TP3 rebase to a later main was held back for intermittent malformed
+output). Moving off 172d9a17 is a port, not an upgrade: the patches are whole files for the old tree,
+and on the new one the indexer page geometry changed underneath them (that, not an upstream bug, is
+what the 99c83fbc4 "one repeated token" symptom was). Revisit when these land:
+
+| item | what it unblocks | state on 2026-09-28 |
+|---|---|---|
+| vllm #56509, #57292, #57028; issue #56461 | SM12x page geometry for sparse MLA and the V4.1 indexer | open |
+| flashinfer #5174 | 32-token extra pages in FlashInfer's sparse path | open |
+| vllm issue #57156, PR #58560 | NaN under CUDA graphs on SM12x; graph startup / null block (0xTank's `gpu_worker.py` fix today) | open |
+| DeepGEMM #14 in vLLM's pin | SM120 page32 in DeepGEMM (main pins `e1f418c`, older) | not picked up |
+| disk-backed Engram with node-local rows and graph-safe staging | the tables staying on NVMe; the reason four GB10 hold this model at all | not upstream (#56757 closed unmerged); main offers only host-memory offload, which saves nothing on unified memory |
+
+Already upstream, so a port would drop them: the SWA prefill width (`sparse_swa.py`, #57152) and the
+top-k override (#56464, now `--kernel-config '{"sparse_indexer_topk_backend":"per_row"}'`).
+A port would start from v0.30.0's official aarch64 image, carry the patches as diffs (`patches/minimal`
+shows ours are sound), re-implement the disk Engram path on the new model code, and go through the
+gates, the quality probe and a night A/B/A like any lever.
