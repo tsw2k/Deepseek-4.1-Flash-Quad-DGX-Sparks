@@ -104,6 +104,16 @@ if [ "$lcorpus" != none ] && on "$head" "test -f '$lcorpus'"; then
 else
   echo "longctx: skipped (no corpus at $lcorpus)" >> "$out/run.txt"
 fi
+# ---- answer accuracy on fixed public question sets (bench/evalset.py): the only part of a run
+# that can rank two different checkpoints. EVALSET_DIR=none skips it.
+edir=${EVALSET_DIR:-/home/mtxc/dsv41-eval}
+if [ "$edir" != none ] && on "$head" "test -f '$edir/gsm8k.json'"; then
+  on "$head" "python3 '$REPO_DIR/bench/evalset.py' run '$edir' --base 'http://$API_HOST:$API_PORT' \
+    --out '$rdir/evalset.json'" | tee "$out/evalset.txt" || echo "warning: evalset run failed" >&2
+  echo "evalset: $(tr '\n' ' ' < "$out/evalset.txt")" >> "$out/run.txt"
+else
+  echo "evalset: skipped (no question sets at $edir)" >> "$out/run.txt"
+fi
 fetch "$rdir/." "$out/"
 on "$head" "docker logs '$CONTAINER' 2>&1 | grep 'SpecDecoding metrics'" > "$out/spec-decode.log" || true
 [ -s "$out/spec-decode.log" ] || echo "warning: no SpecDecoding metrics captured" >&2
