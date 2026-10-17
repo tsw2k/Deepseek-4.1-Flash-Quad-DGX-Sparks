@@ -2,12 +2,15 @@
 """Download the two full Engram shards once, onto the download node, and verify them.
 
 usage: fetch-engram.py CACHE_DIR [--mbps N] [--verify-only]
+                       [--repo OWNER/NAME --revision SHA --manifest FILE]
 
 model-00047 and model-00048 (189 GiB together) at the pinned revision go into CACHE_DIR, a
 directory of their own, never the serving model directory: that one holds this node's sparse
 slice under the same file names. Each shard's full sha256 is checked against the LFS oid in
-weights/manifest-dba1be0a.tsv and stamped as <shard>.sha256; engram-slice.py refuses to cut
-from a shard without that stamp.
+the manifest (weights/manifest-dba1be0a.tsv, the release, unless --manifest names another; a
+bare name is looked up in weights/) and stamped as <shard>.sha256; engram-slice.py refuses to
+cut from a shard without that stamp. A checkpoint other than the release, such as
+DeepSeek-V4.1-Flash-1017, needs all three of --repo, --revision and --manifest.
 
 The download resumes from a .partial file. It is streamed through sha256 as it arrives
 (a resumed file is re-hashed first), flushed and dropped from the page cache every GiB, and
@@ -30,10 +33,13 @@ ap = argparse.ArgumentParser()
 ap.add_argument("cache_dir")
 ap.add_argument("--mbps", type=float, default=0, help="rate limit in MB/s, 0 for none")
 ap.add_argument("--verify-only", action="store_true", help="only check the stamps; exit 1 if missing")
+ap.add_argument("--repo", default=REPO)
+ap.add_argument("--revision", default=PIN)
+ap.add_argument("--manifest", default="manifest-dba1be0a.tsv")
 args = ap.parse_args()
 
-manifest = os.path.join(os.path.dirname(os.path.abspath(__file__)), "manifest-dba1be0a.tsv")
-rows = {p: (int(size), oid) for p, size, oid in (l.rstrip("\n").split("\t") for l in open(manifest))}
+manifest = os.path.join(os.path.dirname(os.path.abspath(__file__)), args.manifest)
+rows = {f[0]: (int(f[1]), f[2]) for f in (l.rstrip("\n").split("\t") for l in open(manifest))}
 
 
 def log(msg):
@@ -74,7 +80,7 @@ for shard in SHARDS:
         for off in range(0, done, CHUNK):
             h.update(os.pread(fd, min(CHUNK, done - off), off))
             os.posix_fadvise(fd, off, CHUNK, os.POSIX_FADV_DONTNEED)
-    url = f"https://huggingface.co/{REPO}/resolve/{PIN}/{shard}"
+    url = f"https://huggingface.co/{args.repo}/resolve/{args.revision}/{shard}"
     started, got, since, last_log = time.time(), 0, 0, 0
     while done < size:
         try:

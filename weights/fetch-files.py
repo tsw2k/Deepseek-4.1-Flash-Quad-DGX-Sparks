@@ -2,12 +2,15 @@
 """Download the files of a pinned Hugging Face revision that this cluster does not already have.
 
 usage: fetch-files.py MANIFEST DEST_DIR --repo OWNER/NAME --revision SHA [--only new|all] [--mbps N]
+                      [--include GLOB ...] [--exclude GLOB ...]
 
 MANIFEST is a TSV written from the Hugging Face tree API at a pinned revision:
     path <TAB> size <TAB> sha256 (LFS) or git:<blob sha1> <TAB> status
 where status is "new" or "same-as-release" (the file is byte-identical to a file of the release
 checkpoint we already hold, so it is hardlinked, never downloaded again). With --only new
-(default) only "new" rows are fetched.
+(default) only "new" rows are fetched. --include and --exclude (repeatable globs on the path)
+narrow that further, e.g. a checkpoint's small files first and its Engram shards never
+(fetch-engram.py fetches those into a directory of their own).
 
 Each file is streamed through its hash as it arrives, resumes from a .partial, is flushed and
 dropped from the page cache every GiB (on GB10 the page cache is the GPU's memory), and is
@@ -15,6 +18,7 @@ renamed into place only when its hash matches the manifest. A verified file gets
 <path>.verified stamp holding the hash, so a re-run skips it.
 """
 import argparse
+import fnmatch
 import hashlib
 import os
 import sys
@@ -30,6 +34,8 @@ ap.add_argument("--repo", required=True)
 ap.add_argument("--revision", required=True)
 ap.add_argument("--only", choices=("new", "all"), default="new")
 ap.add_argument("--mbps", type=float, default=0)
+ap.add_argument("--include", action="append", default=[], help="only paths matching this glob (repeatable)")
+ap.add_argument("--exclude", action="append", default=[], help="skip paths matching this glob (repeatable)")
 args = ap.parse_args()
 
 
@@ -40,6 +46,10 @@ def log(msg):
 rows = []
 for line in open(args.manifest):
     path, size, want, status = line.rstrip("\n").split("\t")
+    if args.include and not any(fnmatch.fnmatch(path, g) for g in args.include):
+        continue
+    if any(fnmatch.fnmatch(path, g) for g in args.exclude):
+        continue
     if args.only == "all" or status == "new":
         rows.append((path, int(size), want))
 

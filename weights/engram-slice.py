@@ -193,10 +193,10 @@ def plan_slice(model_dir, source_dir, ranges):
     return plan, shards
 
 
-def verify_full_source(source_dir):
+def verify_full_source(source_dir, manifest):
     """The full shards must carry the .sha256 stamp fetch-engram.py writes after a full check."""
-    manifest = os.path.join(os.path.dirname(os.path.abspath(__file__)), "manifest-dba1be0a.tsv")
-    want = {p: oid for p, _, oid in (l.rstrip("\n").split("\t") for l in open(manifest))}
+    manifest = os.path.join(os.path.dirname(os.path.abspath(__file__)), manifest)
+    want = {f[0]: f[2] for f in (l.rstrip("\n").split("\t") for l in open(manifest))}
     for shard in ENGRAM_SHARDS:
         stamp = os.path.join(source_dir, shard + ".sha256")
         if not os.path.exists(stamp) or open(stamp).read().split()[0] != want[shard]:
@@ -206,7 +206,7 @@ def verify_full_source(source_dir):
 def cmd_cut(a):
     if bool(a.out) == bool(a.pack):
         sys.exit("cut needs exactly one of --out DIR or --pack FILE")
-    verify_full_source(a.source)
+    verify_full_source(a.source, a.manifest)
     ranges = row_ranges(os.path.join(a.model_dir, "config.json"), a.rank, a.tp)
     log("rows for rank %d/%d: %s" % (a.rank, a.tp, {k: list(v) for k, v in ranges.items()}))
     plan, shards = plan_slice(a.model_dir, a.source, ranges)
@@ -344,6 +344,8 @@ c.add_argument("--source", required=True, help="directory with the full, verifie
 c.add_argument("--out")
 c.add_argument("--pack")
 c.add_argument("--revision", default=PIN)
+c.add_argument("--manifest", default="manifest-dba1be0a.tsv",
+               help="manifest the full shards were verified against (a bare name is looked up in weights/)")
 c.add_argument("--force", action="store_true")
 u = sub.add_parser("unpack")
 u.add_argument("pack")

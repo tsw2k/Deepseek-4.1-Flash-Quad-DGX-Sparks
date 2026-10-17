@@ -60,12 +60,17 @@ slice)
   staging=${SLICE_STAGING:-/var/tmp/dsv41-slices}
   bw=${SLICE_BWLIMIT:-400m}
   case "$staging" in /var/tmp/*) ;; *) echo "SLICE_STAGING must live under /var/tmp (rsyncd module root)" >&2; exit 2;; esac
-  on "$dl" "python3 '$REPO_DIR/weights/fetch-engram.py' '$cache' --verify-only" \
+  # A checkpoint other than the release names its manifest and revision in the env file.
+  pin="--revision '$MODEL_REVISION' --manifest '${MODEL_MANIFEST:-manifest-dba1be0a.tsv}'"
+  on "$dl" "python3 '$REPO_DIR/weights/fetch-engram.py' '$cache' --verify-only $pin" \
     || { echo "full Engram shards not verified on $dl: run weights/fetch-engram.py $cache there" >&2; exit 3; }
   if [ $check = 0 ]; then
+    # Only an engine serving this MODEL_DIR is in the way: slices for another checkpoint can be
+    # cut into its own directory while the current one keeps serving.
     for n in "${NODES[@]}"; do
-      if [ "$(on "$n" "docker inspect -f '{{.State.Status}}' '$CONTAINER' 2>/dev/null" || true)" = running ]; then
-        echo "$n is serving; replacing slices under a live engine is refused (fleet down first, or use --check)" >&2; exit 3
+      if on "$n" "docker inspect -f '{{.State.Status}} {{range .Mounts}}{{.Source}} {{end}}' \$(docker ps -q) 2>/dev/null" \
+          | grep -qE "^running .*$MODEL_DIR( |\$)"; then
+        echo "$n is serving $MODEL_DIR; replacing slices under a live engine is refused (fleet down first, or use --check)" >&2; exit 3
       fi
     done
   fi
@@ -77,14 +82,14 @@ slice)
     echo "=== rank $i ($n)"
     if [ "$i" -eq 0 ]; then
       out=$MODEL_DIR; [ $check = 1 ] && out=$staging/check-rank-0
-      if on "$dl" "mkdir -p '$staging' && $sl cut '$MODEL_DIR' --rank 0 --source '$cache' --out '$out' --force"; then
+      if on "$dl" "mkdir -p '$staging' && $sl cut '$MODEL_DIR' --rank 0 --source '$cache' --out '$out' --force $pin"; then
         [ $check = 0 ] || on "$dl" "$sl compare '$out' '$MODEL_DIR'" || bad=1
       else bad=1; fi
       [ $check = 0 ] || on "$dl" "rm -rf '$out'"
       continue
     fi
     pack=$staging/rank-$i.pack
-    if ! on "$dl" "mkdir -p '$staging' && $sl cut '$MODEL_DIR' --rank $i --source '$cache' --pack '$pack'"; then
+    if ! on "$dl" "mkdir -p '$staging' && $sl cut '$MODEL_DIR' --rank $i --source '$cache' --pack '$pack' $pin"; then
       bad=1; continue
     fi
     # Over rail B from rsyncd, as a plain file; both ends keep it out of the page cache.
