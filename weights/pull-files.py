@@ -2,7 +2,7 @@
 """Pull the files of a manifest from another node's rsyncd over rail B, and verify each one.
 
 usage: pull-files.py MANIFEST DEST_DIR --source rsync://RAIL_B_IP/models/REL [--only new|all]
-                     [--bwlimit 400m] [--include GLOB ...]
+                     [--bwlimit 400m] [--include GLOB ...] [--exclude GLOB ...]
 
 Restoring release shards another node still holds is the same pull against the release manifest:
     pull-files.py weights/manifest-dba1be0a.tsv MODEL_DIR --source rsync://.../DeepSeek-V4.1-Flash \
@@ -34,6 +34,7 @@ ap.add_argument("--source", required=True)
 ap.add_argument("--only", choices=("new", "all"), default="new")
 ap.add_argument("--bwlimit", default="400m")
 ap.add_argument("--include", action="append", default=[], help="only paths matching this glob (repeatable)")
+ap.add_argument("--exclude", action="append", default=[], help="skip paths matching this glob (repeatable)")
 args = ap.parse_args()
 
 
@@ -69,6 +70,8 @@ rows = []
 for line in open(args.manifest):
     path, size, want, *status = line.rstrip("\n").split("\t")  # the release manifest has no status
     if args.include and not any(fnmatch.fnmatch(path, g) for g in args.include):
+        continue
+    if any(fnmatch.fnmatch(path, g) for g in args.exclude):
         continue
     if args.only == "all" or status == ["new"]:
         rows.append((path, int(size), want))
