@@ -238,3 +238,36 @@ spark-01, outside this repository:
     bash /home/mtxc/dsv41/ops/notify.sh "test"
 
 Without the file every caller still works; the message is only logged as not sent.
+
+## A new checkpoint next to the serving release
+
+How DeepSeek-V4.1-Flash-1017 was laid out, and the order any same-architecture checkpoint follows.
+`cluster.1017.env.example` holds the four values that change (repo, revision, manifest, model and
+Engram cache directories); everything else comes from `cluster.env`.
+
+Disk sets the order. Each node needs ~334 GiB for the new model directory (286 GiB of shards
+1-46 plus its 47.5 GiB Engram slice), and the head also needs the two full Engram shards
+(189 GiB) to cut slices from. With the release still on disk no node holds all of that at once,
+so the full Engram shards come first and leave before shards 1-46 arrive:
+
+1. On the head, the small files (config, tensor index) and the full Engram shards:
+
+       python3 weights/fetch-files.py weights/manifest-1017-1bae0e10.tsv /var/tmp/models/DeepSeek-V4.1-Flash-1017 \
+           --repo deepseek-ai/DeepSeek-V4.1-Flash-1017 --revision 1bae0e10... --only all --exclude 'model-*'
+       python3 weights/fetch-engram.py /var/tmp/models/DeepSeek-V4.1-Flash-1017-engram-full \
+           --repo deepseek-ai/DeepSeek-V4.1-Flash-1017 --revision 1bae0e10... --manifest manifest-1017-1bae0e10.tsv --mbps 100
+
+2. From the operator host, every rank's slice, while the release keeps serving (the slicer
+   refuses only a MODEL_DIR a running engine mounts):
+
+       CLUSTER_ENV=cluster.1017.env launch/cluster.sh slice
+
+3. Delete the full Engram shards on the head. Re-cutting slices later means fetching them again.
+4. On the head, shards 1-46 (`fetch-files.py ... --only all --include 'model-*' --exclude 'model-0004[78]-*'`),
+   then on every other node `pull-files.py` from the head's rsyncd over rail B with the same
+   manifest and globs.
+5. `weights/verify.py MODEL_DIR --manifest=weights/manifest-1017-1bae0e10.tsv` on every node, then
+   a boot in a window under the memory guard.
+
+A new checkpoint's next-token distribution legitimately differs from the release, so the
+quality probe against `release-a` says nothing about it: collect a new reference on it first.
