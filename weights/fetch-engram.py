@@ -42,6 +42,19 @@ manifest = os.path.join(os.path.dirname(os.path.abspath(__file__)), args.manifes
 rows = {f[0]: (int(f[1]), f[2]) for f in (l.rstrip("\n").split("\t") for l in open(manifest))}
 
 
+def hf_token():
+    """HF_TOKEN, else the token file `hf auth login` writes; empty for anonymous access. It is sent
+    only to huggingface.co: an unredirected header does not follow the redirect to the CDN."""
+    tok = os.environ.get("HF_TOKEN", "")
+    path = os.path.expanduser("~/.cache/huggingface/token")
+    if not tok and os.path.exists(path):
+        tok = open(path).read().strip()
+    return tok
+
+
+TOKEN = hf_token()
+
+
 def log(msg):
     print(msg, flush=True)
 
@@ -85,6 +98,8 @@ for shard in SHARDS:
     while done < size:
         try:
             req = urllib.request.Request(url, headers={"Range": f"bytes={done}-{size - 1}"})
+            if TOKEN:
+                req.add_unredirected_header("Authorization", f"Bearer {TOKEN}")
             with urllib.request.urlopen(req, timeout=300) as r:
                 if r.status not in (200, 206) or (done and r.status != 206):
                     raise OSError(f"HTTP {r.status} for bytes={done}-")

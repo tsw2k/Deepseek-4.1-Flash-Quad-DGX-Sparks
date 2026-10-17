@@ -39,6 +39,19 @@ ap.add_argument("--exclude", action="append", default=[], help="skip paths match
 args = ap.parse_args()
 
 
+def hf_token():
+    """HF_TOKEN, else the token file `hf auth login` writes; empty for anonymous access. It is sent
+    only to huggingface.co: an unredirected header does not follow the redirect to the CDN."""
+    tok = os.environ.get("HF_TOKEN", "")
+    path = os.path.expanduser("~/.cache/huggingface/token")
+    if not tok and os.path.exists(path):
+        tok = open(path).read().strip()
+    return tok
+
+
+TOKEN = hf_token()
+
+
 def log(msg):
     print(msg, flush=True)
 
@@ -80,6 +93,8 @@ for path, size, want in rows:
     while done < size:
         try:
             req = urllib.request.Request(url, headers={"Range": f"bytes={done}-{size - 1}"} if done else {})
+            if TOKEN:
+                req.add_unredirected_header("Authorization", f"Bearer {TOKEN}")
             with urllib.request.urlopen(req, timeout=300) as r:
                 if done and r.status != 206:
                     raise OSError(f"HTTP {r.status} on resume")
