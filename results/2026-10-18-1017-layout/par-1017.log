@@ -1,0 +1,11 @@
+[20:34:41] phase 1: four downloads in parallel
+[21:12:30] spark-01: done: 10 files verified in /var/tmp/models/DeepSeek-V4.1-Flash-1017
+[21:12:30] spark-02: done: 10 files verified in /var/tmp/models/DeepSeek-V4.1-Flash-1017
+[21:12:30] spark-03: done: 9 files verified in /var/tmp/models/DeepSeek-V4.1-Flash-1017
+[21:12:30] spark-04: done: 9 files verified in /var/tmp/models/DeepSeek-V4.1-Flash-1017
+[21:12:30] phase 2: every node pulls the other quarters over rail B
+[21:36:30] spark-01: 0 failed pulls; [21:28:49] done: 9 files verified in /var/tmp/models/DeepSeek-V4.1-Flash-1017
+[21:36:30] spark-02: 0 failed pulls; [21:34:08] done: 9 files verified in /var/tmp/models/DeepSeek-V4.1-Flash-1017
+[21:36:30] spark-03: 0 failed pulls; [21:34:54] done: 9 files verified in /var/tmp/models/DeepSeek-V4.1-Flash-1017
+[21:36:30] spark-04: 0 failed pulls; [21:36:30] done: 9 files verified in /var/tmp/models/DeepSeek-V4.1-Flash-1017
+[21:36:30] parallel layout finished
