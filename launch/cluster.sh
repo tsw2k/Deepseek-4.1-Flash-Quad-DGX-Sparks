@@ -38,9 +38,22 @@ case "$cmd" in
 ship)
   [ -z "$(git -C "$root" status --porcelain --untracked-files=no)" ] || echo "note: uncommitted changes are NOT shipped (git archive HEAD)" >&2
   rev=$(git -C "$root" rev-parse --short HEAD)
+  # The nodes' cluster.env is replaced by this host's copy. Each ship records the hash of what it
+  # wrote; a node whose cluster.env no longer matches that hash was edited in place (the
+  # 2026-10-17 rail cutover was), and is not overwritten silently: merge its values here first.
+  if [ "${SHIP_FORCE:-0}" != 1 ]; then
+    drift=0
+    for n in "${NODES[@]}"; do
+      if ! on "$n" "cd '$REPO_DIR' 2>/dev/null || exit 0; [ ! -f cluster.env ] || { [ -f .cluster.env.shipped ] && sha256sum -c --status .cluster.env.shipped; } || cmp -s cluster.env /dev/stdin" < "$env_file"; then
+        echo "$n: $REPO_DIR/cluster.env was changed on the node since the last ship:" >&2
+        on "$n" "cat '$REPO_DIR/cluster.env'" | diff - "$env_file" | sed 's/^/    /' >&2; drift=1
+      fi
+    done
+    [ $drift = 0 ] || { echo "not shipped: merge the node's values into $env_file, or SHIP_FORCE=1 to overwrite" >&2; exit 3; }
+  fi
   for n in "${NODES[@]}"; do
     git -C "$root" archive --format=tar HEAD | on "$n" "rm -rf '$REPO_DIR.new' && mkdir -p '$REPO_DIR.new' && tar -x -C '$REPO_DIR.new' && echo $rev > '$REPO_DIR.new/REVISION'"
-    on "$n" "cat > '$REPO_DIR.new/cluster.env'" < "$env_file"
+    on "$n" "cat > '$REPO_DIR.new/cluster.env' && cd '$REPO_DIR.new' && sha256sum cluster.env > .cluster.env.shipped" < "$env_file"
     on "$n" "rm -rf '$REPO_DIR.old' && { [ ! -d '$REPO_DIR' ] || mv '$REPO_DIR' '$REPO_DIR.old'; } && mv '$REPO_DIR.new' '$REPO_DIR' && rm -rf '$REPO_DIR.old'"
     echo "$n: $REPO_DIR at $rev"
   done
