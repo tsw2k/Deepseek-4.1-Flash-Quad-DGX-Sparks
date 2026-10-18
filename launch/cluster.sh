@@ -25,7 +25,7 @@ cmd=${1:?usage: cluster.sh ship|render|slice|preflight|up|down|status|engram|log
 # a node need not be able to ssh to itself.
 on() {
   local n=$1; shift
-  if [ "$n" = "$(hostname)" ]; then bash -c "$*"; else ssh -o BatchMode=yes -o ConnectTimeout=15 "$n" "$@"; fi
+  if [ "$n" = "$(hostname)" ]; then bash -c "$*"; else ssh -o BatchMode=yes -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 "$n" "$@"; fi
 }
 # Operator stops pause the watchdog (ops/fleet-watchdog.sh) until the next successful `up`;
 # the watchdog's own recovery passes WATCHDOG=1 so it does not pause itself.
