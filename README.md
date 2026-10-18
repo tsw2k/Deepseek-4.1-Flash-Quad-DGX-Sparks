@@ -8,7 +8,13 @@ tensor-parallel 4, with vLLM, over a switched RoCEv2 fabric.
 This is a self-contained recipe: pinned sources, patch sets as reviewable diffs, image build,
 weight and Engram tooling, launcher, correctness gates and benchmark.
 
-> **Status (2026-09-28): serving on the mtxc cluster as baseline + L1 + L3 (DSpark K5, 300K), every rank under a memory guard.** The measured configuration
+> **Status (2026-10-18): serving [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
+> on the same image, patches and flags as the release (baseline + L1 + L3, DSpark K5, 300K, NCCL striped over
+> both rail-A ports), every rank under a memory guard.** Against the release in an A/B/A it is as fast and
+> answers as well on GSM8K and MMLU-Pro ([results](results/2026-10-18-ABA-1017/NOTES.md)); the release stays on
+> disk for rollback.
+>
+> 2026-09-28: serving the release as baseline + L1 + L3. The measured configuration
 > booted in 10 minutes, passed all gates and reproduced 0xTank's numbers within run-to-run spread
 > ([baseline](results/2026-09-13-baseline-measured/NOTES.md)). NCCL buffer sizing (lever L1) then
 > added +13 % single-stream and +11 % at six streams and gave ~10 GiB back per node
