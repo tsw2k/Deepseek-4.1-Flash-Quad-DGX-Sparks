@@ -96,6 +96,7 @@ what the 99c83fbc4 "one repeated token" symptom was). Revisit when these land:
 | flashinfer #5174 | 32-token extra pages in FlashInfer's sparse path | open |
 | vllm issue #57156, PR #58560 | NaN under CUDA graphs on SM12x; graph startup / null block (0xTank's `gpu_worker.py` fix today) | open |
 | DeepGEMM #14 in vLLM's pin | SM120 page32 in DeepGEMM (main pins `e1f418c`, older) | not picked up |
+| vllm #62196, #62199, #62200 (open 2026-10-17) | V4.1 prompt encoder synced with the 1017 reference: a tool-calling turn keeps its reasoning while its results come back; content-block tool results; `<｜deepseek_image｜>` in text rejected. Our pin lacks it, but in `encode_messages` the turn boundary only matters with thinking on and no tools declared (`drop_thinking` turns off as soon as tools are declared), so an agent that declares tools, or runs with thinking off as served here, renders the same; checked 2026-10-19, not ported | open |
 | disk-backed Engram with node-local rows and graph-safe staging | the tables staying on NVMe; the reason four GB10 hold this model at all | not upstream (#56757 closed unmerged); main offers only host-memory offload, which saves nothing on unified memory |
 
 Already upstream, so a port would drop them: the SWA prefill width (`sparse_swa.py`, #57152) and the
