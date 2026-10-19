@@ -71,7 +71,9 @@ note "patch set $PATCH_SET ($(wc -l < "$patch_dir/mounts.txt") files, hashes mat
 # ---- model: full shards by size, Engram slice for exactly this rank
 manifest=$root/weights/${MODEL_MANIFEST:-manifest-dba1be0a.tsv}
 python3 "$root/weights/verify.py" "$MODEL_DIR" --size-only "--manifest=$manifest" >/dev/null || fail "checkpoint incomplete (weights/verify.py $MODEL_DIR --manifest=$manifest)"
-python3 - "$MODEL_DIR" "$rank" "$MODEL_REVISION" <<'PY' || fail "Engram slice does not belong to this rank"
+# ENGRAM_REVISION: a checkpoint whose Engram shards are byte-identical to another's (same LFS sha256 in
+# both manifests, e.g. an abliterated 1017) serves the slices cut from the other, which record its revision.
+python3 - "$MODEL_DIR" "$rank" "${ENGRAM_REVISION:-$MODEL_REVISION}" <<'PY' || fail "Engram slice does not belong to this rank"
 import json, os, sys
 md, rank, rev = sys.argv[1], int(sys.argv[2]), sys.argv[3]
 j = json.load(open(os.path.join(md, "engram-local.json")))
@@ -153,7 +155,11 @@ args=(run --gpus all -d --name "$CONTAINER" --restart no --network host --ipc ho
   --label "dsv41.rank=$rank" --label "dsv41.patch_set=$PATCH_SET" --label "dsv41.gid_index=$gid_index" --label "dsv41.draft_sample=$DRAFT_SAMPLE" --label "dsv41.spec=$SPEC" --label "dsv41.lever_env=${LEVER_ENV:-}"
   -v "$MODEL_DIR:$name_model:ro" -v "$CACHE_DIR:/cache" "${mounts[@]}" "${extra_py[@]}")
 for e in "${envs[@]}"; do args+=(-e "$e"); done
-args+=("$IMAGE" "$name_model" --served-model-name deepseek-v4.1-flash
+# SERVED_NAMES: the engine's model names, first one primary. Benchmarks and gates call deepseek-v4.1-flash,
+# so a checkpoint published under another name keeps it as a second, internal name; LiteLLM decides
+# what clients see.
+read -ra served <<< "${SERVED_NAMES:-deepseek-v4.1-flash}"
+args+=("$IMAGE" "$name_model" --served-model-name "${served[@]}"
   --host "$API_HOST" --port "$API_PORT"
   --tensor-parallel-size 4 --gpu-memory-utilization "$GMU"
   --max-model-len "$MAXLEN" --max-num-seqs "$SEQS" --max-num-batched-tokens "$MAX_BATCHED"
