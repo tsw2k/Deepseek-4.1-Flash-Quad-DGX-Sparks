@@ -109,6 +109,9 @@ else
 fi
 
 envs=(
+  # No telemetry: vLLM otherwise posts hardware, model and config details to stats.vllm.ai at
+  # start and every 10 minutes (found 2026-10-19). Part of the recipe, not of an env file.
+  VLLM_NO_USAGE_STATS=1 DO_NOT_TRACK=1 HF_HUB_DISABLE_TELEMETRY=1
   "VLLM_HOST_IP=$my_ip" HF_HOME=/cache/huggingface HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
   "VLLM_CACHE_ROOT=/cache/vllm-${IMAGE##*:}-$PATCH_SET" VLLM_ENGINE_READY_TIMEOUT_S=3600
   PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True VLLM_USE_RUST_FRONTEND=0
