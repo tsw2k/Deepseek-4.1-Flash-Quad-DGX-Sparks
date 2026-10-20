@@ -1,0 +1,63 @@
+{
+ "version": "v1",
+ "corpus": "/home/mtxc/dsv41-quality/corpus/code.txt",
+ "corpus_sha256": "c8490cd916e5ddcd2582e9a8c1bd887ab635273c08bf7bd0cea386c0315626b0",
+ "tokens": 150000,
+ "append": 2000,
+ "answer": 256,
+ "summary": {
+  "cold.ttft_s": 80.12,
+  "cold.prefill_tok_s": 1871.48,
+  "cold.decode_tok_s": 49.95,
+  "warm.ttft_s": 1.88,
+  "warm.decode_tok_s": 46.88
+ },
+ "cold_runs_that_hit_the_cache": [],
+ "reps": [
+  {
+   "cold": {
+    "prompt_tokens": 149947,
+    "completion_tokens": 256,
+    "ttft_s": 80.48933625221252,
+    "total_s": 85.30323600769043,
+    "decode_tok_s": 52.97160575681423,
+    "cache_queried_tokens": 149947,
+    "cache_hit_tokens": 0,
+    "prefill_tok_s": 1862.942434139879
+   },
+   "warm": {
+    "prompt_tokens": 152212,
+    "completion_tokens": 256,
+    "ttft_s": 1.889155626296997,
+    "total_s": 7.5440497398376465,
+    "decode_tok_s": 45.09368254825537,
+    "cache_queried_tokens": 152212,
+    "cache_hit_tokens": 149760,
+    "prefill_tok_s": 1297.934360657335
+   }
+  },
+  {
+   "cold": {
+    "prompt_tokens": 149947,
+    "completion_tokens": 256,
+    "ttft_s": 79.75825262069702,
+    "total_s": 85.19153928756714,
+    "decode_tok_s": 46.93291844048688,
+    "cache_queried_tokens": 149947,
+    "cache_hit_tokens": 0,
+    "prefill_tok_s": 1880.0186196793536
+   },
+   "warm": {
+    "prompt_tokens": 152212,
+    "completion_tokens": 256,
+    "ttft_s": 1.8699026107788086,
+    "total_s": 7.108778238296509,
+    "decode_tok_s": 48.674566477697596,
+    "cache_queried_tokens": 152212,
+    "cache_hit_tokens": 149760,
+    "prefill_tok_s": 1311.2982386707026
+   }
+  }
+ ],
+ "utc": "2026-10-20T00:27:54Z"
+}

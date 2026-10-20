@@ -1,0 +1,2 @@
+gsm8k: 243/250 = 0.972, tokens median 141.5, truncated 1, errors 0
+mmlupro: 236/280 = 0.8429, tokens median 89.5, truncated 10, errors 0

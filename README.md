@@ -8,7 +8,12 @@ tensor-parallel 4, with vLLM, over a switched RoCEv2 fabric.
 This is a self-contained recipe: pinned sources, patch sets as reviewable diffs, image build,
 weight and Engram tooling, launcher, correctness gates and benchmark.
 
-> **Status (2026-10-18): serving [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
+> **Status (2026-10-20): serving [mrfakename/DeepSeek-V4.1-Flash-1017-abliterated](https://huggingface.co/mrfakename/DeepSeek-V4.1-Flash-1017-abliterated)**
+> (1017 with a refusal subspace projected out of two matrices per layer) as `deepseek-v4.1-flash-abliterated` and
+> `deepseek-v4.1-flash`, on the same stack: as fast as 1017 and as good on GSM8K and MMLU-Pro
+> ([results](results/2026-10-20-ABA-1017-abliterated/NOTES.md)); 1017 stays on disk for rollback.
+>
+> 2026-10-18: serving [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 > on the same image, patches and flags as the release (baseline + L1 + L3, DSpark K5, 300K, NCCL striped over
 > both rail-A ports), every rank under a memory guard.** Against the release in an A/B/A it is as fast and
 > answers as well on GSM8K and MMLU-Pro ([results](results/2026-10-18-ABA-1017/NOTES.md)); the release stays on

@@ -1,0 +1,5 @@
+r0 cold: prompt 149947 cached 0 ttft 80.70s prefill 1858 tok/s decode 51.9 tok/s
+r0 warm: prompt 152212 cached 149760 ttft 1.95s prefill 1257 tok/s decode 48.1 tok/s
+r1 cold: prompt 149947 cached 0 ttft 79.86s prefill 1878 tok/s decode 45.7 tok/s
+r1 warm: prompt 152212 cached 149760 ttft 1.89s prefill 1295 tok/s decode 48.4 tok/s
+summary: cold.ttft_s 80.28 cold.prefill_tok_s 1867.87 cold.decode_tok_s 48.81 warm.ttft_s 1.92 warm.decode_tok_s 48.25
