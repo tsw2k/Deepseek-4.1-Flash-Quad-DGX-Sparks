@@ -159,6 +159,8 @@ for e in "${envs[@]}"; do args+=(-e "$e"); done
 # so a checkpoint published under another name keeps it as a second, internal name; LiteLLM decides
 # what clients see.
 read -ra served <<< "${SERVED_NAMES:-deepseek-v4.1-flash}"
+# MM_IMAGES: images per request (4 until 2026-10-20). Agent clients resend the whole conversation,
+# so every screenshot so far counts; vLLM sizes the vision encoder's profile for this many.
 args+=("$IMAGE" "$name_model" --served-model-name "${served[@]}"
   --host "$API_HOST" --port "$API_PORT"
   --tensor-parallel-size 4 --gpu-memory-utilization "$GMU"
@@ -169,7 +171,7 @@ args+=("$IMAGE" "$name_model" --served-model-name "${served[@]}"
   --compilation-config "{\"cudagraph_mode\":\"FULL_AND_PIECEWISE\",\"cudagraph_capture_sizes\":[$cg_sizes]}"
   --distributed-executor-backend mp --nnodes 4 --node-rank "$rank"
   --master-addr "${RAIL_A_IPS[0]}" --master-port "$MASTER_PORT"
-  --block-size 128 --limit-mm-per-prompt '{"image":4}' --mm-processor-cache-gb 1)
+  --block-size 128 --limit-mm-per-prompt "{\"image\":${MM_IMAGES:-4}}" --mm-processor-cache-gb 1)
 [ "$rank" -eq 0 ] || args+=(--headless)
 read -r -a extra <<< "${VLLM_EXTRA:-}"
 args+=("${extra[@]}")
