@@ -271,3 +271,42 @@ so the full Engram shards come first and leave before shards 1-46 arrive:
 
 A new checkpoint's next-token distribution legitimately differs from the release, so the
 quality probe against `release-a` says nothing about it: collect a new reference on it first.
+
+## Operating the serving deployment (since 2026-10-19)
+
+**The operator host is spark-01**, not a workstation behind a VPN: a git checkout of this repository
+in `~/dsv41-src` (`git pull` there after a push), with the git-ignored env files beside it
+(`cluster.env`, `cluster.1017.env`, `cluster.1017abl.env`, `cluster.exl3.env`). Run `ship`,
+`slice`, `preflight`, downloads and benchmarks there, detached (`setsid -f ... > /var/tmp/dsv41-logs/X.log`),
+so a dropped VPN neither hangs nor half-finishes them. A ship from a workstation once left two nodes
+on a new recipe and two on the old one; `preflight` refuses that state, and so would any relaunch.
+
+**`cluster.env` is changed in the operator copy only.** `ship` replaces `REPO_DIR/cluster.env` on
+every node with it, and since 2026-10-18 it records the hash of what it wrote
+(`REPO_DIR/.cluster.env.shipped`) and refuses, showing the difference, when a node's copy was edited
+in place after that (`SHIP_FORCE=1` overrides). An in-place edit during the rail cutover was
+silently undone by the next ship once, and the relaunch after it failed preflight on every rank.
+
+**Values the serving deployment sets beyond the release's** (`launch/node.sh` reads them):
+
+| key | serving value | default |
+|---|---|---|
+| `MODEL_DIR`, `MODEL_REVISION`, `MODEL_MANIFEST` | the 1017-abliterated directory, 517efab9, `manifest-1017abl-517efab9.tsv` | the release |
+| `ENGRAM_REVISION` | 1bae0e10: the abliterated checkpoint's Engram shards are 1017's, byte for byte, so it serves the 1017 slices | `MODEL_REVISION` |
+| `SERVED_NAMES` | `deepseek-v4.1-flash-abliterated deepseek-v4.1-flash`; benchmarks, gates and the watchdog canary call the second | `deepseek-v4.1-flash` |
+| `MM_IMAGES` | 16 images per request: agent clients resend every screenshot of a conversation. KV cache 1.56M tokens with 16 (1.59M with 4) | 4 |
+| `QUALITY_REF` | `/home/mtxc/dsv41-quality/1017abl-a`, collected on the serving weights (copy on spark-03) | `release-a` |
+| `RAIL_A_IFACE`, `RAIL_A_HCA`, `LEVER_ENV` | rail A on cage B (`enp1s0f1np1` / `rocep1s0f1`), NCCL striped over both of its ports | |
+
+Telemetry is off in the recipe itself (`VLLM_NO_USAGE_STATS=1`, `DO_NOT_TRACK=1`,
+`HF_HUB_DISABLE_TELEMETRY=1` in every rank's environment); `/root/.config/vllm/` in the container
+must not exist.
+
+**Restarts** go through `scripts/fleet down|up dsv41` in mtxc-spark-cluster, after 15 minutes
+without a client request and with nothing in flight: the engine's access log, any address other
+than the head's, as the night runner's quiet gate reads it. Clients reach the engine through LiteLLM
+on `litellm1` (10.81.2.186), whose routes `deepseek-v4.1-flash-abliterated` and `deepseek-v4.1-flash`
+both point at 10.77.1.11:8000.
+
+**Rollback to stock 1017**, while its directory is on disk: `cp cluster.env.before-abl cluster.env`
+in `~/dsv41-src`, ship, restart; the 1017 reference `1017-a` comes back with it.
